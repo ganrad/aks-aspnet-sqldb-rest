@@ -1,13 +1,16 @@
 #  Build and deploy an ASP.NET Core 2.2 microservice application on Azure Kubernetes Service (AKS)
+This project describes the steps for building and deploying a real world **Medical Claims Processing** microservice application on Azure Kubernetes Service (AKS).
 
 **Description:**
 
 In a nutshell, you will work on the following tasks.
-1.  Define a **Build Pipeline** in Azure DevOps (formerly Visual Studio Team Services).  Execute the build pipeline to package a containerized ASP.NET Core Microservice Application (**claims-api**) and push it to ACR (Azure Container Registry).  This task focuses on the **Continuous Integration** aspect of the DevOps process.  Complete Sections [A] thru [C].
+1. Deploy an **Azure SQL Server Database**.  Complete Section [A]. 
+2. Deploy an **Azure Container Registry** (ACR). Complete Section [B].
+2. Define a *Build Pipeline* in **Azure DevOps** (formerly Visual Studio Team Services).  Execute the build pipeline to build the ASP.NET Core application, containerize it and deploy the container image to the ACR.  This task focuses on the **Continuous Integration** aspect of the DevOps process.  Complete Section [C].
 2.  Deploy an AKS (Azure Kubernetes Service) cluster.  Complete Section [D].
-3.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized microservice application on AKS.  Complete Step [E].
+3.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized microservice (`claims-api`) on AKS.  Complete Step [E].
 
-This ASP.NET Core application demonstrates how to build and deploy a *Medical Claims Processing* microservice (`claims-api`) as a containerized application on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations on medical claims.
+This project demonstrates how to use Azure DevOps to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for medical claims.  The microservice persists all claims records in a Azure SQL Server Database.
 
 **Prerequisites:**
 1.  An active **Microsoft Azure Subscription**.  You can obtain a free Azure subscription by accessing the [Microsoft Azure](https://azure.microsoft.com/en-us/?v=18.12) website.  In order to execute all the labs in this project, either your *Azure subscription* or the *Resource Group* **must** have **Owner** Role assigned to it.
