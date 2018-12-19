@@ -1,4 +1,4 @@
-#  Build and deploy an ASP.NET Core 2.2 microservice application on Azure Kubernetes Service (AKS)
+#  Build and deploy an ASP.NET Core 2.2 Web API (microservice) on Azure Kubernetes Service (AKS)
 This project describes the steps for building and deploying a real world **Medical Claims Processing** microservice application on Azure Kubernetes Service (AKS).
 
 **Description:**
