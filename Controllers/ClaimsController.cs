@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Linq;
 using ClaimsApi.Models;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ClaimsApi.Controllers
 {
@@ -11,10 +14,12 @@ namespace ClaimsApi.Controllers
     public class ClaimsController : ControllerBase
     {
         private readonly ClaimsContext _context;
+        private readonly ILogger _logger;
 
-        public ClaimsController(ClaimsContext context)
+        public ClaimsController(ClaimsContext context, ILogger<ClaimsController> logger)
         {
             _context = context;
+            _logger = logger;
 
             if (_context.ClaimItems.Count() == 0)
             {
@@ -25,25 +30,114 @@ namespace ClaimsApi.Controllers
             }
         }
 
+        // GET: api/claims
         [HttpGet]
-        public ActionResult<List<ClaimItem>> GetAll()
+        public ActionResult<List<ClaimItem>> GetAllClaims()
         {
-            Console.WriteLine("GetAll() -");
-            return _context.ClaimItems.ToList();
+            _logger.LogInformation("GetAllClaims()");
+            return _context.ClaimItems.
+                Include(claimItem => claimItem.SubscriberInfo).
+                Include(claimItem => claimItem.ServiceLineDetails).
+                Include(claimItem => claimItem.PlanPayment).ToList();
         }
 
-        [HttpGet("{id}", Name = "GetClaim")]
-        public ActionResult<ClaimItem> GetById(long id)
+        // GET: api/claims/{id}
+        [HttpGet("{id}", Name = "GetClaimById")]
+        public ActionResult<ClaimItem> GetClaimById(int id)
         {
-            Console.WriteLine("GetById() - id=" + id);
+            _logger.LogInformation($"GetClaimById() - id={id}");
             var item = _context.ClaimItems.Find(id);
             if (item == null)
             {
+                _logger.LogInformation($"GetClaimById() - id={id}, not found");
                 return NotFound();
-            }
+            };
+            _context.Entry(item).Collection(clmInfo => clmInfo.SubscriberInfo).Load();
+            _context.Entry(item).Collection(clmInfo => clmInfo.ServiceLineDetails).Load();
+            _context.Entry(item).Collection(clmInfo => clmInfo.PlanPayment).Load();
+
             return item;
         }
 
+        // GET: api/claims/fetch?claimno=number
+        [Route("fetch")]
+        [HttpGet]
+        public ActionResult<ClaimItem> GetByClaimNumber(
+            [FromQuery] string claimno)
+        {
+            _logger.LogInformation($"GetByClaimNumber() - id={claimno}");
+            var item = _context.ClaimItems.SingleOrDefault(clmItem => clmItem.ClaimNumber == $"{claimno}");
+
+            if ( item == null )
+            {
+                _logger.LogInformation($"GetByClaimNumber() - id={claimno}, not found");
+                return NotFound();
+            };
+            
+            _context.Entry(item).Collection(clmInfo => clmInfo.SubscriberInfo).Load();
+            _context.Entry(item).Collection(clmInfo => clmInfo.ServiceLineDetails).Load();
+            _context.Entry(item).Collection(clmInfo => clmInfo.PlanPayment).Load();
+
+            return item;
+        }
+
+        // POST: api/claims
+        [HttpPost]
+        public async Task<ActionResult<ClaimItem>> PostClaimItem(ClaimItem claimItem)
+        {
+            _logger.LogInformation("PostClaimItem()");
+            _context.ClaimItems.Add(claimItem);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetClaimById", new { id = claimItem.ClaimItemId }, claimItem);
+        }
+
+        // PUT: api/claims/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutClaimItem(int id, ClaimItem claimItem)
+        {
+            _logger.LogInformation($"PutClaimItem() - id={id}");
+            if (id != claimItem.ClaimItemId)
+            {
+                _logger.LogInformation($"PutClaimItem() - id={id}, not found");
+                return BadRequest();
+            }
+           
+            _context.Entry(claimItem).State = EntityState.Modified;
+            foreach (var sub in claimItem.SubscriberInfo) {
+                sub.ClaimItemId = id;
+                _context.Entry(sub).State = EntityState.Modified;
+            }
+            foreach (var svc in claimItem.ServiceLineDetails) {
+                svc.ClaimItemId = id;
+                _context.Entry(svc).State = EntityState.Modified;
+            }
+            foreach (var pay in claimItem.PlanPayment) {
+                pay.ClaimItemId = id;
+                _context.Entry(pay).State = EntityState.Modified;
+            }
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // DELETE: api/claims/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ClaimItem>> DeleteClaimItem(int id)
+        {
+            _logger.LogInformation($"DeleteClaimItem() - id={id}");
+            var claimItem = await _context.ClaimItems.FindAsync(id);
+            if (claimItem == null)
+            {
+                _logger.LogInformation($"DeleteClaimItem() - id={id}, not found");
+                return NotFound();
+            }
+
+            _context.ClaimItems.Remove(claimItem);
+            await _context.SaveChangesAsync();
+
+            return claimItem;
+        }
         private ClaimItem createTestClaimData() {
             ClaimItem ciObj = new ClaimItem();
 
@@ -55,29 +149,33 @@ namespace ClaimsApi.Controllers
             ciObj.DestinationID = "DESMEDSTEST1"; // Destination ID for encounters
             ciObj.ClaimInputMethod = "E"; // Claim input method
 
-            ciObj.SubscriberRelationship = "18";
-            ciObj.SubscriberPolicyNumber = "12345";
-            ciObj.InsuredGroupName = "MD000004";
-            ciObj.SubscriberLastName = "Doe";
-            ciObj.SubscriberFirstName = "John";
-            ciObj.SubscriberMiddleName = "";
-            ciObj.SubscriberIdentifierSSN = "489-88-7001";
-            ciObj.SubscriberAddressLine1 = "5589 Hawthorne Way";
-            ciObj.SubscriberAddressLine2 = "";
-            ciObj.SubscriberCity = "Sacramento";
-            ciObj.SubscriberState = "CA";
-            ciObj.SubscriberPostalCode = "95835";
-            ciObj.SubscriberCountry = "US";
-            ciObj.SubDateOfBirth = "12-19-1984";
-            ciObj.SubscriberGender = "Male";
-            ciObj.PayerName = "";
-            ciObj.PatientFirstName = "";
-            ciObj.PatientLastName = "";
-            ciObj.PatientDOB = "12-19-1984";
-            ciObj.PatientGender = "Male";
-            ciObj.PatientSSN = "489-88-7001";
-            ciObj.PatientMemberID = "12345";
-            ciObj.CatgOfService = "Consultation";
+            SubscriberInfo siObj = new SubscriberInfo();
+            siObj.SubscriberRelationship = "18";
+            siObj.SubscriberPolicyNumber = "12345";
+            siObj.InsuredGroupName = "MD000004";
+            siObj.SubscriberLastName = "Doe";
+            siObj.SubscriberFirstName = "John";
+            siObj.SubscriberMiddleName = "";
+            siObj.SubscriberIdentifierSSN = "489-88-7001";
+            siObj.SubscriberAddressLine1 = "5589 Hawthorne Way";
+            siObj.SubscriberAddressLine2 = "";
+            siObj.SubscriberCity = "Sacramento";
+            siObj.SubscriberState = "CA";
+            siObj.SubscriberPostalCode = "95835";
+            siObj.SubscriberCountry = "US";
+            siObj.SubDateOfBirth = "12-19-1984";
+            siObj.SubscriberGender = "Male";
+            siObj.PayerName = "";
+            siObj.PatientFirstName = "";
+            siObj.PatientLastName = "";
+            siObj.PatientDOB = "12-19-1984";
+            siObj.PatientGender = "Male";
+            siObj.PatientSSN = "489-88-7001";
+            siObj.PatientMemberID = "12345";
+            siObj.CatgOfService = "Consultation";
+            List<SubscriberInfo> siList = new List<SubscriberInfo>();
+            siList.Add(siObj);
+            ciObj.SubscriberInfo = siList;
 
             ciObj.ClaimNumber = "1234121235";
             ciObj.TotalClaimCharge = 1234.50m;
@@ -86,86 +184,7 @@ namespace ClaimsApi.Controllers
             ciObj.ServiceDate = new System.DateTime(); // DateTime.Now; DateTime.Today; new DateTime(2018,10,31,7,0,0);
 
             ciObj.PolicyNumber = "898435";
-            ciObj.SubscriberRelationship = "18";
-            ciObj.SetClaimPaidDate(DateTime.Now);
-
-            ciObj.StatementDate = new DateTime(2018,10,31,8,30,0);
-            ciObj.LineCounter = 1;
-            ciObj.ServiceCodeDescription = "INPT";
-            ciObj.LineChargeAmount = 15000.00m;
-            ciObj.DrugCode = "UN";
-            ciObj.DrugUnitQuantity = 23;
-            ciObj.PharmacyPrescriptionNumber = "123897";
-            ciObj.ServiceType = "Consultation";
-            ciObj.ProviderCode = "72";
-            ciObj.ProviderIdentification = "20120904-20120907";
-            ciObj.ProviderLastName = "Longhorn";
-            ciObj.ProviderFirstName = "Dr. James";
-            ciObj.InNetworkIndicator = true;
-
-            ciObj.PrimaryPayerID = "MEDICAID";
-            ciObj.CobServicePaidAmount = 15000m;
-            ciObj.ServiceCode = "ABC";
-            ciObj.PaymentDate = DateTime.Today;
-            ciObj.ClaimAdjGroupCode = "HIPAA";
-            ciObj.ClaimAdjReasonCode = "CO";
-            ciObj.ClaimAdjQuantity ="3";
-            ciObj.ClaimAdjAmount = 500.00m;
-
-            return(ciObj);
-        }
-        /** private ClaimItem createTestClaimData() {
-            ClaimItem ciObj = new ClaimItem();
-
-            ClaimHeader ciObj = new ClaimHeader();
-            ciObj.ClaimStatus = "02"; // Claim status code for claim processing system
-            ciObj.ClaimType = "InstClaim"; // Institutional claim
-            ciObj.SenderID = "CLPCSVNTEST2"; // Claim processor partner value
-            ciObj.ReceiverID = "APPCSVNTEST1"; // Application partner value
-            ciObj.OriginatorID = "ORGNCSVTEST1"; // Originator partner value (optional)
-            ciObj.DestinationID = "DESMEDSTEST1"; // Destination ID for encounters
-            ciObj.ClaimInputMethod = "E"; // Claim input method
-            ciObj.ClaimHeader = ciObj;
-
-            SubscriberInfo ciObj = new SubscriberInfo();
-            ciObj.SubscriberRelationship = "18";
-            ciObj.SubscriberPolicyNumber = "12345";
-            ciObj.InsuredGroupName = "MD000004";
-            ciObj.SubscriberLastName = "Doe";
-            ciObj.SubscriberFirstName = "John";
-            ciObj.SubscriberMiddleName = "";
-            ciObj.SubscriberIdentifierSSN = "489-88-7001";
-            ciObj.SubscriberAddressLine1 = "5589 Hawthorne Way";
-            ciObj.SubscriberAddressLine2 = "";
-            ciObj.SubscriberCity = "Sacramento";
-            ciObj.SubscriberState = "CA";
-            ciObj.SubscriberPostalCode = "95835";
-            ciObj.SubscriberCountry = "US";
-            ciObj.SubDateOfBirth = "12-19-1984";
-            ciObj.SubscriberGender = "Male";
-            ciObj.PayerName = "";
-            ciObj.PatientFirstName = "";
-            ciObj.PatientLastName = "";
-            ciObj.PatientDOB = "12-19-1984";
-            ciObj.PatientGender = "Male";
-            ciObj.PatientSSN = "489-88-7001";
-            ciObj.PatientMemberID = "12345";
-            ciObj.CatgOfService = "Consultation";
-            ciObj.SubscriberInfo = ciObj;
-
-            InstitutionalRecord irObj = new InstitutionalRecord();
-            irObj.ClaimNumber = "1234121235";
-            irObj.TotalClaimCharge = 1234.50m;
-            irObj.PatientStatus = "01";
-            irObj.PatientAmountDue = 0m;
-            irObj.ServiceDate = new System.DateTime(); // DateTime.Now; DateTime.Today; new DateTime(2018,10,31,7,0,0);
-            ciObj.InstitutionalRecord = irObj;
-
-            PlanPaymentInfo ppiObj = new PlanPaymentInfo();
-            ppiObj.PolicyNumber = "898435";
-            ppiObj.SubscriberRelationship = "18";
-            ppiObj.SetClaimPaidDate(DateTime.Now);
-            ciObj.PlanPaymentInfo = ppiObj;
+            ciObj.ClaimPaidDate = DateTime.Now;
 
             ServiceLineDetails sldObj = new ServiceLineDetails();
             sldObj.StatementDate = new DateTime(2018,10,31,8,30,0);
@@ -181,7 +200,9 @@ namespace ClaimsApi.Controllers
             sldObj.ProviderLastName = "Longhorn";
             sldObj.ProviderFirstName = "Dr. James";
             sldObj.InNetworkIndicator = true;
-            ciObj.ServiceLineDetails = sldObj;
+            List<ServiceLineDetails> sldList = new List<ServiceLineDetails>();
+            sldList.Add(sldObj);
+            ciObj.ServiceLineDetails = sldList;
 
             PlanPayment ppObj = new PlanPayment();
             ppObj.PrimaryPayerID = "MEDICAID";
@@ -192,10 +213,11 @@ namespace ClaimsApi.Controllers
             ppObj.ClaimAdjReasonCode = "CO";
             ppObj.ClaimAdjQuantity ="3";
             ppObj.ClaimAdjAmount = 500.00m;
-            ciObj.PlanPayment = ppObj;
+            List<PlanPayment> ppList = new List<PlanPayment>();
+            ppList.Add(ppObj);
+            ciObj.PlanPayment = ppList;
 
             return(ciObj);
         }
-        */
     }
 }
