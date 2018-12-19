@@ -8,7 +8,7 @@ In a nutshell, you will work on the following tasks.
 2. Deploy an **Azure Container Registry** (ACR). Complete Section [B].
 2. Define a *Build Pipeline* in **Azure DevOps** (formerly Visual Studio Team Services).  Execute the build pipeline to build the ASP.NET Core application, containerize it and deploy the container image to the ACR.  This task focuses on the **Continuous Integration** aspect of the DevOps process.  Complete Section [C].
 2.  Deploy an AKS (Azure Kubernetes Service) cluster.  Complete Section [D].
-3.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized microservice (`claims-api`) on AKS.  Complete Step [E].
+3.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized microservice (`claims-api`) on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Step [E].
 
 This project demonstrates how to use Azure DevOps to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for medical claims.  The microservice persists all claims records in a Azure SQL Server Database.
 
