@@ -57,11 +57,11 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
     ![alt tag](./images/A-01.PNG)
     
-    In the **SQL Database** tab, provide a name for the database (`ClaimsDB`), select the resource group which you created in the previous step and leave the default value (Blank database) for **Select source** field as-is.  Click on **Server** and fill in the details in the **New Server** tab.  The server name should be unique as it will be exposed using a FQDN.  Use a pattern such as **<Your_Initial>sqldb** for the server name (Replace *Your_Initial* with your initials).  For the **location** field, use the same location which you specified for the resource group.  Click **Select** in the **New Server** field.  See screenshot below.
+    In the **SQL Database** tab, provide a name for the database (`ClaimsDB`), select the resource group which you created in the previous step and leave the default value (Blank database) for **Select source** field as-is.  Click on **Server** and fill in the details in the **New Server** tab.  The **Server name** value should be unique as the SQL database server FQDN will be constructed with this name eg., <SQL_server_name>.database.windows.net. Use a pattern such as **<Your_Initial>sqldb** for the server name (Replace *Your_Initial* with your initials).  For the **location** field, use the same location which you specified for the resource group.  Click **Select** in the **New Server** tab.  See screenshot below.
 
     ![alt tag](./images/A-02.PNG)
 
-    In the **SQL Database** tab, select a pricing tier, leave the **Collation** field as-is and then click on **Create**.
+    In the **SQL Database** tab, select a **Pricing tier**, leave the **Collation** field as-is and then click on **Create**.
 
     ![alt tag](./images/A-03.PNG)
 
@@ -71,13 +71,13 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
     ![alt tag](./images/A-04.PNG)
 
-    In the **Firewall settings** tab, configure a *rule* to allow inbound connections from all IP addresses as shown in the screenshots below.  Alternatively, you can create a rule to allow inbound connections from your local pc/workstation.  Leave the setting for **Allow access to Azure services** ON.  See screenshot below.
+    In the **Firewall settings** tab, configure a *rule* to allow inbound connections from all public IP addresses as shown in the screenshots below.  Alternatively, if you know the Public IP address of your workstation/pc, you can create a rule to only allow inbound connections from your local pc.  Leave the setting for **Allow access to Azure services** ON.  See screenshot below.
 
     ![alt tag](./images/A-05.PNG)
 
     Click on **Save**.
 
-    **NOTE**: For an actual **Production** database, the firewall rules should be configured to allow connections from known (private) IP addresses only.
+    **NOTE**: Remember to delete the firewall rule setting once you are done working on this hands-on lab.  
 
 5.  In the **ClaimsDB** tab, click on **Connection strings** in the left navigational panel (blade).  Copy the SQL Server database connection string under the **ADO.NET** tab and save the value in a file.  We will need this connection string in the next section to configure the SQL Server database for the `claims-api` microservice.  See screenshot below.
 
