@@ -4,8 +4,8 @@ This project describes the steps for building and deploying a real world **Medic
 **Description:**
 
 In a nutshell, you will work on the following tasks.
-1. Deploy an **Azure SQL Server Database**.  Complete Section [A]. 
-2. Deploy an **Azure Container Registry** (ACR). Complete Section [B].
+1. Deploy an **Azure SQL Server Database**.  Complete Sections [A] & [B]. 
+2. Deploy an **Azure Container Registry** (ACR). Complete Section [X].
 2. Define a *Build Pipeline* in **Azure DevOps** (formerly Visual Studio Team Services).  Execute the build pipeline to build the ASP.NET Core application, containerize it and deploy the container image to the ACR.  This task focuses on the **Continuous Integration** aspect of the DevOps process.  Complete Section [C].
 2.  Deploy an AKS (Azure Kubernetes Service) cluster.  Complete Section [D].
 3.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized microservice (`claims-api`) on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Step [E].
@@ -86,16 +86,17 @@ In this section, we will create an Azure SQL Server instance and create a databa
 ### B] Deploy a Linux CentOS VM on Azure (~ Bastion Host)
 **Approx. time to complete this section: 45 minutes**
 
-The following tools (binaries) will be installed on this VM.
-- VSTS build agent (docker container). This build container will be used for running application and container builds.
-- Azure CLI 2.0 client.  Azure CLI will be used to administer and manage all Azure resources including the AKS cluster resources.
-- Git client.  We will be cloning this repository to make changes to the Kubernetes resources before deploying them to the AKS cluster.
-- OpenJDK, Maven and Jenkins.  If you would like to learn how to build and deploy this SpringBoot microservice to AKS using Jenkins CI/CD, then you will also need to install Java run-time (OpenJDK), Maven and Jenkins.
-- Kubernetes CLI (`kubectl`).  This binary will be used for managing resources on Kubernetes (AKS).
-- Helm CLI (`helm`).  Helm is a package manager for Kubernetes and is used for automating the deployment of applications comprised of multiple microservices on Kubernetes.
-- [Kubernetes Service Catalog](https://kubernetes.io/docs/concepts/extend-kubernetes/service-catalog/). Service Catalog will be used for dynamically provisioning PaaS services on Azure.
+The Linux VM will be used to install CLI tools.  This in turn will allow us to deploy, manage and monitor Azure PaaS services and associated resources (using CLI).
 
-Follow the steps below to create the Bastion host (Linux VM), install pre-requisite software (CLI) on this VM, and run the VSTS build agent.
+The following tools (binaries) will be installed on this VM.
+- Azure DevOps (VSTS) build agent (docker container). This build container will be used for running application and container builds.
+- Azure CLI 2.0 client.  Azure CLI will be used to administer and manage all Azure resources including the AKS cluster resources.
+- Git client.  We will be cloning this repository to make changes to various application resources.
+- .NET Core SDK.  We will be building the microservice application (and container) and testing them locally first before deploying the same on AKS.
+- Kubernetes CLI (`kubectl`).  This binary will be used for managing and introspecting the current state of resources deployed on the Kubernetes (AKS) cluster.
+- Helm CLI (`helm`).  Helm is a package manager for Kubernetes and is used for automating the deployment of applications comprised of multiple microservices on Kubernetes.  Helm will be used to manage and monitor the lifecyle of container deployments on AKS.
+
+Follow the steps below to create the Bastion host (Linux VM), install pre-requisite software (CLI) on this VM, run the VSTS build agent and test the `claims-api` microservice locally.
 
 1.  Login to the [Azure Portal](https://portal.azure.com) using your credentials and use a **Azure Cloud Shell** session to perform the next steps.  Azure Cloud Shell is an interactive, browser-accessible shell for managing Azure resources.  The first time you access the Cloud Shell, you will be prompted to create a resource group, storage account and file share.  You can use the defaults or click on *Advanced Settings* to customize the defaults.  Accessing the Cloud Shell is described in [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview). 
 
