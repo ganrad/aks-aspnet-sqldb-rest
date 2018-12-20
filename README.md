@@ -86,27 +86,34 @@ In this section, we will create an Azure SQL Server instance and create a databa
 ### B] Deploy a Linux CentOS VM on Azure (~ Bastion Host)
 **Approx. time to complete this section: 45 minutes**
 
-The following tools (binaries) will be installed on this Linux VM.  The CLI tools will allow us to deploy, manage and monitor Azure PaaS services and associated resources.
+The following tools (binaries) will be installed on the Linux VM.
 
-- Azure DevOps (VSTS) build agent (docker container). This build container will be used for running application and container builds.
+- Azure DevOps (VSTS) build agent (docker container). The build container will be used for running application and container builds.
 - Azure CLI 2.0 client.  Azure CLI will be used to administer and manage all Azure resources including the AKS cluster resources.
-- Git client.  We will use the Git client to clone this GitHub repository, make changes to application resources and then push the changes to the forked repository.
-- .NET Core SDK.  We will be building the microservice application (and container) and testing them locally first before deploying the same on AKS.
-- Kubernetes CLI (`kubectl`).  This binary will be used for managing and introspecting the current state of resources deployed on the Kubernetes (AKS) cluster.
-- Helm CLI (`helm`).  Helm is a package manager for Kubernetes and is used for automating the deployment of applications comprised of multiple microservices on Kubernetes.  Helm CLI will allow us to manage and monitor the lifecyle of container deployments on AKS.
+- Git client.  The Git client will be used to clone this GitHub repository and then push the changes to the forked repository.
+- .NET Core SDK.  This SDK will be used to build and test the microservice application locally. 
+- Kubernetes CLI (`kubectl`).  This CLI will be used for managing and introspecting the current state of resources deployed on the Kubernetes (AKS) cluster.
+- Helm CLI (`helm`).  Helm is a package manager for Kubernetes and will be used to manage and monitor the lifecyle of application deployments on AKS.
+- Docker engine and client.  Docker engine will be used to run the VSTS build agent. It will also be used to build and test the `claims-api` microservice container locally. 
 
 Follow the steps below to create the Bastion host (Linux VM), install pre-requisite software (CLI) on this VM, run the VSTS build agent and test the `claims-api` microservice locally.
 
-1.  Login to the [Azure Portal](https://portal.azure.com) using your credentials and use a **Azure Cloud Shell** session to perform the next steps.  Azure Cloud Shell is an interactive, browser-accessible shell for managing Azure resources.  The first time you access the Cloud Shell, you will be prompted to create a resource group, storage account and file share.  You can use the defaults or click on *Advanced Settings* to customize the defaults.  Accessing the Cloud Shell is described in [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview). 
+1.  Fork this [GitHub repository](https://github.com/ganrad/aks-aspnet-sqldb-rest) to **your** GitHub account.  In the browser window, click on **Fork** in the upper right hand corner to get a separate copy of this project added to your GitHub account.  You must be signed in to your GitHub account in order to fork this repository.
 
-2.  An Azure resource group is a logical container into which Azure resources are deployed and managed.  From the Cloud Shell, use Azure CLI to create a **Resource Group**.  Azure CLI is already pre-installed and configured to use your Azure account (subscription) in the Cloud Shell.  Alternatively, you can also use Azure Portal to create this resource group.  
-    ```
-    az group create --name myResourceGroup --location eastus
-    ```
-    **NOTE:** Keep in mind, if you specify a different name for the resource group (other than **myResourceGroup**), you will need to substitute the same value in multiple CLI commands in the remainder of this project!  If you are new to Azure or AKS, it's best to use the suggested name.
+    ![alt tag](./images/B-01.png)
 
-3.  Use the command below to create a **CentOS 7.4** VM on Azure.  Make sure you specify the correct **resource group** name and provide a value for the *password*.  Once the command completes, it will print the VM connection info. in the JSON message (response).  Note down the **Public IP address**, **Login name** and **Password** info. so that we can connect to this VM using SSH (secure shell).
-Alternatively, if you prefer you can use SSH based authentication to connect to the Linux VM.  The steps for creating and using an SSH key pair for Linux VMs in Azure is documented [here](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys).  You can then specify the location of the public key with the `--ssh-key-path` option to the `az vm create ...` command.
+    From the terminal window connected to the Bastion host (Linux VM), clone this repository.  Ensure that you are using the URL of your fork when cloning this repository.
+    ```
+    # Switch to home directory
+    $ cd
+    # Clone your GitHub repository.  This will allow you to make changes to the application artifacts without affecting resources in the forked (original) GitHub project.
+    $ git clone https://github.com/<YOUR-GITHUB-ACCOUNT>/k8s-springboot-data-rest.git
+    #
+    # Switch to the 'k8s-springboot-data-rest' directory
+    $ cd k8s-springboot-data-rest
+    ```
+
+3.  Open the [Azure Cloud Shell](https://shell.azure.com) in a separate browser tab and use the command below to create a **CentOS 7.4** VM on Azure.  Make sure you specify the correct **resource group** name and provide a value for the *password*.  Once the command completes, it will print the VM connection info. in the JSON message (response).  Save the **Public IP address**, **Login name** and **Password** info. in a file.  Alternatively, if you prefer you can use SSH based authentication to connect to the Linux VM.  The steps for creating and using an SSH key pair for Linux VMs in Azure is described [here](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys).  You can then specify the location of the public key with the `--ssh-key-path` option to the `az vm create ...` command.
     ```
     az vm create --resource-group myResourceGroup --name k8s-lab --image OpenLogic:CentOS:7.4:7.4.20180118 --size Standard_B2s --generate-ssh-keys --admin-username labuser --admin-password <password> --authentication-type password
     ```
