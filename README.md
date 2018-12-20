@@ -86,9 +86,8 @@ In this section, we will create an Azure SQL Server instance and create a databa
 ### B] Deploy a Linux CentOS VM on Azure (~ Bastion Host)
 **Approx. time to complete this section: 45 minutes**
 
-The Linux VM will be used to install CLI tools.  This in turn will allow us to deploy, manage and monitor Azure PaaS services and associated resources (using CLI).
+The following tools (binaries) will be installed on this Linux VM.  The CLI tools will allow us to deploy, manage and monitor Azure PaaS services and associated resources.
 
-The following tools (binaries) will be installed on this VM.
 - Azure DevOps (VSTS) build agent (docker container). This build container will be used for running application and container builds.
 - Azure CLI 2.0 client.  Azure CLI will be used to administer and manage all Azure resources including the AKS cluster resources.
 - Git client.  We will use the Git client to clone this GitHub repository, make changes to application resources and then push the changes to the forked repository.
