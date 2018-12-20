@@ -91,10 +91,10 @@ The Linux VM will be used to install CLI tools.  This in turn will allow us to d
 The following tools (binaries) will be installed on this VM.
 - Azure DevOps (VSTS) build agent (docker container). This build container will be used for running application and container builds.
 - Azure CLI 2.0 client.  Azure CLI will be used to administer and manage all Azure resources including the AKS cluster resources.
-- Git client.  We will be cloning this repository to make changes to various application resources.
+- Git client.  We will use the Git client to clone this GitHub repository, make changes to application resources and then push the changes to your forked repository.
 - .NET Core SDK.  We will be building the microservice application (and container) and testing them locally first before deploying the same on AKS.
 - Kubernetes CLI (`kubectl`).  This binary will be used for managing and introspecting the current state of resources deployed on the Kubernetes (AKS) cluster.
-- Helm CLI (`helm`).  Helm is a package manager for Kubernetes and is used for automating the deployment of applications comprised of multiple microservices on Kubernetes.  Helm will be used to manage and monitor the lifecyle of container deployments on AKS.
+- Helm CLI (`helm`).  Helm is a package manager for Kubernetes and is used for automating the deployment of applications comprised of multiple microservices on Kubernetes.  Helm CLI will allow us to manage and monitor the lifecyle of container deployments on AKS.
 
 Follow the steps below to create the Bastion host (Linux VM), install pre-requisite software (CLI) on this VM, run the VSTS build agent and test the `claims-api` microservice locally.
 
