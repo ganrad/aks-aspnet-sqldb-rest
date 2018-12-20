@@ -90,7 +90,7 @@ The following tools (binaries) will be installed on the Linux VM.
 
 - Azure DevOps (VSTS) build agent (docker container). The build container will be used for running application and container builds.
 - Azure CLI 2.0 client.  Azure CLI will be used to administer and manage all Azure resources including the AKS cluster resources.
-- Git client.  The Git client will be used to clone this GitHub repository and then push the changes to the forked repository.
+- Git client.  The Git client will be used to clone this GitHub repository and then push source code changes to the forked repository.
 - .NET Core SDK.  This SDK will be used to build and test the microservice application locally. 
 - Kubernetes CLI (`kubectl`).  This CLI will be used for managing and introspecting the current state of resources deployed on the Kubernetes (AKS) cluster.
 - Helm CLI (`helm`).  Helm is a package manager for Kubernetes and will be used to manage and monitor the lifecyle of application deployments on AKS.
@@ -100,7 +100,7 @@ Follow the steps below to create the Bastion host (Linux VM), install pre-requis
 
 1.  Fork this [GitHub repository](https://github.com/ganrad/aks-aspnet-sqldb-rest) to **your** GitHub account.  In the browser window, click on **Fork** in the upper right hand corner to get a separate copy of this project added to your GitHub account.  You must be signed in to your GitHub account in order to fork this repository.
 
-    ![alt tag](./images/B-01.png)
+    ![alt tag](./images/B-01.PNG)
 
     From the terminal window connected to the Bastion host (Linux VM), clone this repository.  Ensure that you are using the URL of your fork when cloning this repository.
     ```
