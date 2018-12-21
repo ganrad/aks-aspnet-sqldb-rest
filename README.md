@@ -1,16 +1,18 @@
-#  Build and deploy an ASP.NET Core 2.2 Web API (microservice) on Azure Kubernetes Service (AKS)
-This project describes the steps for building and deploying a real world **Medical Claims Processing** microservice application on Azure Kubernetes Service (AKS).
+#  Build and deploy an ASP.NET Core 2.2 Web API (microservice) on Azure Kubernetes Service
+This project describes the steps for building and deploying a real world **Medical Claims Processing** microservice application (**Claims API**) on Azure Kubernetes Service.
 
 **Description:**
 
 In a nutshell, you will work on the following tasks.
-1. Deploy an **Azure SQL Server Database**.  Complete Sections [A] & [B]. 
-2. Deploy an **Azure Container Registry** (ACR). Complete Section [X].
-2. Define a *Build Pipeline* in **Azure DevOps** (formerly Visual Studio Team Services).  Execute the build pipeline to build the ASP.NET Core application, containerize it and deploy the container image to the ACR.  This task focuses on the **Continuous Integration** aspect of the DevOps process.  Complete Section [C].
-2.  Deploy an AKS (Azure Kubernetes Service) cluster.  Complete Section [D].
-3.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized microservice (`claims-api`) on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Step [E].
+1. Deploy an **Azure SQL Server Database**.  Complete Section [A]. 
+2. Provision a Linux VM (Bastion Host/Jump Box) on Azure and install pre-requisite software.  Complete Section [B].
+3. Build and run the *Claims API* microservice locally on the Bastion Host.  Complete Section [C].
+4. Deploy an **Azure Container Registry** (ACR). Complete Section [X].
+5. Define a *Build Pipeline* in **Azure DevOps** (formerly Visual Studio Team Services).  Execute the build pipeline to build the ASP.NET Core application, containerize it and deploy the container image to the ACR.  This task focuses on the **Continuous Integration** aspect of the DevOps process.  Complete Section [C].
+6.  Deploy an AKS (Azure Kubernetes Service) cluster.  Complete Section [D].
+7.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized microservice (`claims-api`) on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Step [E].
 
-This project demonstrates how to use Azure DevOps to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for medical claims.  The microservice persists all claims records in a Azure SQL Server Database.
+This project demonstrates how to use Azure DevOps platform to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for medical claims.  The microservice persists all claims records in a Azure SQL Server Database.
 
 **Prerequisites:**
 1.  An active **Microsoft Azure Subscription**.  You can obtain a free Azure subscription by accessing the [Microsoft Azure](https://azure.microsoft.com/en-us/?v=18.12) website.  In order to execute all the sections in this project, either your *Azure subscription* or the *Resource Group* **must** have **Owner** Role assigned to it.
@@ -40,7 +42,7 @@ For easy and quick reference, readers can refer to the following on-line resourc
 - This project requires **all** resources to be deployed to the same Azure **Resource Group**.
 - Specify either **eastus**, **westus**, **westus2** or **centralus** as the *location* for the Azure *Resource Group* and the *AKS cluster*.
 
-### A] Deploy an Azure SQL Server and Database
+## A] Deploy an Azure SQL Server and Database
 **Approx. time to complete this section: 20 minutes**
 
 In this section, we will create an Azure SQL Server instance and create a database (`ClaimsDB`).  This database will be used by the `claims-api` microservice to persist *Claims* records.
@@ -84,7 +86,7 @@ In this section, we will create an Azure SQL Server instance and create a databa
     ![alt tag](./images/A-06.PNG)
 
 ### B] Deploy a Linux CentOS VM on Azure (~ Bastion Host)
-**Approx. time to complete this section: 45 minutes**
+**Approx. time to complete this section: 1 Hour**
 
 The following tools (binaries) will be installed on the Linux VM.
 
@@ -102,23 +104,12 @@ Follow the steps below to create the Bastion host (Linux VM), install pre-requis
 
     ![alt tag](./images/B-01.PNG)
 
-    From the terminal window connected to the Bastion host (Linux VM), clone this repository.  Ensure that you are using the URL of your fork when cloning this repository.
-    ```
-    # Switch to home directory
-    $ cd
-    # Clone your GitHub repository.  This will allow you to make changes to the application artifacts without affecting resources in the forked (original) GitHub project.
-    $ git clone https://github.com/<YOUR-GITHUB-ACCOUNT>/k8s-springboot-data-rest.git
-    #
-    # Switch to the 'k8s-springboot-data-rest' directory
-    $ cd k8s-springboot-data-rest
-    ```
-
-3.  Open the [Azure Cloud Shell](https://shell.azure.com) in a separate browser tab and use the command below to create a **CentOS 7.4** VM on Azure.  Make sure you specify the correct **resource group** name and provide a value for the *password*.  Once the command completes, it will print the VM connection info. in the JSON message (response).  Save the **Public IP address**, **Login name** and **Password** info. in a file.  Alternatively, if you prefer you can use SSH based authentication to connect to the Linux VM.  The steps for creating and using an SSH key pair for Linux VMs in Azure is described [here](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys).  You can then specify the location of the public key with the `--ssh-key-path` option to the `az vm create ...` command.
+2.  Open the [Azure Cloud Shell](https://shell.azure.com) in a separate browser tab and use the command below to create a **CentOS 7.4** VM on Azure.  Make sure you specify the correct **resource group** name and provide a value for the *password*.  Once the command completes, it will print the VM connection info. in the JSON message (response).  Save the **Public IP address**, **Login name** and **Password** info. in a file.  Alternatively, if you prefer you can use SSH based authentication to connect to the Linux VM.  The steps for creating and using an SSH key pair for Linux VMs in Azure is described [here](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys).  You can then specify the location of the public key with the `--ssh-key-path` option to the `az vm create ...` command.
     ```
     az vm create --resource-group myResourceGroup --name k8s-lab --image OpenLogic:CentOS:7.4:7.4.20180118 --size Standard_B2s --generate-ssh-keys --admin-username labuser --admin-password <password> --authentication-type password
     ```
 
-4.  Login into the Linux VM via SSH.  On a Windows PC, you can use a SSH client such as [Putty](https://putty.org/) or the Windows Sub-System for Linux (Windows 10) to login into the VM.
+3.  Login into the Linux VM via SSH.  On a Windows PC, you can use a SSH client such as [Putty](https://putty.org/) or the Windows Sub-System for Linux (Windows 10) to login into the VM.
 
     **NOTE:** Use of Cloud Shell to SSH into the VM is **NOT** recommended.
     ```
@@ -127,9 +118,33 @@ Follow the steps below to create the Bastion host (Linux VM), install pre-requis
     #
     ```
 
-5.  Install Azure CLI, K8s CLI, Helm CLI, Service Catalog CLI, Git client, Open JDK, Jenkins and Maven on this VM.  If you are a Linux power user and would like to save yourself some typing time, use this [shell script](./shell-scripts/setup-bastion.sh) to install all the pre-requisite CLI tools.
+4.  Install Git client and clone [this repository](https://github.com/ganrad/aks-aspnet-sqldb-rest).  When cloning the repository, ensure that you are using the URL of your forked repository.
     ```
-    # Install Azure CLI on this VM so that we can to deploy this application to the AKS cluster later in step [D].
+    # Switch to home directory
+    $ cd
+    #
+    # Install Git client
+    $ sudo yum install -y git
+    #
+    # Check Git version number
+    $ git --version
+    #
+    # Create a new directory for GitHub repositories.
+    $ mkdir git-repos
+    #
+    # Change the working directory to 'git-repos'
+    $ cd git-repos
+    #
+    # Clone your GitHub repository into directory 'git-repos'.  Cloning this repo. will allow you to make changes to the application artifacts in the forked GitHub project.
+    $ git clone https://github.com/<YOUR-GITHUB-ACCOUNT>/aks-aspnet-sqldb-rest.git
+    #
+    # Switch to home directory
+    $ cd
+    ```
+
+5.  Install Azure CLI and login into your Azure account.
+    ```
+    # Install Azure CLI on this VM.
     #
     # Import the Microsoft repository key.
     $ sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
@@ -138,44 +153,19 @@ Follow the steps below to create the Bastion host (Linux VM), install pre-requis
     $ sudo sh -c 'echo -e "[azure-cli]\nname=Azure CLI\nbaseurl=https://packages.microsoft.com/yumrepos/azure-cli\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/azure-cli.repo'
     #
     # Install with the yum install command.
-    $ sudo yum install azure-cli
+    $ sudo yum install -y azure-cli
     #
-    # Test the install
+    # Check the Azure CLI version (Should be 2.0.54+)
     $ az -v
     #
-    # Login to your Azure account
+    # Login to your Azure account.  Use your Azure login ID and password to login.
     $ az login -u <user name> -p <password>
     #
-    # View help on az commands, sub-commands
-    $ az --help
-    #
-    # Install Git client
-    $ sudo yum install git
-    #
-    # Check Git version number
-    $ git --version
-    #
-    # Install OpenJDK 8 on the VM.
-    $ sudo yum install -y java-1.8.0-openjdk-devel
-    #
-    # Check JDK version
-    $ java -version
-    #
-    # Install Jenkins 2.138.1
-    $ mkdir jenkins
-    $ cd jenkins
-    $ wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war
-    #
-    # Switch back to home directory
-    $ cd
-    #
-    # Install Maven 3.5.4
-    $ mkdir maven
-    $ cd maven
-    $ wget http://www-eu.apache.org/dist/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz
-    $ tar -xzvf apache-maven-3.5.4-bin.tar.gz
-    #
-    # Switch back to home directory
+    ```
+
+6.  Install K8s CLI, Helm CLI and .NET Core SDK on this VM.
+    ```
+    # Make sure you are in the home directory
     $ cd
     #
     # Install Helm v2.9.1
@@ -195,45 +185,53 @@ Follow the steps below to create the Bastion host (Linux VM), install pre-requis
     # Install kubectl binary in the new directory
     $ az aks install-cli --install-location=./aztools/kubectl
     #
-    # Install Service Catalog 'svcat' binary in 'aztools' directory
-    $ cd aztools
-    $ curl -sLO https://servicecatalogcli.blob.core.windows.net/cli/latest/$(uname -s)/$(uname -m)/svcat
-    $ chmod +x ./svcat
-    # Switch back to home directory
-    $ cd
+    # Register the Microsoft key, product repository and required dependencies.
+    $ sudo rpm -Uvh https://packages.microsoft.com/config/rhel/7/packages-microsoft-prod.rpm
     #
-    # Finally, update '.bashrc' file and set the path to Maven, Helm and Kubectl binaries
+    # Update the system libraries.  This command will take a few minutes (~10 mins) to complete.  Be patient!
+    $ sudo yum update
+    #
+    # Install .NET Core 2.2 binaries
+    $ sudo yum install -y dotnet-sdk-2.2
+    #
+    # Check .NET Core version (Should print 2.2.100)
+    $ dotnet --version
+    #
+    # Finally, update '.bashrc' file and set the path to Helm and Kubectl binaries
     $ KUBECLI=/home/labuser/aztools
-    $ MAVEN=/home/labuser/maven/apache-maven-3.5.4/bin
     $ HELM=/home/labuser/helm/linux-amd64
-    $ echo "export PATH=$MAVEN:$KUBECLI:$HELM:${PATH}" >> ~/.bashrc
+    $ echo "export PATH=$KUBECLI:$HELM:${PATH}" >> ~/.bashrc
     #
     ```
 
-6.  Next, install **docker-ce** container runtime. Refer to the commands below.  You can also refer to the [Docker CE install docs for CentOS](https://docs.docker.com/install/linux/docker-ce/centos/).
+7.  Next, install **docker-ce** container runtime. Refer to the commands below.  You can also refer to the [Docker CE install docs for CentOS](https://docs.docker.com/install/linux/docker-ce/centos/).
     ```
-    $ sudo yum update
     $ sudo yum install -y yum-utils device-mapper-persistent-data lvm2
     $ sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-    $ sudo yum install docker-ce-18.03.0.ce
+    $ sudo yum install -y docker-ce-18.03.0.ce
     $ sudo systemctl enable docker
     $ sudo groupadd docker
     $ sudo usermod -aG docker labuser
     ```
 
-    LOGOUT AND RESTART YOUR LINUX VM BEFORE PROCEEDING.  You can restart the VM via Azure Portal.  Once the VM is back up, log back in to the Linux VM via SSH.  Run the command below to verify **docker** engine is running.
+    LOGOUT AND RESTART YOUR LINUX VM BEFORE PROCEEDING.  You can restart the VM via Azure Portal.  Alternatively, use the command below to reboot the VM.
+    ```
+    $ sudo shutdown -r now
+    #
+    ```
 
+    Once the Linux VM is back up, log back in to the VM via SSH.  Run the command below to verify **docker** engine is running.
     ```
     $ docker info
     ```
 
-7.  Pull the Microsoft VSTS agent container from docker hub.  It will take a few minutes to download the image (~ 10+ GB).
+8.  Pull the Microsoft VSTS agent container from docker hub.  It will take approx. 20 minutes to download the image (Size ~ 10+ GB).  Take a coffee break.
     ```
     $ docker pull microsoft/vsts-agent
     $ docker images
     ```
 
-8.  Next, we will generate a VSTS personal access token (PAT) to connect our VSTS build agent to your VSTS account.  Login to VSTS using your account ID. In the upper right, click on your profile image and click **security**.  
+9.  Next, we will generate a Azure DevOps (VSTS) personal access token (PAT) to connect our DevOps build agent to your Azure DevOps account.  Login to Azure DevOps using your account ID. In the upper right, click on your profile image and click **security**.  
 
     ![alt tag](./images/C-01.png)
 
@@ -243,7 +241,7 @@ Follow the steps below to create the Bastion host (Linux VM), install pre-requis
 
     In the next page, make sure to **copy and store** the PAT (token) into a file.  Keep in mind, you will not be able to retrieve this token again.  Incase you happen to lose or misplace the token, you will need to generate a new PAT and use it to reconfigure the VSTS build agent.  So save this PAT (token) to a file.
 
-9.  In the Linux VM terminal window, use the command below to start the VSTS build container.  Refer to the table below to set the build container parameter values correctly.
+10.  In the Linux VM terminal window, use the command below to start the VSTS build container.  Refer to the table below to set the build container parameter values correctly.
 
     Parameter | Value
     --------- | -----
@@ -283,7 +281,9 @@ Follow the steps below to create the Bastion host (Linux VM), install pre-requis
     ```
     Minimize this terminal window for now as you will only be using it to view the results of a VSTS build.  Before proceeding, open another terminal (WSL Ubuntu/Putty) window and login (SSH) into the Linux VM.
 
-### B] Deploy Azure Container Registry (ACR)
+### C] Build and run the Claims API microservice locally on the Linux VM
+
+### D] Deploy Azure Container Registry (ACR)
 **Approx. time to complete this section: 10 minutes**
 
 In this step, we will deploy an instance of Azure Container Registry to store container images which we will build in later steps.  A container registry such as ACR allows us to store multiple versions of application container images in one centralized repository and consume them from multiple nodes (VMs/Servers) where our applications are deployed.
