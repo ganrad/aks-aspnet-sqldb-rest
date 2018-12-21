@@ -10,7 +10,7 @@ In a nutshell, you will work on the following tasks.
 4. Deploy an **Azure Container Registry** (ACR). Complete Section [X].
 5. Define a *Build Pipeline* in **Azure DevOps** (formerly Visual Studio Team Services).  Execute the build pipeline to build the ASP.NET Core application, containerize it and deploy the container image to the ACR.  This task focuses on the **Continuous Integration** aspect of the DevOps process.  Complete Section [C].
 6.  Deploy an AKS (Azure Kubernetes Service) cluster.  Complete Section [D].
-7.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized microservice (`claims-api`) on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Step [E].
+7.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized microservice (Claims API) on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Step [E].
 
 This project demonstrates how to use Azure DevOps platform to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for medical claims.  The microservice persists all claims records in a Azure SQL Server Database.
 
@@ -45,7 +45,7 @@ For easy and quick reference, readers can refer to the following on-line resourc
 ## A] Deploy an Azure SQL Server and Database
 **Approx. time to complete this section: 20 minutes**
 
-In this section, we will create an Azure SQL Server instance and create a database (`ClaimsDB`).  This database will be used by the `claims-api` microservice to persist *Claims* records.
+In this section, we will create an Azure SQL Server instance and create a database (`ClaimsDB`).  This database will be used by the Claims API microservice to persist *Claims* records.
 
 1.  Login to the [Azure Portal](https://portal.azure.com) using your credentials and use a [Azure Cloud Shell](https://shell.azure.com) session to perform the next steps.  Azure Cloud Shell is an interactive, browser-accessible shell for managing Azure resources.  The first time you access the Cloud Shell, you will be prompted to create a resource group, storage account and file share.  You can use the defaults or click on *Advanced Settings* to customize the defaults.  Accessing the Cloud Shell is described in [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview). 
 
@@ -81,7 +81,7 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
     **NOTE**: Remember to delete the firewall rule setting once you are done working on this hands-on lab.  
 
-5.  In the **ClaimsDB** tab, click on **Connection strings** in the left navigational panel (blade).  Copy the SQL Server database connection string under the **ADO.NET** tab and save the value in a file.  We will need this connection string in the next section to configure the SQL Server database for the `claims-api` microservice.  See screenshot below.
+5.  In the **ClaimsDB** tab, click on **Connection strings** in the left navigational panel (blade).  Copy the SQL Server database connection string under the **ADO.NET** tab and save the value in a file.  We will need this connection string in the next section to configure the SQL Server database for the Claims API microservice.  See screenshot below.
 
     ![alt tag](./images/A-06.PNG)
 
@@ -96,9 +96,9 @@ The following tools (binaries) will be installed on the Linux VM.
 - .NET Core SDK.  This SDK will be used to build and test the microservice application locally. 
 - Kubernetes CLI (`kubectl`).  This CLI will be used for managing and introspecting the current state of resources deployed on the Kubernetes (AKS) cluster.
 - Helm CLI (`helm`).  Helm is a package manager for Kubernetes and will be used to manage and monitor the lifecyle of application deployments on AKS.
-- Docker engine and client.  Docker engine will be used to run the VSTS build agent. It will also be used to build and test the `claims-api` microservice container locally. 
+- Docker engine and client.  Docker engine will be used to run the Azure DevOps build agent. It will also be used to build and run the Claims API microservice container locally. 
 
-Follow the steps below to create the Bastion host (Linux VM), install pre-requisite software (CLI) on this VM, run the VSTS build agent and test the `claims-api` microservice locally.
+Follow the steps below to create the Bastion host (Linux VM), install pre-requisite software  on this VM and run the Azure DevOps build agent.
 
 1.  Fork this [GitHub repository](https://github.com/ganrad/aks-aspnet-sqldb-rest) to **your** GitHub account.  In the browser window, click on **Fork** in the upper right hand corner to get a separate copy of this project added to your GitHub account.  You must be signed in to your GitHub account in order to fork this repository.
 
