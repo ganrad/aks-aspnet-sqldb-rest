@@ -85,7 +85,7 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
     ![alt tag](./images/A-06.PNG)
 
-### B] Deploy a Linux CentOS VM on Azure (~ Bastion Host)
+### B] Provision a Linux CentOS VM on Azure (~ Bastion Host) and install pre-requisite software
 **Approx. time to complete this section: 1 Hour**
 
 The following tools (binaries) will be installed on the Linux VM.
