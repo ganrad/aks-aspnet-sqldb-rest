@@ -247,7 +247,7 @@ Before proceeding, login into the Linux VM using SSH.
     #
     ```
     
-    Edit the `appsettings.json` using **vi** or **nano** editor and configure the SQL Server connection string value.  Remember to specify correct values for **User ID** and **Password** in the connection string.  See the screenshot below.
+    Edit the `appsettings.json` file using **vi** or **nano** editor and configure the SQL Server connection string value.  Replace the variable tokens and specify correct values for **SQL_SRV_PREFIX**, **SQL_USER_ID** and **SQL_USER_PWD** in the connection string.  Do not include the curly braces and the hash symbols (#{ xxx }#) when specifying the values.  See the screenshot below.
 
     ![alt tag](./images/C-01.PNG)
 
@@ -324,13 +324,32 @@ Before proceeding, login into the Linux VM using SSH.
 
     You have now tested the Claims API microservice locally on this VM.  Press Control-C to exit out of the command (docker run ...) and get back to the terminal prompt.
 
-6.  Pull the Microsoft VSTS agent container from docker hub.  It will take approx. 20 minutes to download the image (Size ~ 10+ GB).  Take a coffee break.
+6.  Update the **appsettings.json** file. Push the updated source code to your GitHub repository.
+
+    In this step, we will reset the values for **User ID**, **Password** and *Azure SQL Server prefix* with variable tokens in the *appsettings.json* file.  We will inject these values when building the Claims API microservice in Azure DevOps in Section [F].
+
+    In in the Linux VM terminal window, edit the appsettings.json file using **vi** or **nano** editor and substitute variable tokens as shown (highlighted in yellow) in the screenshot below.
+    
+    ![alt tag](./images/C-01.PNG)
+
+    Commit and push your source code updates to your GitHub repository.  Follow the instructions in the command snippet below.
+    ```
+    # Configure the remote GitHub repository
+    $ git remote set-url origin git@github.com:ganrad/aks-aspnet-sqldb-rest.git
+    #
+    # Commit and push your changes to your GitHub repository
+    $ git commit -a -m "Updated appsettings.json"
+    $ git push
+    #
+    ```
+
+7.  Pull the Microsoft VSTS agent container from docker hub.  It will take approx. 20 minutes to download the image (Size ~ 10+ GB).  Take a coffee break.
     ```
     $ docker pull microsoft/vsts-agent
     $ docker images
     ```
 
-7.  Next, we will generate a Azure DevOps (VSTS) personal access token (PAT) to connect our DevOps build agent to your Azure DevOps account.  Login to Azure DevOps using your account ID. In the upper right, click on your profile image and click **security**.  
+8.  Next, we will generate a Azure DevOps (VSTS) personal access token (PAT) to connect our DevOps build agent to your Azure DevOps account.  Login to Azure DevOps using your account ID. In the upper right, click on your profile image and click **security**.  
 
     ![alt tag](./images/C-01.png)
 
@@ -340,7 +359,7 @@ Before proceeding, login into the Linux VM using SSH.
 
     In the next page, make sure to **copy and store** the PAT (token) into a file.  Keep in mind, you will not be able to retrieve this token again.  Incase you happen to lose or misplace the token, you will need to generate a new PAT and use it to reconfigure the VSTS build agent.  So save this PAT (token) to a file.
 
-8.  In the Linux VM terminal window, use the command below to start the VSTS build container.  Refer to the table below to set the build container parameter values correctly.
+9.  In the Linux VM terminal window, use the command below to start the VSTS build container.  Refer to the table below to set the build container parameter values correctly.
 
     Parameter | Value
     --------- | -----
