@@ -225,13 +225,112 @@ Follow the steps below to create the Bastion host (Linux VM), install pre-requis
     $ docker info
     ```
 
-8.  Pull the Microsoft VSTS agent container from docker hub.  It will take approx. 20 minutes to download the image (Size ~ 10+ GB).  Take a coffee break.
+### C] Build and run the Claims API microservice locally on the Linux VM
+**Approx. time to complete this section: 45 minutes**
+
+In this section, we will work on the following tasks
+- Configure the Azure SQL Server connection string in the Claims API microservice (source code)
+- Build the Claims API microservice using the .NET Core 2.2 SDK
+- Run the .NET Core *Entity Framework* migrations to create the relational database tables in Azure SQL Server provisioned in Section [A].  These tables will be used to persist Claims records.
+- Run the Claims API microservice locally using the .NET Core 2.2 SDK
+- Build the microservice Docker container and run the container
+- Lastly, deploy the Azure DevOps build agent
+
+Before proceeding, login into the Linux VM using SSH.
+
+1.  Update the Azure SQL Server database connection string value in the **appsettings.json** file.
+
+    The attribute **SqlServerDb** holds the database connection string and should point to the Azure SQL Server database instance which we provisioned in Section [A].  You should have saved the SQL Server connection string value in a file.  Refer to the comands below.
+    ```
+    # Switch to the source code directory.  This is the directory where you cloned this GitHub repository.
+    $ cd git-repos/aks-aspnet-sqldb-rest
+    #
+    ```
+    
+    Edit the `appsettings.json` using **vi** or **nano** editor and configure the SQL Server connection string value.  Remember to specify correct values for **User ID** and **Password** in the connection string.  See the screenshot below.
+
+    ![alt tag](./images/C-01.PNG)
+
+2.  Build the Claims API microservice using the .NET Core SDK.
+
+    ```
+    #
+    # Build the Claims API microservice
+    $ dotnet build
+    #
+    ```
+
+3.  Create and run the database migration scripts. 
+  
+    This step will create the database tables for persisting *Claims* records in the Azure SQL Server database.  Refer to the command snippet below.
+    ```
+    # Run the .NET Core CLI command to create the database migration scripts
+    $ dotnet ef migrations add InitialCreate
+    #
+    # Run the ef (Entity Framework) migrations
+    $ dotnet ef database update
+    #
+    ```
+
+    Login to the Azure Portal and check if the database tables have been created. See screenshot below.
+
+    ![alt tag](./images/C-02.PNG)
+
+4.  Run the Claims API locally using the .NET Core SDK.
+
+    Refer to the commands below.
+    ```
+    # Make sure you are in the Claims API source code directory
+    $ pwd
+    /home/labuser/git-repos/aks-aspnet-sqldb-rest
+    #
+    # Run the microservice
+    $ dotnet run
+    #
+    ```
+
+    Login to the Linux VM using another SSH terminal session.  Use the **Curl** command to invoke the Claims API end-point.  Refer to the command snippet below.
+    ```
+    # Use curl command to hit the claims api end-point.  
+    $ curl -i http://localhost:5000/api/claims
+    #
+    ```
+
+    The API end-point should return a 200 OK HTTP status code and also return one claim record in the HTTP response body.  See screenshot below.
+
+    ![alt tag](./images/C-03.PNG)
+
+5.  Build and run the Claims API with Docker for Linux containers.
+
+    In the SSH terminal window where you started the application (dotnet run), press Control-C to exit out of the command.  Follow the instructions in the command snippet below.
+    ```
+    # Make sure you are in the Claims API source code directory
+    $ pwd
+    /home/labuser/git-repos/aks-aspnet-sqldb-rest
+    #
+    # Run the docker build.  The build will take a few minutes to download both the .NET core build and run-time containers!
+    $ docker build -t claims-api .
+    #
+    # List the docker images on this VM.  You should see two container images ('2.2-sdk' and '2.2-aspnetcore-runtime') in the 'microsoft/dotnet' repository.
+    # Compare the sizes of the two dotnet container images and you will notice the size of the runtime image is pretty small ~ 260MB.
+    $ docker images
+    #
+    # Run the application container
+    $ docker run -it --rm -p 5000:80 --name test-claims-api claims-api
+    #
+    ```
+
+    Switch to the other SSH terminal window and invoke the Claims API HTTP end-point again using **Curl** command.  You should get the same HTTP response output as in the previous step.
+
+    You have now tested the Claims API microservice locally on this VM.  Press Control-C to exit out of the command (docker run ...) and get back to the terminal prompt.
+
+6.  Pull the Microsoft VSTS agent container from docker hub.  It will take approx. 20 minutes to download the image (Size ~ 10+ GB).  Take a coffee break.
     ```
     $ docker pull microsoft/vsts-agent
     $ docker images
     ```
 
-9.  Next, we will generate a Azure DevOps (VSTS) personal access token (PAT) to connect our DevOps build agent to your Azure DevOps account.  Login to Azure DevOps using your account ID. In the upper right, click on your profile image and click **security**.  
+7.  Next, we will generate a Azure DevOps (VSTS) personal access token (PAT) to connect our DevOps build agent to your Azure DevOps account.  Login to Azure DevOps using your account ID. In the upper right, click on your profile image and click **security**.  
 
     ![alt tag](./images/C-01.png)
 
@@ -241,7 +340,7 @@ Follow the steps below to create the Bastion host (Linux VM), install pre-requis
 
     In the next page, make sure to **copy and store** the PAT (token) into a file.  Keep in mind, you will not be able to retrieve this token again.  Incase you happen to lose or misplace the token, you will need to generate a new PAT and use it to reconfigure the VSTS build agent.  So save this PAT (token) to a file.
 
-10.  In the Linux VM terminal window, use the command below to start the VSTS build container.  Refer to the table below to set the build container parameter values correctly.
+8.  In the Linux VM terminal window, use the command below to start the VSTS build container.  Refer to the table below to set the build container parameter values correctly.
 
     Parameter | Value
     --------- | -----
@@ -280,8 +379,6 @@ Follow the steps below to create the Bastion host (Linux VM), install pre-requis
     2018-09-17 16:59:59Z: Listening for Jobs
     ```
     Minimize this terminal window for now as you will only be using it to view the results of a VSTS build.  Before proceeding, open another terminal (WSL Ubuntu/Putty) window and login (SSH) into the Linux VM.
-
-### C] Build and run the Claims API microservice locally on the Linux VM
 
 ### D] Deploy Azure Container Registry (ACR)
 **Approx. time to complete this section: 10 minutes**
