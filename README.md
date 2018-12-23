@@ -235,7 +235,6 @@ In this section, we will work on the following tasks
 - Run the .NET Core *Entity Framework* migrations to create the relational database tables in Azure SQL Server provisioned in Section [A].  These tables will be used to persist Claims records.
 - Run the Claims API microservice locally using the .NET Core 2.2 SDK
 - Build the microservice Docker container and run the container
-- Lastly, deploy the Azure DevOps build agent
 
 Before proceeding, login into the Linux VM using SSH.
 
@@ -327,15 +326,19 @@ Before proceeding, login into the Linux VM using SSH.
 
     You have now tested the Claims API microservice locally on this VM.  Press Control-C to exit out of the command (docker run ...) and get back to the terminal prompt.
 
-6.  Update the **appsettings.json** file. Push the updated source code to your GitHub repository.
+6.  Update the **appsettings.json** file.
 
     In this step, we will reset the values for *User ID*, *Password* and *Azure SQL Server prefix* with variable tokens in the *appsettings.json* file.  These values will be injected in the Claims API build (CI) pipeline in Azure DevOps in Section [F].
 
-    In the Linux VM terminal window, edit the **appsettings.json** file using **vi** or **nano** editor and substitute variable tokens (highlighted in yellow) as shown in the screenshot below.
+    In the Linux VM terminal window, edit the **appsettings.json** file using **vi** or **nano** editor and substitute variable tokens (highlighted in yellow) as shown in the screenshot below.  Save this file.
     
     ![alt tag](./images/C-01.PNG)
 
-    Commit and push the application source code to your GitHub repository.  Follow the instructions in the command snippet below.
+7.  Commit the updated source code to your GitHub repository.
+
+    Commit and push the application source code to your GitHub repository.
+
+    Refer to the command snippet below.
     ```
     # Configure the remote GitHub repository
     $ git remote set-url origin git@github.com:ganrad/aks-aspnet-sqldb-rest.git
@@ -365,15 +368,15 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
 
     Login to [Azure DevOps](https://dev.azure.com) using your account ID. In the upper right, click on your profile image and click **Security**.  
 
-    ![alt tag](./images/D-01.png)
+    ![alt tag](./images/D-01.PNG)
 
     Click on **New Token** to create a new PAT.  See screenshot below.
 
-    ![alt tag](./images/D-02.png)
+    ![alt tag](./images/D-02.PNG)
 
     In the **Create a new personal access token** page, provide a **Name** for the token, check the radio button besides **Full access**, select an expiry period and click **Create**.  See screenshot below.
 
-    ![alt tag](./images/D-03.png)
+    ![alt tag](./images/D-03.PNG)
 
     In the next page, make sure to **copy and store** the PAT (token) into a file.  Keep in mind, you will not be able to retrieve this token again.  Incase you happen to lose or misplace the token, you will need to generate a new PAT and use it to reconfigure the VSTS build agent.  So save this PAT (token) to a file.
 
