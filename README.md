@@ -7,10 +7,11 @@ In a nutshell, you will work on the following tasks.
 1. Deploy an **Azure SQL Server Database**.  Complete Section [A]. 
 2. Provision a Linux VM (Bastion Host/Jump Box) on Azure and install pre-requisite software.  Complete Section [B].
 3. Build and run the *Claims API* microservice locally on the Bastion Host.  Complete Section [C].
-4. Deploy an **Azure Container Registry** (ACR). Complete Section [X].
-5. Define a *Build Pipeline* in **Azure DevOps** (formerly Visual Studio Team Services).  Execute the build pipeline to build the ASP.NET Core application, containerize it and deploy the container image to the ACR.  This task focuses on the **Continuous Integration** aspect of the DevOps process.  Complete Section [C].
-6.  Deploy an AKS (Azure Kubernetes Service) cluster.  Complete Section [D].
-7.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized microservice (Claims API) on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Step [E].
+4. Deploy an **Azure DevOps** build container on the Linux VM. Complete Section [D].
+5. Deploy an **Azure Container Registry** (ACR). Complete Section [E].
+6. Define a *Build Pipeline* in **Azure DevOps** (formerly Visual Studio Team Services).  Execute the build pipeline to build the ASP.NET Core application, containerize it and deploy the container image to the ACR.  This task focuses on the **Continuous Integration** aspect of the DevOps process.  Complete Section [C].
+7.  Deploy an AKS (Azure Kubernetes Service) cluster.  Complete Section [D].
+8.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized microservice (Claims API) on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Step [E].
 
 This project demonstrates how to use Azure DevOps platform to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for medical claims.  The microservice persists all claims records in a Azure SQL Server Database.
 
