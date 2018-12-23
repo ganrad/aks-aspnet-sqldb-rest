@@ -240,7 +240,9 @@ Before proceeding, login into the Linux VM using SSH.
 
 1.  Update the Azure SQL Server database connection string value in the **appsettings.json** file.
 
-    The attribute **SqlServerDb** holds the database connection string and should point to the Azure SQL Server database instance which we provisioned in Section [A].  You should have saved the SQL Server connection string value in a file.  Refer to the comands below.
+    The attribute **SqlServerDb** holds the database connection string and should point to the Azure SQL Server database instance which we provisioned in Section [A].  You should have saved the SQL Server connection string value in a file.
+
+    Refer to the comands below to edit the SQL Server database *Connection string*...
     ```
     # Switch to the source code directory.  This is the directory where you cloned this GitHub repository.
     $ cd git-repos/aks-aspnet-sqldb-rest
@@ -326,13 +328,13 @@ Before proceeding, login into the Linux VM using SSH.
 
 6.  Update the **appsettings.json** file. Push the updated source code to your GitHub repository.
 
-    In this step, we will reset the values for **User ID**, **Password** and *Azure SQL Server prefix* with variable tokens in the *appsettings.json* file.  We will inject these values when building the Claims API microservice in Azure DevOps in Section [F].
+    In this step, we will reset the values for *User ID*, *Password* and *Azure SQL Server prefix* with variable tokens in the *appsettings.json* file.  These values will be injected in the Claims API build (CI) pipeline in Azure DevOps in Section [F].
 
-    In in the Linux VM terminal window, edit the appsettings.json file using **vi** or **nano** editor and substitute variable tokens as shown (highlighted in yellow) in the screenshot below.
+    In the Linux VM terminal window, edit the **appsettings.json** file using **vi** or **nano** editor and substitute variable tokens (highlighted in yellow) as shown in the screenshot below.
     
     ![alt tag](./images/C-01.PNG)
 
-    Commit and push your source code updates to your GitHub repository.  Follow the instructions in the command snippet below.
+    Commit and push the application source code to your GitHub repository.  Follow the instructions in the command snippet below.
     ```
     # Configure the remote GitHub repository
     $ git remote set-url origin git@github.com:ganrad/aks-aspnet-sqldb-rest.git
@@ -343,32 +345,53 @@ Before proceeding, login into the Linux VM using SSH.
     #
     ```
 
-7.  Pull the Microsoft VSTS agent container from docker hub.  It will take approx. 20 minutes to download the image (Size ~ 10+ GB).  Take a coffee break.
+### D] Deploy the Azure DevOps (VSTS) build container
+**Approx. time to complete this section: 30 minutes**
+
+If you haven't already, login to the Linux VM using a SSH terminal session.
+
+1.  Pull the Azure DevOps (VSTS) build agent container from docker hub.
+
+    It will take approx. 20 minutes to download the image (Size ~ 10+ GB).  Take a coffee break.
     ```
     $ docker pull microsoft/vsts-agent
     $ docker images
     ```
 
-8.  Next, we will generate a Azure DevOps (VSTS) personal access token (PAT) to connect our DevOps build agent to your Azure DevOps account.  Login to Azure DevOps using your account ID. In the upper right, click on your profile image and click **security**.  
+2.  Generate a Azure DevOps (VSTS) personal access token (PAT).
 
-    ![alt tag](./images/C-01.png)
+    The PAT token will be used to connect the Azure DevOps build agent to your Azure DevOps account.
 
-    Click on **Add** to create a new PAT.  In the next page, provide a short description for this token, select a expiry period and click **Create Token**.  See screenshot below.
+    Login to [Azure DevOps](https://dev.azure.com) using your account ID. In the upper right, click on your profile image and click **Security**.  
 
-    ![alt tag](./images/C-02.png)
+    ![alt tag](./images/D-01.png)
+
+    Click on **New Token** to create a new PAT.  See screenshot below.
+
+    ![alt tag](./images/D-02.png)
+
+    In the **Create a new personal access token** page, provide a **Name** for the token, check the radio button besides **Full access**, select an expiry period and click **Create**.  See screenshot below.
+
+    ![alt tag](./images/D-03.png)
 
     In the next page, make sure to **copy and store** the PAT (token) into a file.  Keep in mind, you will not be able to retrieve this token again.  Incase you happen to lose or misplace the token, you will need to generate a new PAT and use it to reconfigure the VSTS build agent.  So save this PAT (token) to a file.
 
-9.  In the Linux VM terminal window, use the command below to start the VSTS build container.  Refer to the table below to set the build container parameter values correctly.
+3.  Start the Azure DevOps (VSTS) build container.
+
+    The *Continuous Integration* (CI) and *Continuous Deployment* (CD) pipelines deployed on Azure DevOps will be executed by the build container on the Linux VM.
+
+    Refer to the table below to set the parameter values for the build container correctly.
 
     Parameter | Value
     --------- | -----
     VSTS_TOKEN | VSTS PAT Token.  This is the value which you copied and saved in a file in the previous step.
     VSTS_ACCOUNT | VSTS Organization name.  An Org. is a container for DevOps projects in Azure DevOps (VSTS) platform.  It's usually the first part (Prefix) of the VSTS URL (eg., **Prefix**.visualstudio.com).  If you are using Azure DevOps URL, then it is the last part (ContextPath) of the URL (eg., dev.azure.com/**ContextPath**).
 
+    In the Linux terminal window, start the Azure DevOps (VSTS) build container.  See command snippet below.
     ```
-    $ docker run -e VSTS_ACCOUNT=<Org. Name> -e VSTS_TOKEN=<PAT Token> -v /var/run/docker.sock:/var/run/docker.sock --name vstsagent -it microsoft/vsts-agent
+    $ docker run -e VSTS_ACCOUNT=<Org. Name> -e VSTS_TOKEN=<PAT Token> -v /var/run/docker.sock:/var/run/docker.sock --name vstsagent --rm -it microsoft/vsts-agent
     ```
+
     The VSTS build agent will initialize and you should see a message indicating "Listening for Jobs".  See below.  
     ```
     Determining matching VSTS agent...
@@ -392,14 +415,15 @@ Before proceeding, login into the Linux VM using SSH.
     Connecting to the server.
     Successfully added the agent
     Testing agent connection.
-    2018-09-17 16:59:56Z: Settings Saved.
+    2018-12-23 05:26:36Z: Settings Saved.
     Scanning for tool capabilities.
     Connecting to the server.
-    2018-09-17 16:59:59Z: Listening for Jobs
+    2018-12-23 05:26:39Z: Listening for Jobs
     ```
+
     Minimize this terminal window for now as you will only be using it to view the results of a VSTS build.  Before proceeding, open another terminal (WSL Ubuntu/Putty) window and login (SSH) into the Linux VM.
 
-### D] Deploy Azure Container Registry (ACR)
+### E] Deploy Azure Container Registry (ACR)
 **Approx. time to complete this section: 10 minutes**
 
 In this step, we will deploy an instance of Azure Container Registry to store container images which we will build in later steps.  A container registry such as ACR allows us to store multiple versions of application container images in one centralized repository and consume them from multiple nodes (VMs/Servers) where our applications are deployed.
