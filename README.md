@@ -1,4 +1,4 @@
-#  Build and deploy an ASP.NET Core 2.2 Web API (microservice) on Azure Kubernetes Service
+#  Build and deploy an ASP.NET Core 2.2 Web API on Azure Kubernetes Service
 This project describes the steps for building and deploying a real world **Medical Claims Processing** microservice application (**Claims API**) on Azure Kubernetes Service.
 
 **Description:**
