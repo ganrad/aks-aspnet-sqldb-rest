@@ -328,9 +328,9 @@ Before proceeding, login into the Linux VM using SSH.
 
 6.  Update the **appsettings.json** file.
 
-    In this step, we will reset the values for *User ID*, *Password* and *Azure SQL Server prefix* with variable tokens in the *appsettings.json* file.  These values will be injected in the Claims API build (CI) pipeline in Azure DevOps in Section [F].
+    In the *appsettings.json* file, replace the values for *User ID*, *Password* and *Azure SQL Server prefix* with variable tokens.  The token values will be injected when the Claims API build (CI) pipeline is executed in Azure DevOps (in Section [F]).
 
-    In the Linux VM terminal window, edit the **appsettings.json** file using **vi** or **nano** editor and substitute variable tokens (highlighted in yellow) as shown in the screenshot below.  Save this file.
+    In the Linux VM terminal window, edit the **appsettings.json** file using **vi** or **nano** editor.  Substitute variable tokens as shown in the screenshot below (highlighted in yellow).  After updating this file, save it.
     
     ![alt tag](./images/C-01.PNG)
 
@@ -374,7 +374,7 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
 
     ![alt tag](./images/D-02.PNG)
 
-    In the **Create a new personal access token** page, provide a **Name** for the token, check the radio button besides **Full access**, select an expiry period and click **Create**.  See screenshot below.
+    In the **Create a new personal access token** tab, provide a **Name** for the token, check the radio button besides **Full access**, select an **Expiration** period and click **Create**.  See screenshot below.
 
     ![alt tag](./images/D-03.PNG)
 
@@ -393,7 +393,10 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
 
     In the Linux terminal window, start the Azure DevOps (VSTS) build container.  See command snippet below.
     ```
+    # Substitute the correct values for VSTS_ACCOUNT and VSTS_TOKEN before running this command
+    #
     $ docker run -e VSTS_ACCOUNT=<Org. Name> -e VSTS_TOKEN=<PAT Token> -v /var/run/docker.sock:/var/run/docker.sock --name vstsagent --rm -it microsoft/vsts-agent
+    #
     ```
 
     The VSTS build agent will initialize and you should see a message indicating "Listening for Jobs".  See below.  
@@ -425,7 +428,7 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
     2018-12-23 05:26:39Z: Listening for Jobs
     ```
 
-    Minimize this terminal window for now as you will only be using it to view the results of a VSTS build.  Before proceeding, open another terminal (WSL Ubuntu/Putty) window and login (SSH) into the Linux VM.
+    Minimize this terminal window for now as you will only be using it to view the results of a Azure DevOps build.  Before proceeding, open another terminal (WSL Ubuntu/Putty) window and login (SSH) into the Linux VM.
 
 ### E] Deploy Azure Container Registry (ACR)
 **Approx. time to complete this section: 10 minutes**
