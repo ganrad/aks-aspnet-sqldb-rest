@@ -119,7 +119,7 @@ Follow the steps below to create the Bastion host (Linux VM), install pre-requis
     #
     ```
 
-4.  Install Git client and clone [this repository](https://github.com/ganrad/aks-aspnet-sqldb-rest).  When cloning the repository, ensure that you are using the URL of your forked repository.
+4.  Install Git client and clone [this repository](https://github.com/ganrad/aks-aspnet-sqldb-rest).  When cloning the repository, make sure to use your Account ID in the GitHub URL.
     ```
     # Switch to home directory
     $ cd
@@ -137,6 +137,7 @@ Follow the steps below to create the Bastion host (Linux VM), install pre-requis
     $ cd git-repos
     #
     # Clone your GitHub repository into directory 'git-repos'.  Cloning this repo. will allow you to make changes to the application artifacts in the forked GitHub project.
+    # Substitute your GitHub Account ID in the URL.
     $ git clone https://github.com/<YOUR-GITHUB-ACCOUNT>/aks-aspnet-sqldb-rest.git
     #
     # Switch to home directory
@@ -324,30 +325,7 @@ Before proceeding, login into the Linux VM using SSH.
 
     Switch to the other SSH terminal window and invoke the Claims API HTTP end-point again using **Curl** command.  You should get the same HTTP response output as in the previous step.
 
-    You have now tested the Claims API microservice locally on this VM.  Press Control-C to exit out of the command (docker run ...) and get back to the terminal prompt.
-
-6.  Update the **appsettings.json** file.
-
-    In the *appsettings.json* file, replace the values for *User ID*, *Password* and *Azure SQL Server prefix* with variable tokens.  The token values will be injected when the Claims API build (CI) pipeline is executed in Azure DevOps (in Section [F]).
-
-    In the Linux VM terminal window, edit the **appsettings.json** file using **vi** or **nano** editor.  Substitute variable tokens as shown in the screenshot below (highlighted in yellow).  After updating this file, save it.
-    
-    ![alt tag](./images/C-01.PNG)
-
-7.  Commit the updated source code to your GitHub repository.
-
-    Commit and push the application source code to your GitHub repository.
-
-    Refer to the command snippet below.
-    ```
-    # Configure the remote GitHub repository
-    $ git remote set-url origin git@github.com:ganrad/aks-aspnet-sqldb-rest.git
-    #
-    # Commit and push your changes to your GitHub repository
-    $ git commit -a -m "Updated appsettings.json"
-    $ git push
-    #
-    ```
+You have now tested the Claims API microservice locally on this VM.  Press Control-C to exit out of the command (docker run ...) and get back to the terminal prompt.
 
 ### D] Deploy the Azure DevOps (VSTS) build container
 **Approx. time to complete this section: 30 minutes**
@@ -437,11 +415,11 @@ In this step, we will deploy an instance of Azure Container Registry to store co
 
 1.  Login to your Azure portal account.  Then click on **Container registries** in the navigational panel on the left.  If you don't see this option in the nav. panel then click on **All services**, scroll down to the **COMPUTE** section and click on the star beside **Container registries**.  This will add the **Container registries** option to the service list in the navigational panel.  Now click on the **Container registries** option.  You will see a page as displayed below.
 
-    ![alt tag](./images/B-01.png)
+    ![alt tag](./images/E-01.PNG)
 
 2.  Click on **Add** to create a new ACR instance.  Give a meaningful name to your registry and make a note of it.  Select an Azure **Subscription**, select the **Resource group** which you created in Section [A] and leave the **Location** field as-is.  The location should default to the location assigned to the resource group.  Select the **Basic** pricing tier.  Click **Create** when you are done.
 
-    ![alt tag](./images/B-02.png)
+    ![alt tag](./images/E-02.png)
 
 3.  Create an Azure Service Principal (SP) and assign *Contributor* role access to the ACR created in previous step.  This SP will be used in a subsequent lab (Jenkins-CI-CD) to push the *po-service* container image into ACR and re-deploy the microservice to AKS.
     Execute the shell script `./shell-scripts/jenkins-acr-auth.sh` in the Linux VM (Bastion Host) terminal window.  The command output will be displayed on the console and also saved to a file (SP_ACR.txt) in the current directory.  Before running the shell script, open it in 'vi' editor (or 'nano') and specify the correct values for variables 'ACR_RESOURCE_GROUP' and 'ACR_NAME'. 
