@@ -254,7 +254,7 @@ Before proceeding, login into the Linux VM using SSH.
 
     Variable Token | Description
     -------------- | -----------
-    SQL_SRV_PREFIX | Name of the Azure SQL Server instance
+    SQL_SRV_PREFIX | Name of the Azure SQL Server instance. Eg., <Your_Initial>sqldb
     SQL_USER_ID | User ID for the SQL Server instance
     SQL_USER_PWD | User password for the SQL Server instance 
 
@@ -376,7 +376,7 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
     --------- | -----
     VSTS_TOKEN | VSTS PAT Token.  This is the value which you copied and saved in a file in the previous step.
     VSTS_ACCOUNT | VSTS Organization name.  An Org. is a container for DevOps projects in Azure DevOps (VSTS) platform.  It's usually the first part (Prefix) of the VSTS URL (eg., **Prefix**.visualstudio.com).  If you are using Azure DevOps URL, then it is the last part (ContextPath) of the URL (eg., dev.azure.com/**ContextPath**).
-    VSTS_POOL | VSTS Agent Pool Name.  For this lab, use value **'Default'**.  **NOTE:**In case you use a different name for the pool, you will need to first create this pool in your VSTS account.  Otherwise the agent will not be able to connect to the pool.
+    VSTS_POOL | VSTS Agent Pool Name.  For this lab, use value *Default*.  **NOTE:**In case you use a different name for the pool, you will need to first create this pool in your VSTS account.  Otherwise the agent will not be able to connect to the pool.
 
     In the Linux terminal window, start the Azure DevOps (VSTS) build container.  See command snippet below.
     ```
