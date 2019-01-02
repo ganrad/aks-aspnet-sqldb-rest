@@ -422,12 +422,12 @@ In this step, we will deploy an instance of Azure Container Registry to store co
 
     ![alt tag](./images/E-02.PNG)
 
-### F] Create a new Build (CI) pipeline for Claims API microservice in Azure DevOps
+### F] Define and execute a Build pipeline in Azure DevOps for containerizing the Claims API microservice
 **Approx. time to complete this section: 1 Hour**
 
-In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (microsoft/dotnet).  Finally, the built application container is pushed into ACR which we deployed in the previous step (Step [E]).
+In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (microsoft/dotnet).  Finally, the built application container is pushed into ACR which you deployed in Step [E].
 
-Before proceeding with the next steps, feel free to inspect the **dockerfile** and Claims API source files in the GitHub repository.  This will give you a better understanding of how continuous integration (CI) can be easily implemented using Azure DevOps.
+Before proceeding with the next steps, feel free to go thru the **dockerfile** and Claims API source files in the GitHub repository.  This will help you understand how the container is built when the continuous integration (CI) pipeline is executed in Azure DevOps.
 
 1.  Enable *Preview* features in Azure DevOps.
 
@@ -481,7 +481,7 @@ Before proceeding with the next steps, feel free to inspect the **dockerfile** a
 
     ![alt tag](./images/F-12.PNG)
 
-    Move the **Replace tokens** task to the top of the task list.  Then update values of fields **Display name** and **Target files** as shown in the screenshot below.
+    Move the **Replace tokens** task to the top of the task list (click and drag the task).  Then update values of fields **Display name** and **Target files** as shown in the screenshot below.
 
     ![alt tag](./images/F-13.PNG)
 
@@ -497,7 +497,9 @@ Before proceeding with the next steps, feel free to inspect the **dockerfile** a
 
     ![alt tag](./images/F-15.PNG)
 
-    Click **Save and Queue** to save the build definition and queue it for execution. Click on the **Build number** on the top of the page.  Wait for the build process to finish.  When all build tasks complete OK and the build process finishes, you will see the screen below.
+4.  Run the application container build.
+
+    At the top of the page, click **Save and Queue** to save the build definition and queue it for execution. Click on the **Build number** on the top of the page to view the progress of the build.  Wait for the build process to finish.  When all build tasks complete OK and the build process finishes, you will see the screen below.
 
     ![alt tag](./images/F-16.PNG)
 
