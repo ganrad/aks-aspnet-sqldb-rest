@@ -515,7 +515,7 @@ Before proceeding with the next steps, feel free to go thru the **dockerfile** a
 
     ![alt tag](./images/F-17.PNG)
 
-    Login to the Azure portal, open the blade for *Azure Container Registry* and verify that the container for Claims API microservice (`claims-api:latest`) has been pushed into the registry.
+    Login to the Azure portal, open the blade for *Azure Container Registry* and verify that the container image for Claims API microservice (`claims-api:latest`) has been pushed into the registry.
 
     ![alt tag](./images/F-18.PNG)
 
