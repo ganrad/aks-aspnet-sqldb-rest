@@ -11,7 +11,7 @@ In a nutshell, you will work on the following tasks.
 5. Deploy an **Azure Container Registry** (ACR). Complete Section [E].
 6. Define a *Build Pipeline* in **Azure DevOps** (formerly Visual Studio Team Services).  Execute the build pipeline to build the ASP.NET Core application, containerize it and push the container image to the ACR.  This task focuses on the **Continuous Integration** aspect of the DevOps process.  Complete Section [F].
 7.  Deploy an **Azure Kubernetes Service** (AKS) cluster.  Complete Section [G].
-8.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized microservice (Claims API) on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Step [E].
+8.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized microservice (Claims API) on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Step [G].
 
 This project demonstrates how to use Azure DevOps platform to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for medical claims.  The microservice persists all claims records in a Azure SQL Server Database.
 
@@ -281,7 +281,7 @@ Before proceeding, login into the Linux VM using SSH.
 
 4.  Run the Claims API locally using the .NET Core SDK.
 
-    Refer to the commands below.
+    Run the Claims API microservice in a Linux terminal window.  Refer to the commands below.
     ```
     # Make sure you are in the Claims API source code directory
     $ pwd
@@ -368,12 +368,13 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
     --------- | -----
     VSTS_TOKEN | VSTS PAT Token.  This is the value which you copied and saved in a file in the previous step.
     VSTS_ACCOUNT | VSTS Organization name.  An Org. is a container for DevOps projects in Azure DevOps (VSTS) platform.  It's usually the first part (Prefix) of the VSTS URL (eg., **Prefix**.visualstudio.com).  If you are using Azure DevOps URL, then it is the last part (ContextPath) of the URL (eg., dev.azure.com/**ContextPath**).
+    VSTS_POOL | VSTS Agent Pool Name.  For this lab, use value **'Default'**.  **NOTE:**In case you use a different name for the pool, you will need to first create this pool in your VSTS account.  Otherwise the agent will not be able to connect to the pool.
 
     In the Linux terminal window, start the Azure DevOps (VSTS) build container.  See command snippet below.
     ```
-    # Substitute the correct values for VSTS_ACCOUNT and VSTS_TOKEN before running this command
+    # Substitute the correct values for VSTS_ACCOUNT, VSTS_POOL and VSTS_TOKEN before running this command
     #
-    $ docker run -e VSTS_ACCOUNT=<Org. Name> -e VSTS_TOKEN=<PAT Token> -v /var/run/docker.sock:/var/run/docker.sock --name vstsagent --rm -it microsoft/vsts-agent
+    $ docker run -e VSTS_ACCOUNT=<Org. Name> -e VSTS_TOKEN=<PAT Token> VSTS_POOL=Default -v /var/run/docker.sock:/var/run/docker.sock --name vstsagent --rm -it microsoft/vsts-agent
     #
     ```
 
@@ -421,121 +422,96 @@ In this step, we will deploy an instance of Azure Container Registry to store co
 
     ![alt tag](./images/E-02.PNG)
 
-3.  Create an Azure Service Principal (SP) and assign *Contributor* role access to the ACR created in previous step.  This SP will be used in a subsequent lab (Jenkins-CI-CD) to push the *po-service* container image into ACR and re-deploy the microservice to AKS.
-    Execute the shell script `./shell-scripts/jenkins-acr-auth.sh` in the Linux VM (Bastion Host) terminal window.  The command output will be displayed on the console and also saved to a file (SP_ACR.txt) in the current directory.  Before running the shell script, open it in 'vi' editor (or 'nano') and specify the correct values for variables 'ACR_RESOURCE_GROUP' and 'ACR_NAME'. 
-    ```
-    # Enable execute permission for this script
-    $ chmod 700 ./shell-scripts/jenkins-acr-auth.sh
-    #
-    # Specify the correct values for `ACR_RESOURCE_GROUP` and `ACR_NAME` in this shell script before running it
-    $ ./shell-scripts/jenkins-acr-auth.sh 
-    # Make sure the 'SP_ACR.txt' file got created in the current working directory
-    $ cat SP_ACR.txt
-    ```
-
-### C] Create a new Build definition in VSTS to deploy the Springboot microservice
+### F] Create a new Build (CI) pipeline for Claims API microservice in Azure DevOps
 **Approx. time to complete this section: 1 Hour**
 
-In this step, we will define the tasks for building the microservice (binary artifacts) application and packaging (layering) it within a docker container.  The build tasks use **Maven** to build the Springboot microservice & **docker-compose** to build the application container.  During the application container build process, the application binary is layered on top of a base docker image (CentOS 7).  Finally, the built application container is pushed into ACR which we deployed in step [B] above.
+In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (microsoft/dotnet).  Finally, the built application container is pushed into ACR which we deployed in the previous step (Step [E]).
 
-Before proceeding with the next steps, feel free to inspect the dockerfile and source files in the GitHub repository (under src/...).  This will give you a better understanding of how continuous integration (CI) can be easily implemented using Azure DevOps.
+Before proceeding with the next steps, feel free to inspect the **dockerfile** and Claims API source files in the GitHub repository.  This will give you a better understanding of how continuous integration (CI) can be easily implemented using Azure DevOps.
 
-1.  Fork this [GitHub repository](https://github.com/ganrad/k8s-springboot-data-rest) to **your** GitHub account.  In the browser window, click on **Fork** in the upper right hand corner to get a separate copy of this project added to your GitHub account.  You must be signed in to your GitHub account in order to fork this repository.
+1.  Enable *Preview* features in Azure DevOps.
 
-    ![alt tag](./images/A-01.png)
+    If you haven't already done so, login to [VSTS](https://www.visualstudio.com/team-services/) using your Microsoft Live ID (or Azure AD ID).  Click on your profile picture (top right corner) and then click on **Preview Features**.  Ensure the check box for feature **New YAML pipeline creation experience** is disabled.  See screenshots below.
 
-    From the terminal window connected to the Bastion host (Linux VM), clone this repository.  Ensure that you are using the URL of your fork when cloning this repository.
-    ```
-    # Switch to home directory
-    $ cd
-    # Clone your GitHub repository.  This will allow you to make changes to the application artifacts without affecting resources in the forked (original) GitHub project.
-    $ git clone https://github.com/<YOUR-GITHUB-ACCOUNT>/k8s-springboot-data-rest.git
-    #
-    # Switch to the 'k8s-springboot-data-rest' directory
-    $ cd k8s-springboot-data-rest
-    ```
+    ![alt tag](./images/F-01.PNG)
 
-2.  If you haven't already done so, login to [VSTS](https://www.visualstudio.com/team-services/) using your Microsoft Live ID (or Azure AD ID) and create an *Organization*.  Give the Organization a meaningful name (eg., Your initials-AzureLab) and then create a new DevOps project. Give a name to your project.
+    ![alt tag](./images/F-02.PNG)
 
-    ![alt tag](./images/A-02.png)
+2.  Create an Azure DevOps *Organization* and *Project*.
 
-    **NOTE:** At this point, you may need to create an Azure **Service Principal** in VSTS.  If you are not familiar with this process, please ask a lab procter to assist you!
+    Give the Organization a meaningful name (eg., claims-api-lab) and then create a new *DevOps Project*. Give a name to your project.  See screenshots below.
 
-3.  We will now create a **Build** definition and define tasks which will execute as part of the application build process.  Click on **Build and Release** in the top menu and then click on *Builds*.  Click on **New definition/pipeline**
+    ![alt tag](./images/F-03.PNG)
 
-    ![alt tag](./images/A-03.png)
+    ![alt tag](./images/F-04.PNG)
 
-4.  In the **Select a source** page, select *GitHub* as the source repository. Give your connection a *name* and then select *Authorize using OAuth* link.  Optionally, you can use a GitHub *personal access token* instead of OAuth.  When prompted, sign in to your **GitHub account**.  Then select *Authorize* to grant access to your VSTS account.
+3.  Create a **Build** definition and define tasks which will execute as part of the application build process.
 
-5.  Once authorized, select the **GitHub Repo** which you forked in step [1] above.  Make sure you replace the account name in the **GitHub URL** with your account name.  Then hit continue.
+    Click on **Pipelines** in the left navigational menu and then select *Builds*.  Then click on **New pipeline**.
 
-    ![alt tag](./images/A-05.png)
+    ![alt tag](./images/F-05.PNG)
 
-6.  Search for text *Maven* in the **Select a template** field and then select *Maven* build.  Then click apply.
+    In the **Select a source** page, select *GitHub* as the source repository. Give your connection a *name* and then select *Authorize using OAuth* link.  Optionally, you can use a GitHub *personal access token* instead of OAuth.  When prompted, sign in to your **GitHub account**.  Then select *Authorize* to grant access to your Azure DevOps account.
 
-    ![alt tag](./images/A-06.png)
+    Once authorized, select the **GitHub Repo** which you forked in Step [B] above.  Make sure you replace the account name in the **GitHub URL** with your account name.  Then hit continue.
 
-7.  Select *Default* in the **Agent Queue** field.  The VSTS build agent which you deployed in step [A] connects to this *queue* and listens for build requests.
+    ![alt tag](./images/F-06.PNG)
 
-    ![alt tag](./images/A-07.png)
+    Search for text *Docker* in the **Select a template** field and then select *Docker container* task.  Then click apply.
 
-8.  On the top extensions menu in VSTS, click on **Browse Markplace** (Bag icon).  Save your build pipeline before proceeding.  Then search for text **replace tokens**.  In the results list below, click on **Colin's ALM Corner Build and Release Tools** (circled in yellow in the screenshot).  Then click on **Get it free** to install this extension in your VSTS account.
+    ![alt tag](./images/F-07.PNG)
 
-    ![alt tag](./images/A-08.PNG)
+    Select *Default* in the **Agent Queue** field.  The VSTS build agent which you deployed in Step [D] connects to this *queue* and listens for build requests.
 
-    Next, search for text **Release Management Utility Tasks** extension provided by Microsoft DevLabs.  This extension includes the **Tokenizer utility** which we will be using in a continuous deployment (CD) step later on in this project.  Click on **Get it free** to install this extension in your VSTS account.  See screenshot below.
+    ![alt tag](./images/F-08.PNG)
 
-    ![alt tag](./images/A-81.PNG)
+    On the top extensions menu in Azure DevOps, click on **Browse Markplace** (Bag icon).  Save your build pipeline before proceeding.  Then search for text **replace tokens**.  In the results list below, click on **Replace Tokens** (By Guillaume Rouchon).  Then click on **Get it free** to install this extension in your Azure DevOps account.
 
-    ![alt tag](./images/A-82.PNG)
+    ![alt tag](./images/F-09.PNG)
 
-9.  Go back to your build definition and click on the plus symbol beside **Agent job 1**.  Search by text **replace tokens** and then select the extension **Replace Tokens** which you just installed in the previous step.  Click **Add**.
+    Edit your DevOps build definition and click on the **Variables** tab as shown in the screenshot below.
 
-    ![alt tag](./images/A-09.png)
+    ![alt tag](./images/F-10.PNG)
 
-10.  Click on the **Replace Tokens** task and drag it to the top of the task list.  In the **Display name** field, specify *Replace MySql service name and k8s namespace in Springboot config file*.  In the **Source Path** field, select *src/main/resources* and specify `*.properties` in the **Target File Pattern** field.  Click on **Advanced** and in the **Token Regex** field, specify `__(\w+[.\w+]*)__` as shown in the screenshot below.  In the next step, we will use this task to specify the target service name and Kubernetes namespace name for MySQL. (Ask a proctor if you have any questions).
+    Define 3 variables **SQL_SRV_PREFIX**, **SQL_USER_ID** and **SQL_USER_PWD**.  These variables should specify database connection string values for Azure SQL Server instance which you provisioned in Step [A] above.  Click on **+ Add** to add a new variable and specify the correct value for each variable as shown in the screenshot below.  
 
-     ![alt tag](./images/A-10.png)
+    ![alt tag](./images/F-11.PNG)
 
-11.  Click on the **Variables** tab and add a new variable to specify the Kubernetes MySQL service name and namespace name as shown in the screenshot below.  When the build pipeline runs, it replaces the value of the variable *svc.name.k8s.namespace* with **mysql.development** in file *src/main/resources/application.properties*.  This allows us to modify the connection settings for MySQL service in the PO microservice application without having to change any line of code.  As such, the MySQL service could be deployed in any Kubernetes namespace and we can easily connect to that instance by setting this variable at build time.
+    Switch back to the **Tasks** tab and click on the plus symbol beside **Agent job 1**.  Search by text **replace tokens** and then select the extension **Replace Tokens** which you just installed in the previous step.  Click **Add**.  See screenshot below.
 
-     Variable Name | Value
-     ------------- | ------
-     svc.name.k8s.namespace | mysql.development
+    ![alt tag](./images/F-12.PNG)
 
-     ![alt tag](./images/A-11.png)
+    Move the **Replace tokens** task to the top of the task list.  Then update values of fields **Display name** and **Target files** as shown in the screenshot below.
 
-12.  Switch back to the **Tasks** tab and click on the **Maven** task.  Specify values for fields **Goal(s)**, **Options** as shown in the screen shot below.  Ensure **Publish to TFS/Team Services** checkbox is enabled.
+    ![alt tag](./images/F-13.PNG)
 
-     ![alt tag](./images/A-12.png)
+    Next, we will package the application binary within a container image.  Review the **dockerfile** in the source repository to understand how the application container image is built.
 
-13.  Go thru the **Copy Files...** and **Publish Artifact:...** tasks.  These tasks copy the application binary artifacts (*.jar) to the **drop** location on the VSTS server.  In **Copy Files...** task, you will need to add `**/*.yaml` to the **Contents** field. See screenshot below.
-   
-     ![alt tag](./images/A-20.PNG)
+    Click on the **Build an image** task on the left panel.  Specify *Build container image* for **Display name** field and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription.  Click on **Authorize**.  In the **Azure Container Registry** field, select the ACR which you provisioned in Step [E] above.  Check to make sure the **Docker File** field is set to `dockerfile`.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)* and enable **Qualify Image Name** checkbox.  In the **Action** field, select *Build an image*.  Also enable **Include Latest Tag** checkbox.  See screenshot below.
 
-14.  Next, we will package our application binary within a container image.  Review the **docker-compose.yml** and **Dockerfile** files in the source repository to understand how the application container image is built.  Click on the plus symbol besides *Agent job 1* to add a new task. Search for task *Docker Compose* and click **Add**.
+    ![alt tag](./images/F-14.PNG)
 
-     ![alt tag](./images/A-14.png)
+    Once the application container image has been built, we will push it into the ACR.
 
-15.  Click on the *Docker Compose ...* task on the left panel.  Specify *Build container image* for **Display name** field and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription.  Click on **Authorize**.  In the **Azure Container Registry** field, select the ACR which you created in step [B] above.  Check to make sure the **Docker Compose File** field is set to `**/docker-compose.yml`.  Enable **Qualify Image Names** checkbox.  In the **Action** field, select *Build service images* and specify *$(Build.BuildNumber)* for field **Additional Image Tags**.  Also enable **Include Latest Tag** checkbox.  See screenshot below.
+    Click on the *Push an image* task on the left panel.  Specify *Push container image to ACR* for field **Display name** and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription (Under Available Azure service connections).  In the **Azure Container Registry** field, select the ACR which you provisioned in Step [E] above.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)* and enable **Qualify Image Name** checkbox.  In the **Action** field, select *Push an image*.  Also enable **Include Latest Tag** checkbox.  See screenshot below.
 
-     ![alt tag](./images/A-15.PNG)
+    ![alt tag](./images/F-15.PNG)
 
-16.  Once our application container image has been built, we will push it into the ACR.  Let's add another task to publish the container image built in the previous step to ACR.  Similar to step [15], search for task *Docker Compose* and click **Add**.
+    Click **Save and Queue** to save the build definition and queue it for execution. Click on the **Build number** on the top of the page.  Wait for the build process to finish.  When all build tasks complete OK and the build process finishes, you will see the screen below.
 
-     Click on the *Docker Compose ...* task on the left.  Specify *Push container image to ACR* for field **Display name** and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription (Under Available Azure service connections).  In the **Azure Container Registry** field, select the ACR which you created in step [B] above.  Check to make sure the **Docker Compose File** field is set to `**/docker-compose.yml`.  Enable **Qualify Image Names** checkbox.  In the **Action** field, select *Push service images* and specify *$(Build.BuildNumber)* for field **Additional Image Tags**.  Also enable **Include Latest Tag** checkbox.  See screenshot below.
+    ![alt tag](./images/F-16.PNG)
 
-     ![alt tag](./images/A-17.PNG)
+    Switch to the VSTS build agent terminal window and you will notice that a build request was received from VSTS and processed successfully. See below.
 
-17.  Click **Save and Queue** to save the build definition and queue it for execution. Wait for the build process to finish.  When all build tasks complete OK and the build process finishes, you will see the screen below.
+    ![alt tag](./images/F-17.PNG)
 
-     ![alt tag](./images/A-18.png)
+    Login to the Azure portal, open the blade for *Azure Container Registry* and verify that the container for Claims API microservice (`claims-api:latest`) has been pushed into the registry.
 
-     Switch to the VSTS build agent terminal window and you will notice that a build request was received from VSTS and processed successfully. See below.
+    ![alt tag](./images/F-18.PNG)
 
-     ![alt tag](./images/A-19.png)
+You have now successfully built the Claims API microservice container image and pushed it to the Azure Container Registry.
 
-### D] Create an Azure Kubernetes Service (AKS) cluster and deploy Springboot microservice
+### G] Create an Azure Kubernetes Service (AKS) cluster and deploy Springboot microservice
 **Approx. time to complete this section: 1 - 1.5 Hours**
 
 In this step, we will first deploy an AKS cluster on Azure.  The Springboot **Purchase Order** microservice application reads/writes purchase order data from/to a relational (MySQL) database.  So we will deploy a **MySQL** database container (ephemeral) first and then deploy our Springboot Java application.  Kubernetes resources (object definitions) are usually specified in manifest files (yaml/json) and then submitted to the API Server.  The API server is responsible for instantiating corresponding objects and bringing the state of the system to the desired state.
