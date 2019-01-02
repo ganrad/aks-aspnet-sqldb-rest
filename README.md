@@ -11,7 +11,7 @@ In a nutshell, you will work on the following tasks.
 5. Deploy an **Azure Container Registry** (ACR). Complete Section [E].
 6. Define a *Build Pipeline* in **Azure DevOps** (formerly Visual Studio Team Services).  Execute the build pipeline to build the ASP.NET Core application, containerize it and push the container image to the ACR.  This task focuses on the **Continuous Integration** aspect of the DevOps process.  Complete Section [F].
 7.  Deploy an **Azure Kubernetes Service** (AKS) cluster.  Complete Section [G].
-8.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized microservice (Claims API) on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Step [G].
+8.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized microservice (Claims API) on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Section [G].
 
 This project demonstrates how to use Azure DevOps platform to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for medical claims.  The microservice persists all claims records in a Azure SQL Server Database.
 
@@ -82,7 +82,7 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
     **NOTE**: Remember to delete the firewall rule setting once you are done working on this hands-on lab.  
 
-5.  In the **ClaimsDB** tab, click on **Connection strings** in the left navigational panel (blade).  Copy the SQL Server database connection string under the **ADO.NET** tab and save the value in a file.  We will need this connection string in the next section to configure the SQL Server database for the Claims API microservice.  See screenshot below.
+5.  In the **ClaimsDB** tab, click on **Connection strings** in the left navigational panel (blade).  Copy the SQL Server database connection string under the **ADO.NET** tab and save the value in a file.  We will need this connection string in the next sections to configure the SQL Server database for the Claims API microservice.  See screenshot below.
 
     ![alt tag](./images/A-06.PNG)
 
@@ -250,7 +250,15 @@ Before proceeding, login into the Linux VM using SSH.
     #
     ```
     
-    Edit the `appsettings.json` file using **vi** or **nano** editor and configure the SQL Server connection string value.  Replace the variable tokens and specify correct values for **SQL_SRV_PREFIX**, **SQL_USER_ID** and **SQL_USER_PWD** in the connection string.  Do not include the curly braces and the hash symbols (#{ xxx }#) when specifying the values.  See the screenshot below.
+    Edit the `appsettings.json` file using **vi** or **nano** editor and configure the SQL Server connection string value.  Replace the variable tokens and specify correct values for **SQL_SRV_PREFIX**, **SQL_USER_ID** and **SQL_USER_PWD** in the connection string.
+
+    Variable Token | Description
+    -------------- | -----------
+    SQL_SRV_PREFIX | Name of the Azure SQL Server instance
+    SQL_USER_ID | User ID for the SQL Server instance
+    SQL_USER_PWD | User password for the SQL Server instance 
+
+    Do not include the curly braces and the hash symbols (#{ xxx }#) when specifying the values.  See the screenshot below.
 
     ![alt tag](./images/C-01.PNG)
 
@@ -425,13 +433,13 @@ In this step, we will deploy an instance of Azure Container Registry to store co
 ### F] Define and execute Claims API Build pipeline in Azure DevOps
 **Approx. time to complete this section: 1 Hour**
 
-In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (microsoft/dotnet).  Finally, the built application container is pushed into ACR which you deployed in Step [E].
+In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (microsoft/dotnet).  Finally, the built application container is pushed into ACR which you deployed in Section [E].
 
 Before proceeding with the next steps, feel free to go thru the **dockerfile** and Claims API source files in the GitHub repository.  This will help you understand how the container is built when the continuous integration (CI) pipeline is executed in Azure DevOps.
 
 1.  Enable *Preview* features in Azure DevOps.
 
-    If you haven't already done so, login to [VSTS](https://www.visualstudio.com/team-services/) using your Microsoft Live ID (or Azure AD ID).  Click on your profile picture (top right corner) and then click on **Preview Features**.  Ensure the check box for feature **New YAML pipeline creation experience** is disabled.  See screenshots below.
+    If you haven't already done so, login to [Azure DevOps](https://www.visualstudio.com/team-services/) using your Microsoft Live ID (or Azure AD ID).  Click on your profile picture (top right corner) and then click on **Preview Features**.  Ensure the check box for feature **New YAML pipeline creation experience** is disabled.  See screenshots below.
 
     ![alt tag](./images/F-01.PNG)
 
@@ -453,7 +461,7 @@ Before proceeding with the next steps, feel free to go thru the **dockerfile** a
 
     In the **Select a source** page, select *GitHub* as the source repository. Give your connection a *name* and then select *Authorize using OAuth* link.  Optionally, you can use a GitHub *personal access token* instead of OAuth.  When prompted, sign in to your **GitHub account**.  Then select *Authorize* to grant access to your Azure DevOps account.
 
-    Once authorized, select the **GitHub Repo** which you forked in Step [B] above.  Make sure you replace the account name in the **GitHub URL** with your account name.  Then hit continue.
+    Once authorized, select the **GitHub Repo** which you forked in Section [B] above.  Make sure you replace the account name in the **GitHub URL** with your account name.  Then hit continue.
 
     ![alt tag](./images/F-06.PNG)
 
@@ -461,11 +469,11 @@ Before proceeding with the next steps, feel free to go thru the **dockerfile** a
 
     ![alt tag](./images/F-07.PNG)
 
-    Select *Default* in the **Agent Queue** field.  The VSTS build agent which you deployed in Step [D] connects to this *queue* and listens for build requests.
+    Select *Default* in the **Agent Queue** field.  The VSTS build agent which you deployed in Section [D] connects to this *queue* and listens for build requests.
 
     ![alt tag](./images/F-08.PNG)
 
-    On the top extensions menu in Azure DevOps, click on **Browse Markplace** (Bag icon).  Save your build pipeline before proceeding.  Then search for text **replace tokens**.  In the results list below, click on **Replace Tokens** (By Guillaume Rouchon).  Then click on **Get it free** to install this extension in your Azure DevOps account.
+    Save your build pipeline before proceeding.  On the top extensions menu in Azure DevOps, click on **Browse Markplace** (Bag icon).  Then search for text **replace tokens**.  In the results list below, click on **Replace Tokens** (By Guillaume Rouchon) plug-in.  Click on **Get it free** to install this extension in your Azure DevOps account.
 
     ![alt tag](./images/F-09.PNG)
 
@@ -473,7 +481,7 @@ Before proceeding with the next steps, feel free to go thru the **dockerfile** a
 
     ![alt tag](./images/F-10.PNG)
 
-    Define 3 variables **SQL_SRV_PREFIX**, **SQL_USER_ID** and **SQL_USER_PWD**.  These variables should specify database connection string values for Azure SQL Server instance which you provisioned in Step [A] above.  Click on **+ Add** to add a new variable and specify the correct value for each variable as shown in the screenshot below.  
+    Define 3 variables **SQL_SRV_PREFIX**, **SQL_USER_ID** and **SQL_USER_PWD**.  These variables will be used to specify database connection string values for Azure SQL Server instance which was provisioned in Section [A].  Click on **+ Add** to add a new variable and specify the correct value for each variable as shown in the screenshot below.  For variable token descriptions, refer to Section [C] if needed.
 
     ![alt tag](./images/F-11.PNG)
 
@@ -487,13 +495,13 @@ Before proceeding with the next steps, feel free to go thru the **dockerfile** a
 
     Next, we will package the application binary within a container image.  Review the **dockerfile** in the source repository to understand how the application container image is built.
 
-    Click on the **Build an image** task on the left panel.  Specify *Build container image* for **Display name** field and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription.  Click on **Authorize**.  In the **Azure Container Registry** field, select the ACR which you provisioned in Step [E] above.  Check to make sure the **Docker File** field is set to `dockerfile`.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)* and enable **Qualify Image Name** checkbox.  In the **Action** field, select *Build an image*.  Also enable **Include Latest Tag** checkbox.  See screenshot below.
+    Click on the **Build an image** task on the left panel.  Specify *Build container image* for **Display name** field and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription.  Click on **Authorize**.  In the **Azure Container Registry** field, select the ACR which you provisioned in Section [E] above.  Check to make sure the **Docker File** field is set to `dockerfile`.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)* and enable **Qualify Image Name** checkbox.  In the **Action** field, select *Build an image*.  Also enable **Include Latest Tag** checkbox.  See screenshot below.
 
     ![alt tag](./images/F-14.PNG)
 
     Once the application container image has been built, we will push it into the ACR.
 
-    Click on the *Push an image* task on the left panel.  Specify *Push container image to ACR* for field **Display name** and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription (Under Available Azure service connections).  In the **Azure Container Registry** field, select the ACR which you provisioned in Step [E] above.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)* and enable **Qualify Image Name** checkbox.  In the **Action** field, select *Push an image*.  Also enable **Include Latest Tag** checkbox.  See screenshot below.
+    Click on the *Push an image* task on the left panel.  Specify *Push container image to ACR* for field **Display name** and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription (Under Available Azure service connections).  In the **Azure Container Registry** field, select the ACR which you provisioned in Section [E] above.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)* and enable **Qualify Image Name** checkbox.  In the **Action** field, select *Push an image*.  Also enable **Include Latest Tag** checkbox.  See screenshot below.
 
     ![alt tag](./images/F-15.PNG)
 
@@ -731,7 +739,7 @@ We will define a **Release Pipeline** in Azure DevOps to perform automated appli
 ### E] Create a simple *Release Pipeline* in VSTS
 **Approx. time to complete this section: 1 Hour**
 
-1.  Using a web browser, login to your VSTS account (if you haven't already) and select your project which you created in Step [C]. Click on *Build and Release* menu on the top panel and select *Releases*.  Next, click on *+ New pipeline*.
+1.  Using a web browser, login to your VSTS account (if you haven't already) and select your project which you created in Section [C]. Click on *Build and Release* menu on the top panel and select *Releases*.  Next, click on *+ New pipeline*.
 
     ![alt tag](./images/E-02.PNG)
 
@@ -757,7 +765,7 @@ We will define a **Release Pipeline** in Azure DevOps to perform automated appli
 
     ![alt tag](./images/E-071.PNG)
 
-    Recall that we had installed a **Tokenizer utility** extension in VSTS in Step [C].  We will now use this extension to update the container image *Tag value* in Kubernetes deployment manifest file *./k8s-scripts/app-update-deploy.yaml*.  Open/View the deployment manifest file in an editor (vi) and search for variable **__Build.BuildNumber__**.  When we re-run (execute) the *Build* pipeline, it will generate a new tag (Build number) for the *po-service* container image.  The *Tokenizer* extension will then substitute the latest tag value in the substitution variable.
+    Recall that we had installed a **Tokenizer utility** extension in VSTS in Section [C].  We will now use this extension to update the container image *Tag value* in Kubernetes deployment manifest file *./k8s-scripts/app-update-deploy.yaml*.  Open/View the deployment manifest file in an editor (vi) and search for variable **__Build.BuildNumber__**.  When we re-run (execute) the *Build* pipeline, it will generate a new tag (Build number) for the *po-service* container image.  The *Tokenizer* extension will then substitute the latest tag value in the substitution variable.
 
     Click on the ** + ** symbol beside **Agent job** and search for text **Tokenize with** in the *Search* text box (besides **Add tasks**). Click on **Add**.  See screenshot below.
 
