@@ -422,7 +422,7 @@ In this step, we will deploy an instance of Azure Container Registry to store co
 
     ![alt tag](./images/E-02.PNG)
 
-### F] Define and execute a Build pipeline in Azure DevOps for containerizing the Claims API microservice
+### F] Define and execute Claims API Build pipeline in Azure DevOps
 **Approx. time to complete this section: 1 Hour**
 
 In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (microsoft/dotnet).  Finally, the built application container is pushed into ACR which you deployed in Step [E].
