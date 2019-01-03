@@ -13,7 +13,7 @@ In a nutshell, you will work on the following tasks.
 7.  Deploy an **Azure Kubernetes Service** (AKS) cluster.  Deploy the *Claims API* (`claims-api`) microservice on AKS. Test the deployed microservice.  Complete Section [G].
 8.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized *Claims API* microservice on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Section [H].
 
-This project demonstrates how to use Azure DevOps platform to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for accessing (retrieving / storing) medical claims from a relational data store.  The microservice persists all claims records in a Azure SQL Server Database.
+This project demonstrates how to use Azure DevOps platform to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for accessing (retrieving / storing) medical claims records from a relational data store.  The microservice persists all claims records in a Azure SQL Server Database.
 
 **Prerequisites:**
 1.  An active **Microsoft Azure Subscription**.  You can obtain a free Azure subscription by accessing the [Microsoft Azure](https://azure.microsoft.com/en-us/?v=18.12) website.  In order to execute all the sections in this project, either your *Azure subscription* or the *Resource Group* **must** have **Owner** Role assigned to it.
@@ -21,8 +21,8 @@ This project demonstrates how to use Azure DevOps platform to build the applicat
 3.  A **Azure DevOps** (formerly Visual Studio Team Services) Account.  You can get a free Azure DevOps account by accessing the [Azure DevOps](https://azure.microsoft.com/en-us/services/devops/) web page.
 4.  Review [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview).  **Azure Cloud Shell** is an interactive, browser accessible shell for managing Azure resources.  You will be using the Cloud Shell to create the Bastion Host (Linux VM).
 5.  **This project assumes readers are familiar with Linux containers (`eg., docker, OCI runc, Clear Containers ...`), Container Platforms (`eg., Kubernetes`), DevOps (`Continuous Integration/Continuous Deployment`) concepts and developing/deploying Microservices.  As such, this project is primarily targeted at technical/solution architects who have a good understanding of some or all of these solutions/technologies.  If you are new to Linux Containers/Kubernetes and/or would like to get familiar with container solutions available on Microsoft Azure, please go thru the hands-on labs that are part of the [MTC Container Bootcamp](https://github.com/Microsoft/MTC_ContainerCamp) first.**
-6.  (Optional) Download and install [Microsoft SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-2017).
-7.  (Optional) Download and install [Post App](https://www.getpostman.com/apps).
+6.  (Optional) Download and install [Microsoft SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-2017) to manage SQL Server database artifacts.
+7.  (Optional) Download and install [Postman App](https://www.getpostman.com/apps), a REST API Client.
 
 **Workflow:**
 
@@ -668,7 +668,7 @@ The above command will list the **IP Address** (both internal and external) for 
 
 ![alt tag](./images/G-02.PNG)
 
-Use the *External-IP* address in the API end-point URL when invoking the Claims API. (Substitute the External-IP address in place of **Azure_load_balancer_ip**.)
+Use the *External-IP* address in the API end-point URL when invoking the Claims API. Substitute the *External-IP* address in place of **Azure_load_balancer_ip**.
 
 The REST API exposed by this microservice can be accessed by using the _context-path_ (or Base Path) `api/claims/`.  The REST API endpoint's exposed are as follows.
 
@@ -689,9 +689,9 @@ Claims API URL's examples:
 
 Congrats!  You have just built an *ASP.NET Core Web API* and deployed it as a containerized microservice on *Azure Kubernetes Service*!!
 
-In the next section, we will define a **Release Pipeline** in Azure DevOps to perform automated application deployments to AKS.
+In the next section, we will define a **Release Pipeline** in Azure DevOps to automate containerized application deployments on AKS.
 
-### E] Create a simple *Release Pipeline* in Azure DevOps
+### H] Define and execute Claims API Release pipeline in Azure DevOps
 **Approx. time to complete this section: 1 Hour**
 
 1.  Using a web browser, login to your VSTS account (if you haven't already) and select your project which you created in Section [C]. Click on *Build and Release* menu on the top panel and select *Releases*.  Next, click on *+ New pipeline*.
