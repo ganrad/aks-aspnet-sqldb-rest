@@ -544,7 +544,6 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
 2.  (If you haven't already) Open a SSH terminal window and login to the Linux VM (Bastion host).
     ```
-    #
     # Check if kubectl is installed OK
     $ kubectl version -o yaml
     ```
@@ -627,13 +626,16 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     # List the pods in the 'development' namespace
     $ kubectl get pods -n development
     #
+    # Check the deployed Kubernetes service
+    $ kubectl get svc -n development
+    #
     ```
 
-7.  (Optional) As part of deploying the *claims-api* Kubernetes *Service* object, an Azure cloud load balancer gets auto-provisioned and configured. The load balancer accepts HTTP requests for our microservice and re-directes all calls to the service endpoint (port 8080).  Take a look at the Azure load balancer.
+7.  (Optional) As part of deploying the *claims-api* Kubernetes *Service* object, an Azure cloud load balancer gets auto-provisioned and configured. The load balancer accepts HTTP requests for our microservice and re-directes all calls to the service endpoint (port 8080).  Using the Azure Portal, take a look at the Azure load balancer.
 
      ![alt tag](./images/G-01.PNG)
 
-### Accessing the Purchase Order Microservice REST API 
+### Accessing the Claims API Microservice REST API 
 
 As soon as the **po-service** application is deployed in AKS, 2 purchase orders will be inserted into the backend (MySQL) database.  The inserted purchase orders have ID's 1 and 2.  The application's REST API supports all CRUD operations (list, search, create, update and delete) on purchase orders.
 
