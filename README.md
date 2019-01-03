@@ -22,7 +22,7 @@ This project demonstrates how to use Azure DevOps platform to build the applicat
 4.  Review [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview).  **Azure Cloud Shell** is an interactive, browser accessible shell for managing Azure resources.  You will be using the Cloud Shell to create the Bastion Host (Linux VM).
 5.  **This project assumes readers are familiar with Linux containers (`eg., docker, OCI runc, Clear Containers ...`), Container Platforms (`eg., Kubernetes`), DevOps (`Continuous Integration/Continuous Deployment`) concepts and developing/deploying Microservices.  As such, this project is primarily targeted at technical/solution architects who have a good understanding of some or all of these solutions/technologies.  If you are new to Linux Containers/Kubernetes and/or would like to get familiar with container solutions available on Microsoft Azure, please go thru the hands-on labs that are part of the [MTC Container Bootcamp](https://github.com/Microsoft/MTC_ContainerCamp) first.**
 6.  (Optional) Download and install [Microsoft SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-2017) to manage SQL Server database artifacts.
-7.  (Optional) Download and install [Postman App](https://www.getpostman.com/apps), a REST API Client.
+7.  (Optional) Download and install [Postman App](https://www.getpostman.com/apps), a REST API Client used for testing the Web API's.
 
 **Workflow:**
 
@@ -537,16 +537,16 @@ Before proceeding with the next steps, feel free to go thru the **dockerfile** a
 
     ![alt tag](./images/F-18.PNG)
 
-You have now successfully built the Claims API microservice container image and pushed it to the Azure Container Registry.
+You have now successfully **built** the Claims API microservice container image and pushed it to the Azure Container Registry.
 
 ### G] Create an Azure Kubernetes Service (AKS) cluster and deploy Claims API microservice
 **Approx. time to complete this section: 1 - 1.5 Hours**
 
 In this step, we will first deploy an AKS cluster on Azure.  We will then use **Helm** package manager CLI to deploy the Claims API microservice on AKS.
 
-Helm has become the de-facto tool for managing the lifecyle of containerized applications on Kubernetes.  With Helm, Kubernetes resources for a given application are packaged within a *Chart*.  When a Chart is deployed to Kubernetes, Helm creates a new release.  A given Chart can be updated and deployed multiple times.  Each deployment creates a new *Revision* for the release.  A specific deployment can also be rolled back to a previous revision and/or deleted.  A Chart can also be deployed multiple times (multiple releases).  We won't be discussing the internals of Helm as it is beyond the scope of this project.  Refer to the Helm documentation for details (Links provided above).
+Helm has become the de-facto tool for managing the lifecyle of containerized applications on Kubernetes.  With Helm, Kubernetes resources for a given application are packaged within a *Chart*.  When a Chart is deployed to Kubernetes, Helm creates a new *Release*.  A given Chart can be updated and deployed multiple times.  Each deployment creates a new *Revision* for the release.  A specific deployment can also be rolled back to a previous revision and/or deleted.  A Chart can also be deployed multiple times (multiple releases).  We won't be discussing the internals of Helm as it is beyond the scope of this project.  Refer to the Helm documentation for details (Links provided above).
 
-Helm Chart templates for deploying the Claims API (`claims-api`) container on AKS is provided in the `./claims-api` folder in this GitHub repository.  Before proceeding with the next steps, feel free to inspect the resource files in the Helm Chart directory.  Kubernetes resources (Object definitions) are usually specified in manifest files (yaml/json) and then submitted to the API Server.  The API server is responsible for instantiating corresponding objects and bringing the state of the system to the desired state. Review the Kubernetes manifest files under the `./claims-api/templates` sub-directory.
+Helm Chart templates for deploying the Claims API (`claims-api`) container on AKS are provided in the `./claims-api` folder in this GitHub repository.  Before proceeding with the next steps, feel free to inspect the resource files in the Helm Chart directory.  Kubernetes resources (Object definitions) are usually specified in manifest files (yaml/json) and then submitted to the API Server.  The API server is responsible for instantiating corresponding objects and bringing the state of the system to the desired state. Review the Kubernetes manifest files under the `./claims-api/templates` sub-directory.
 
 Follow the steps below to provision the AKS cluster and deploy the Claims API microservice.
 1.  Ensure the *Resource provider* for AKS service is enabled (registered) for your subscription.
@@ -567,7 +567,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
 3.  Create an AKS cluster.
 
-    Refer to the commands below to create the AKS cluster.  It will take a few minutes for the AKS cluster to get provisioned. 
+    Refer to the commands below to create the AKS cluster.  It will take a few minutes (< 10 mins) for the AKS cluster to get provisioned. 
     ```
     # Create a 2 Node AKS cluster
     $ az aks create --resource-group myResourceGroup --name akscluster --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.11.5"
@@ -576,7 +576,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     $ az aks show -g myResourceGroup -n akscluster --output table
     ```
 
-4.  Connect to the AKS cluster and initialize **Helm** package manager.
+4.  Connect to the AKS cluster and initialize Helm package manager.
     ```
     # Configure kubectl to connect to the AKS cluster
     $ az aks get-credentials --resource-group myResourceGroup --name akscluster
@@ -597,7 +597,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     Server: &version.Version{SemVer:"v2.9.1", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
     ```
 
-5.  Configure AKS to pull application container images from ACR 
+5.  Configure AKS to pull application container images from ACR.
 
     When AKS cluster is created, Azure also creates a 'Service Principal' (SP) to support cluster operability with other Azure resources.  This auto-generated service principal can be used to authenticate against the ACR.  To do so, we need to create an Azure AD role assignment that grants the cluster's SP access to the Azure Container Registry.
 
@@ -621,7 +621,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     #
     ```
 
-6.  Use Helm to deploy the Claims API microservice container on AKS
+6.  Use Helm to deploy the Claims API microservice container on AKS.
 
     A kubernetes *Namespace* is a container object used to group applications and their associated resources.  We will be deploying the Claims API microservice container within the **development** namespace.
     
@@ -648,7 +648,9 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     #
     ```
 
-7.  (Optional) As part of deploying the *claims-api* Kubernetes *Service* object, an Azure cloud load balancer gets auto-provisioned and configured. The load balancer accepts HTTP requests for our microservice and re-directes all calls to the service endpoint (port 8080).  Using the Azure Portal, take a look at the Azure load balancer.
+7.  (Optional) Inspect the Azure Load Balancer configuration.
+
+    As part of deploying the *claims-api* Kubernetes *Service* object, an Azure cloud load balancer gets auto-provisioned and configured. The load balancer accepts HTTP requests for our microservice and re-directes all calls to the service endpoint (port 8080).  Using the Azure Portal, take a look at the Azure load balancer.
 
      ![alt tag](./images/G-01.PNG)
 
@@ -681,7 +683,7 @@ api/claims/ | POST | Create/Store a new medical claim record in the backend data
 api/claims/{id} | PUT | Update an existing claims record in the backend database. The API consumes and produces claims records in `JSON` format.
 api/claims/{id} | DELETE | Delete a claim record in the backend database.
 
-You can access the Claims REST API (end-points) using a Web browser or by using a REST client such as **Postman**.
+You can access the Claims REST API (end-points) using a Web browser or by using a REST client such as *Postman*.
 
 Claims API URL's examples:
 - http://<Azure_load_balancer_ip>/api/claims
@@ -689,7 +691,7 @@ Claims API URL's examples:
 
 Congrats!  You have just built an *ASP.NET Core Web API* and deployed it as a containerized microservice on *Azure Kubernetes Service*!!
 
-In the next section, we will define a **Release Pipeline** in Azure DevOps to automate containerized application deployments on AKS.
+In the next section, we will define a *Release Pipeline* in Azure DevOps to automate containerized application deployments on AKS.
 
 ### H] Define and execute Claims API Release pipeline in Azure DevOps
 **Approx. time to complete this section: 1 Hour**
