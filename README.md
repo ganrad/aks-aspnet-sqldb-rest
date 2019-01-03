@@ -5,15 +5,15 @@ This project describes the steps for building and deploying a real world **Medic
 
 In a nutshell, you will work on the following tasks.
 1. Deploy an **Azure SQL Server Database**.  Complete Section [A]. 
-2. Provision a Linux VM (Bastion Host/Jump Box) on Azure and install pre-requisite software.  Complete Section [B].
+2. Provision a **Linux VM** (Bastion Host/Jump Box) on Azure and install pre-requisite software.  Complete Section [B].
 3. Build and run the *Claims API* microservice locally on the Bastion Host.  Complete Section [C].
 4. Deploy an **Azure DevOps** build container on the Bastion Host. Complete Section [D].
 5. Deploy an **Azure Container Registry** (ACR). Complete Section [E].
 6. Define a *Build Pipeline* in **Azure DevOps** (formerly Visual Studio Team Services).  Execute the build pipeline to build the ASP.NET Core application, containerize it and push the container image to the ACR.  This task focuses on the **Continuous Integration** aspect of the DevOps process.  Complete Section [F].
-7.  Deploy an **Azure Kubernetes Service** (AKS) cluster.  Complete Section [G].
-8.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized microservice (Claims API) on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Section [G].
+7.  Deploy an **Azure Kubernetes Service** (AKS) cluster.  Deploy the *Claims API* (`claims-api`) microservice on AKS. Test the deployed microservice.  Complete Section [G].
+8.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized *Claims API* microservice on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Section [H].
 
-This project demonstrates how to use Azure DevOps platform to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for medical claims.  The microservice persists all claims records in a Azure SQL Server Database.
+This project demonstrates how to use Azure DevOps platform to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for accessing (retrieving / storing) medical claims from a relational data store.  The microservice persists all claims records in a Azure SQL Server Database.
 
 **Prerequisites:**
 1.  An active **Microsoft Azure Subscription**.  You can obtain a free Azure subscription by accessing the [Microsoft Azure](https://azure.microsoft.com/en-us/?v=18.12) website.  In order to execute all the sections in this project, either your *Azure subscription* or the *Resource Group* **must** have **Owner** Role assigned to it.
@@ -21,10 +21,13 @@ This project demonstrates how to use Azure DevOps platform to build the applicat
 3.  A **Azure DevOps** (formerly Visual Studio Team Services) Account.  You can get a free Azure DevOps account by accessing the [Azure DevOps](https://azure.microsoft.com/en-us/services/devops/) web page.
 4.  Review [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview).  **Azure Cloud Shell** is an interactive, browser accessible shell for managing Azure resources.  You will be using the Cloud Shell to create the Bastion Host (Linux VM).
 5.  **This project assumes readers are familiar with Linux containers (`eg., docker, OCI runc, Clear Containers ...`), Container Platforms (`eg., Kubernetes`), DevOps (`Continuous Integration/Continuous Deployment`) concepts and developing/deploying Microservices.  As such, this project is primarily targeted at technical/solution architects who have a good understanding of some or all of these solutions/technologies.  If you are new to Linux Containers/Kubernetes and/or would like to get familiar with container solutions available on Microsoft Azure, please go thru the hands-on labs that are part of the [MTC Container Bootcamp](https://github.com/Microsoft/MTC_ContainerCamp) first.**
+6.  (Optional) Download and install [Microsoft SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-2017).
+7.  (Optional) Download and install [Post App](https://www.getpostman.com/apps).
 
 **Workflow:**
 
 For easy and quick reference, readers can refer to the following on-line resources as needed.
+- [Install Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
 - [ASP.NET Core 2.2 Documentation](https://docs.microsoft.com/en-us/aspnet/core/?view=aspnetcore-2.2)
 - [Docker Documentation](https://docs.docker.com/)
 - [Kubernetes Documentation](https://kubernetes.io/docs/home/?path=users&persona=app-developer&level=foundational)
@@ -33,7 +36,6 @@ For easy and quick reference, readers can refer to the following on-line resourc
 - [Azure Kubernetes Service (AKS) Documentation](https://docs.microsoft.com/en-us/azure/aks/)
 - [Azure Container Registry Documentation](https://docs.microsoft.com/en-us/azure/container-registry/)
 - [Azure DevOps Documentation](https://docs.microsoft.com/en-us/vsts/index?view=vsts)
-- [Install Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
 
 **Steps:**
 
@@ -100,7 +102,7 @@ The following tools (binaries) will be installed on the Linux VM.
 - Helm CLI (`helm`).  Helm is a package manager for Kubernetes and will be used to manage and monitor the lifecyle of application deployments on AKS.
 - Docker engine and client.  Docker engine will be used to run the Azure DevOps build agent. It will also be used to build and run the Claims API microservice container locally. 
 
-Follow the steps below to create the Bastion host (Linux VM), install pre-requisite software  on this VM and run the Azure DevOps build agent.
+Follow the steps below to create the Bastion host (Linux VM) and install pre-requisite software on this VM.
 
 1.  Fork this [GitHub repository](https://github.com/ganrad/aks-aspnet-sqldb-rest) to **your** GitHub account.  In the browser window, click on **Fork** in the upper right hand corner to get a separate copy of this project added to your GitHub account.  You must be signed in to your GitHub account in order to fork this repository.
 
@@ -299,6 +301,8 @@ Before proceeding, login into the Linux VM using SSH.
     # Run the microservice
     $ dotnet run
     #
+    # Press 'Control + C' to exit the program and return to the terminal prompt ($)
+    #
     ```
 
     Login to the Linux VM using another SSH terminal session.  Use the **Curl** command to invoke the Claims API end-point.  Refer to the command snippet below.
@@ -314,9 +318,9 @@ Before proceeding, login into the Linux VM using SSH.
 
 5.  Build and run the Claims API with Docker for Linux containers.
 
-    In the SSH terminal window where you started the application (dotnet run), press Control-C to exit out of the command.  Follow the instructions in the command snippet below.
+    In the SSH terminal window where you started the application (dotnet run), press Control-C to exit the program and return to the terminal prompt (`$`).  Then execute the instructions (see below) in this terminal window.
     ```
-    # Make sure you are in the Claims API source code directory
+    # Make sure you are in the Claims API source code directory.  If not switch ($ cd ...).
     $ pwd
     /home/labuser/git-repos/aks-aspnet-sqldb-rest
     #
@@ -324,17 +328,30 @@ Before proceeding, login into the Linux VM using SSH.
     $ docker build -t claims-api .
     #
     # List the docker images on this VM.  You should see two container images ('2.2-sdk' and '2.2-aspnetcore-runtime') in the 'microsoft/dotnet' repository.
-    # Compare the sizes of the two dotnet container images and you will notice the size of the runtime image is pretty small ~ 260MB.
+    # Compare the sizes of the two dotnet container images and you will notice the size of the runtime image is pretty small ~ 260MB when compared to the 'build' container image (~ 1.74GB).
     $ docker images
     #
     # Run the application container
     $ docker run -it --rm -p 5000:80 --name test-claims-api claims-api
     #
+    # Press 'Control + C' to exit the program and return to the terminal prompt ($)
+    #
     ```
 
-    Switch to the other SSH terminal window and invoke the Claims API HTTP end-point again using **Curl** command.  You should get the same HTTP response output as in the previous step.
+6.  Invoke the Claims API HTTP end-point.
 
-You have now tested the Claims API microservice locally on this VM.  Press Control-C to exit out of the command (docker run ...) and get back to the terminal prompt.
+    Switch to the other SSH terminal window and invoke the Claims API HTTP end-point again using **Curl** command.
+    ```
+    # Use curl command to hit the claims api end-point.  
+    $ curl -i http://localhost:5000/api/claims
+    #
+    ```
+
+    You should get the same HTTP response output as in the previous step.
+
+    In the SSH terminal window where you started the application container (docker run), press Control-C to exit out of the program and return back to the terminal prompt.
+
+You have now successfully tested the Claims API microservice locally on this VM.
 
 ### D] Deploy the Azure DevOps (VSTS) build container
 **Approx. time to complete this section: 30 minutes**
@@ -635,44 +652,46 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
      ![alt tag](./images/G-01.PNG)
 
-### Accessing the Claims API Microservice REST API 
+### Invoking the Claims API Microservice REST API 
 
-As soon as the **po-service** application is deployed in AKS, 2 purchase orders will be inserted into the backend (MySQL) database.  The inserted purchase orders have ID's 1 and 2.  The application's REST API supports all CRUD operations (list, search, create, update and delete) on purchase orders.
+When the *Claims API* (`claims-api`) microservice end-point is invoked the first time, one medical claim record will be automatically inserted into the backend (Azure SQL Server) database.  The inserted claim record will have a primary key (ID) value of 100.  The microservice REST API supports all CRUD operations (list, search by *ID* and *Claim Number*, create, update and delete) on claims.
 
-In a Kubernetes cluster, applications deployed within pods communicate with each other via services.  A service is responsible for forwarding all incoming requests to the backend application pods.  A service can also expose an *External IP Address* so that applications thatare external to the AKS cluster can access services deployed within the cluster.
+In a Kubernetes cluster, applications deployed within pods communicate with each other via *Services*.  A Service is responsible for forwarding all incoming requests to the backend application *Pods*.  A service can also expose an *External IP Address* so that applications that are external to the AKS cluster can access services deployed within the cluster.
 
-Use the command below to determine the *External* (public) IP address (Azure load balancer IP) assigned to the service end-point.
+Use the command below to determine the *External* (public) IP address (Azure load balancer IP) assigned to the `claims-api` Service end-point.
 ```
 # List the kubernetes service objects
-$ kubectl get svc
+$ kubectl get svc -n development
 ```
-The above command will list the **IP Address** (both internal and external) for all services deployed within the *development* namespace as shown below.  Note how the **mysql** service doesn't have an *External IP* assigned to it.  Reason for that is, we don't want the *MySQL* service to be accessible from outside the AKS cluster.
 
-![alt tag](./images/E-01.png)
+The above command will list the **IP Address** (both internal and external) for all services deployed within the *development* namespace as shown below.
 
-The REST API exposed by this microservice can be accessed by using the _context-path_ (or Base Path) `orders/`.  The REST API endpoint's exposed are as follows.
+![alt tag](./images/G-02.PNG)
+
+Use the *External-IP* address in the API end-point URL when invoking the Claims API. (Substitute the External-IP address in place of **Azure_load_balancer_ip**.)
+
+The REST API exposed by this microservice can be accessed by using the _context-path_ (or Base Path) `api/claims/`.  The REST API endpoint's exposed are as follows.
 
 URI Template | HTTP VERB | DESCRIPTION
 ------------ | --------- | -----------
-orders/ | GET | To list all available purchase orders in the backend database.
-orders/{id} | GET | To get order details by `order id`.
-orders/search/getByItem?{item=value} | GET | To search for a specific order by item name
-orders/ | POST | To create a new purchase order.  The API consumes and produces orders in `JSON` format.
-orders/{id} | PUT | To update a new purchase order. The API consumes and produces orders in `JSON` format.
-orders/{id} | DELETE | To delete a purchase order.
+api/claims/ | GET | List all available medical claims records in the backend database.
+api/claims/{id} | GET | Retrieve all details for a medical claim by `claim id`
+api/claims/fetch?{claimno=value} | GET | Search and retrieve all details for a specific claim record by `claim number` 
+api/claims/ | POST | Create/Store a new medical claim record in the backend database.  The API consumes and produces claims records in `JSON` format.
+api/claims/{id} | PUT | Update an existing claims record in the backend database. The API consumes and produces claims records in `JSON` format.
+api/claims/{id} | DELETE | Delete a claim record in the backend database.
 
-You can access the Purchase Order REST API from your Web browser, e.g.:
+You can access the Claims REST API (end-points) using a Web browser or by using a REST client such as **Postman**.
 
-- http://<Azure_load_balancer_ip>/orders
-- http://<Azure_load_balancer_ip>/orders/1
+Claims API URL's examples:
+- http://<Azure_load_balancer_ip>/api/claims
+- http://<Azure_load_balancer_ip>/api/claims/100
 
-Use the sample scripts in the **./test-scripts** folder to test this microservice.
+Congrats!  You have just built an *ASP.NET Core Web API* and deployed it as a containerized microservice on *Azure Kubernetes Service*!!
 
-Congrats!  You have just built and deployed a Java Springboot microservice on Azure Kubernetes Service!!
+In the next section, we will define a **Release Pipeline** in Azure DevOps to perform automated application deployments to AKS.
 
-We will define a **Release Pipeline** in Azure DevOps to perform automated application deployments to AKS next.
-
-### E] Create a simple *Release Pipeline* in VSTS
+### E] Create a simple *Release Pipeline* in Azure DevOps
 **Approx. time to complete this section: 1 Hour**
 
 1.  Using a web browser, login to your VSTS account (if you haven't already) and select your project which you created in Section [C]. Click on *Build and Release* menu on the top panel and select *Releases*.  Next, click on *+ New pipeline*.
