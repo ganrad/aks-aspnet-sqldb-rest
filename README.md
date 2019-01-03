@@ -28,6 +28,7 @@ For easy and quick reference, readers can refer to the following on-line resourc
 - [ASP.NET Core 2.2 Documentation](https://docs.microsoft.com/en-us/aspnet/core/?view=aspnetcore-2.2)
 - [Docker Documentation](https://docs.docker.com/)
 - [Kubernetes Documentation](https://kubernetes.io/docs/home/?path=users&persona=app-developer&level=foundational)
+- [Helm Documentation](https://docs.helm.sh/)
 - [Creating an Azure VM](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli)
 - [Azure Kubernetes Service (AKS) Documentation](https://docs.microsoft.com/en-us/azure/aks/)
 - [Azure Container Registry Documentation](https://docs.microsoft.com/en-us/azure/container-registry/)
@@ -521,23 +522,19 @@ Before proceeding with the next steps, feel free to go thru the **dockerfile** a
 
 You have now successfully built the Claims API microservice container image and pushed it to the Azure Container Registry.
 
-### G] Create an Azure Kubernetes Service (AKS) cluster and deploy Springboot microservice
+### G] Create an Azure Kubernetes Service (AKS) cluster and deploy Claims API microservice
 **Approx. time to complete this section: 1 - 1.5 Hours**
 
-In this step, we will first deploy an AKS cluster on Azure.  The Springboot **Purchase Order** microservice application reads/writes purchase order data from/to a relational (MySQL) database.  So we will deploy a **MySQL** database container (ephemeral) first and then deploy our Springboot Java application.  Kubernetes resources (object definitions) are usually specified in manifest files (yaml/json) and then submitted to the API Server.  The API server is responsible for instantiating corresponding objects and bringing the state of the system to the desired state.
+In this step, we will first deploy an AKS cluster on Azure.  We will then use **Helm** package manager CLI to deploy the Claims API microservice on AKS.
 
-Kubernetes manifest files for deploying the **MySQL** and **po-service** (Springboot application) containers are provided in the **k8s-scripts/** folder in this GitHub repository.  There are two manifest files in this folder **mysql-deploy.yaml** and **app-deploy.yaml**.  As the names suggest, the *mysql-deploy* manifest file is used to deploy the **MySQL** database container and the other file is used to deploy the **Springboot** microservice respectively.
+Helm has become the de-facto tool for managing the lifecyle of containerized applications on Kubernetes.  With Helm, Kubernetes resources for a given application are packaged within a *Chart*.  When a Chart is deployed to Kubernetes, Helm creates a new release.  A given Chart can be updated and deployed multiple times.  Each deployment creates a new *Revision* for the release.  A specific deployment can also be rolled back to a previous revision and/or deleted.  A Chart can also be deployed multiple times (multiple releases).  We won't be discussing the internals of Helm as it is beyond the scope of this project.  Refer to the Helm documentation for details (Links provided above).
 
-Before proceeding with the next steps, feel free to inspect the Kubernetes manifest files to get a better understanding of the following.  These are all out-of-box capabilities provided by Kubernetes.
--  How confidential data such as database user names & passwords are injected (at runtime) into the application container using **Secrets**
--  How application configuration information (non-confidential) such as database connection URL and the database name parameters are injected (at runtime) into the application container using **ConfigMaps**
--  How **environment variables** such as the MySQL listening port is injected (at runtime) into the application container.
--  How services in Kubernetes can auto discover themselves using the built-in **Kube-DNS** proxy.
+Helm Chart templates for deploying the Claims API (`claims-api`) container on AKS is provided in the `./claims-api` folder in this GitHub repository.  Before proceeding with the next steps, feel free to inspect the resource files in the Helm Chart directory.  Kubernetes resources (Object definitions) are usually specified in manifest files (yaml/json) and then submitted to the API Server.  The API server is responsible for instantiating corresponding objects and bringing the state of the system to the desired state. Review the Kubernetes manifest files under the `./claims-api/templates` sub-directory.
 
-In case you want to modify the default values used for MySQL database name and/or database connection properties (user name, password ...), refer to [Appendix A](#appendix-a) for details.  You will need to update the Kubernetes manifest files.
+Follow the steps below to provision the AKS cluster and deploy the Claims API microservice.
+1.  Ensure the *Resource provider* for AKS service is enabled (registered) for your subscription.
 
-Follow the steps below to provision the AKS cluster and deploy the *po-service* microservice.
-1.  Ensure the *Resource provider* for AKS service is enabled (registered) for your subscription.  A quick and easy way to verify this is, use the Azure portal and go to *->Azure Portal->Subscriptions->Your Subscription->Resource providers->Microsoft.ContainerService->(Ensure registered)*.  Alternatively, you can use Azure CLI to register all required service providers.  See below.
+    A quick and easy way to verify this is, use the Azure portal and go to *->Azure Portal->Subscriptions->Your Subscription->Resource providers->Microsoft.ContainerService->(Ensure registered)*.  Alternatively, you can use Azure CLI to register all required service providers.  See below.
     ```
     az provider register -n Microsoft.Network
     az provider register -n Microsoft.Storage
@@ -545,23 +542,19 @@ Follow the steps below to provision the AKS cluster and deploy the *po-service* 
     az provider register -n Microsoft.ContainerService
     ```
 
-2.  At this point, you can use a) The Azure Portal Web UI to create an AKS cluster and b) The Kubernetes Dashboard UI to deploy the Springboot Microservice application artifacts.  To use a web browser (*Web UI*) for deploying the AKS cluster and application artifacts, refer to the steps in [extensions/k8s-dash-deploy](./extensions/k8s-dash-deploy).
-
-    **NOTE**: If you are new to Kubernetes and not comfortable with issuing commands on a Linux terminal window, use the Azure Portal and the Kubernetes dashboard UI (link above).
-
-    Alternatively, if you prefer CLI for deploying and managing resources on Azure and Kubernetes, continue with the next steps.
-
-    (If you haven't already) Open a terminal window and login to the Linux VM (Bastion host).
+2.  (If you haven't already) Open a SSH terminal window and login to the Linux VM (Bastion host).
     ```
     #
     # Check if kubectl is installed OK
     $ kubectl version -o yaml
     ```
 
-3.  Refer to the commands below to create an AKS cluster.  If you haven't already created a **resource group**, you will need to create one first.  If needed, go back to step [A] and review the steps for the same.  Cluster creation will take a few minutes to complete.
+3.  Create an AKS cluster.
+
+    Refer to the commands below to create the AKS cluster.  It will take a few minutes for the AKS cluster to get provisioned. 
     ```
-    # Create a 1 Node AKS cluster
-    $ az aks create --resource-group myResourceGroup --name akscluster --node-count 1 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac  --kubernetes-version "1.11.4"
+    # Create a 2 Node AKS cluster
+    $ az aks create --resource-group myResourceGroup --name akscluster --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.11.5"
     #
     # Verify state of AKS cluster
     $ az aks show -g myResourceGroup -n akscluster --output table
@@ -584,30 +577,15 @@ Follow the steps below to provision the AKS cluster and deploy the *po-service* 
     # Check if Helm client is able to connect to Tiller on AKS.
     # This command should list both client and server versions.
     $ helm version
+    Client: &version.Version{SemVer:"v2.9.1", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
+    Server: &version.Version{SemVer:"v2.9.1", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
     ```
 
-5.  Next, create a new Kubernetes **namespace** resource.  This namespace will be called *development*.  
-    ```
-    # Make sure you are in the *k8s-springboot-data-rest* directory.
-    $ kubectl create -f k8s-scripts/dev-namespace.json 
-    #
-    # List the namespaces
-    $ kubectl get namespaces
-    ```
+5.  Configure AKS to pull application container images from ACR 
 
-6.  Create a new Kubernetes context and associate it with the **development** namespace.  We will be deploying all our application artifacts into this namespace in subsequent steps.
-    ```
-    # Create the 'dev' context
-    $ kubectl config set-context dev --cluster=akscluster --user=clusterUser_myResourceGroup_akscluster --namespace=development
-    #
-    # Switch the current context to 'dev'
-    $ kubectl config use-context dev
-    #
-    # Check your current context (should list 'dev' in the output)
-    $ kubectl config current-context
-    ```
+    When AKS cluster is created, Azure also creates a 'Service Principal' (SP) to support cluster operability with other Azure resources.  This auto-generated service principal can be used to authenticate against the ACR.  To do so, we need to create an Azure AD role assignment that grants the cluster's SP access to the Azure Container Registry.
 
-7.  Configure Kubernetes to pull application container images from ACR (configured in step [B]).  When AKS cluster is created, Azure also creates a 'Service Principal' (SP) to support cluster operability with other Azure resources.  This auto-generated service principal can be used to authenticate against the ACR.  To do so, we need to create an Azure AD role assignment that grants the cluster's SP access to the Azure Container Registry.  In a Linux terminal window, update the shell script `shell-scripts/acr-auth.sh` with correct values for the following variables.
+    Edit the shell script `./shell-scripts/acr-auth.sh` and specify correct values for the following variables.
 
     Variable | Description
     ----------------- | -------------------
@@ -616,88 +594,44 @@ Follow the steps below to provision the AKS cluster and deploy the *po-service* 
     ACR_RESOURCE_GROUP | Name of the ACR resource group
     ACR_NAME | Name of ACR instance
 
-    Then execute this shell script.  See below.
+    After updating the shell script, execute it.  Refer to the commands below.
 
     ```
-    # chmod 700 ./shell-scripts/acr-auth.sh
+    # Change file permissions to allow script execution.
+    $ chmod 700 ./shell-scripts/acr-auth.sh
     #
     # Update the shell script and then run it
     $ ./shell-scripts/acr-auth.sh
     #
     ```
 
-    At this point you will also want to save your Kube Configuation file to a known temporary location.  You will need this to properly setup your Kubernetes cluster in a subsequent lab.  To do this, in your Terminal, `cat` the kube config file and cut and paste it's contents into another file. Save this config file to a directory location on you local workstation/PC.
-    ```
-    cat ~/.kube/config
-    ```
+6.  Use Helm to deploy the Claims API microservice container on AKS
 
-    It should appear similar to this
-
+    A kubernetes *Namespace* is a container object used to group applications and their associated resources.  We will be deploying the Claims API microservice container within the **development** namespace.
+    
+    Refer to the commands below.
     ```
-    apiVersion: v1
-    clusters:
-    - cluster:
-      certificate-authority-data: LS0tLS1CRUdJTiBDRVJU---------UZJQ0FURS0tLS0tCg==
-      server: https://YOURREGISTRY.hcp.centralus.azmk8s.io:443
-    name: akscluster
-    contexts:
-    - context:
-      cluster: akscluster
-      namespace: development
-      user: clusterUser_atsAKS2_akscluster
-    name: akscluster
-    - context:
-      cluster: akscluster
-      namespace: development
-      user: clusterUser_myResourceGroup_akscluster
-    name: dev
-    current-context: akscluster
-    kind: Config
-    preferences: {}
-    users:
-    - name: clusterUser_atsAKS2_akscluster
-      user:
-        client-certificate-data: LS0tLS1CRUdJT---------lGSUNBVEUtLS0tLQo=
-        client-key-data: LS0tLS1CRUdJTiBSU0EgUFJJV-------------UgS0VZLS0tLS0K
-        token: 3----------------a
-    ```
-
-8.  Update the **k8s-scripts/app-deploy.yaml** file.  The *image* attribute should point to your ACR which you provisioned in Section [B].  This will ensure AKS pulls the application container image from the correct registry. Substitute the correct value for the *ACR registry name* in the *image* attribute (highlighted in yellow) in the pod spec as shown in the screenshot below.
-
-    ![alt tag](./images/D-01.PNG)
-
-9.  Deploy the **MySQL** database container.
-    ```
-    # Make sure you are in the *k8s-springboot-data-rest* directory.
-    $ kubectl create -f k8s-scripts/mysql-deploy.yaml
+    # Make sure you are in the *aks-aspnet-sqldb-rest* directory.
+    $ cd ~/git-repos/aks-aspnet-sqldb-rest
     #
-    # List pods.  You can specify the '-w' switch to watch the status of pod change.
-    $ kubectl get pods
+    # Use Helm to deploy the Claims API microservice on AKS.  Make sure to specify the name
+    # of your ACR repository in the '--set image.repository=<your-acr-repo>.azurecr.io/claims-api' parameter.
+    $ helm upgrade aks-aspnetcore-lab ./claims-api --install --namespace development --set image.repository=<your-acr-repo>.azurecr.io/claims-api
+    #
+    # List the Kubernetes namespaces.  Verify that the 'development' namespace got created.
+    $ kubectl get namespaces
+    #
+    # List the application releases
+    $ helm ls
+    #
+    # List the pods in the 'development' namespace
+    $ kubectl get pods -n development
+    #
     ```
-    The status of the mysql pod should change to *Running*.  See screenshot below.
 
-    ![alt tag](./images/D-02.png)
+7.  (Optional) As part of deploying the *claims-api* Kubernetes *Service* object, an Azure cloud load balancer gets auto-provisioned and configured. The load balancer accepts HTTP requests for our microservice and re-directes all calls to the service endpoint (port 8080).  Take a look at the Azure load balancer.
 
-    (Optional) You can login to the mysql container using the command below. Specify the correct value for the pod ID (Value under 'Name' column listed in the previous command output).  The password for the 'mysql' user is 'password'.
-    ```
-    $ kubectl exec <pod ID> -i -t -- mysql -u mysql -p sampledb
-    ```
-
-10.  Deploy the **po-service** microservice container.
-     ```
-     # Make sure you are in the *k8s-springboot-data-rest* directory.
-     $ kubectl create -f k8s-scripts/app-deploy.yaml
-     #
-     # List pods.  You can specify the '-w' switch to watch the status of pod change.
-     $ kubectl get pods
-     ```
-     The status of the po-service pod should change to *Running*.  See screenshot below.
-
-     ![alt tag](./images/D-03.png)
-
-11.  (Optional) As part of deploying the *po-service* Kubernetes service object, an Azure cloud load balancer gets auto-provisioned and configured. The load balancer accepts HTTP requests for our microservice and re-directes all calls to the service endpoint (port 8080).  Take a look at the Azure load balancer.
-
-     ![alt tag](./images/D-04.png)
+     ![alt tag](./images/G-01.PNG)
 
 ### Accessing the Purchase Order Microservice REST API 
 
