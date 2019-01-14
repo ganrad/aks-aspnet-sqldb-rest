@@ -723,9 +723,11 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
 1.  Create a *Release Pipeline* for the Claims API microservice.
 
-    Using a web browser, login to your Azure DevOps account (if you haven't already) and select your project (**claims-api-lab**) which you created in Section [F]. Click on *Pipelines* menu on the left navigation panel and select *Releases*.  Next, click on *New pipeline*.  See screenshots below.
+    Using a web browser, login to your Azure DevOps account (if you haven't already) and select your project (**claims-api-lab**) which you created in Section [F]. 
 
     ![alt tag](./images/H-01.PNG)
+
+    Click on *Pipelines* menu on the left navigation panel and select *Releases*.  Next, click on *New pipeline*.  See screenshots below.
 
     ![alt tag](./images/H-02.PNG)
 
@@ -739,7 +741,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-05.PNG)
 
-    In the *Add artifact* page, select *Build* for **Source type**, select your Azure DevOps project from the **Project** drop down menu and select your *Build definition* in the drop down menu for **Source (Build pipeline)**.  Select *Latest* for field **Default version**.  See screenshot below. 
+    In the *Add an artifact* tab, select *Build* for **Source type**, select your Azure DevOps *Project* from the **Project** drop down menu and select the *Build definition* in the drop down menu for **Source (Build pipeline)**.  Select *Latest* for field **Default version**.  See screenshot below. 
 
     ![alt tag](./images/H-06.PNG)
 
@@ -753,11 +755,11 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-08.PNG)
 
-    Next, click on *1 job, 0 task* in the **Stages** box under environment *Staging-A*.
+    In the **Stages** box under environment *Staging-A*, click on *1 job, 0 task*. 
 
     ![alt tag](./images/H-09.PNG)
 
-    Click on *Agent job* under the *Tasks* tab and make sure **Agent pool** value is set to *Default*.  Leave the remaining field values as is.  See screenshots below.
+    Click on *Agent job* under the *Tasks* tab and make sure **Agent pool** value is set to *Default*.  Leave the remaining field values as is.  See screenshot below.
 
     ![alt tag](./images/H-10.PNG)
 
@@ -771,7 +773,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-13.PNG)
 
-    Again, click on the ** + ** symbol beside **Agent job** and search for text *helm*, select extension **Package and deploy Helm charts** and click **Add*.  See screenshot below.
+    Again, click on the ** + ** symbol beside **Agent job** and search for text *helm*, select extension **Package and deploy Helm charts** and click **Add**.  See screenshot below.
 
     ![alt tag](./images/H-14.PNG)
 
