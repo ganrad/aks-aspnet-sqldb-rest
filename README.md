@@ -765,7 +765,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-11.PNG)
 
-    Click on the **helm** task (on the left).  In the detail pane on the right, fill out the values as shown in the screenshots below.
+    Click on the **helm** task (on the left).  In the detail pane on the right, fill out the values as shown in the screenshots below.  Remember to specify the correct value for the Azure resource group (eg., myResourceGroup).
 
     ![alt tag](./images/H-12.PNG)
 
@@ -773,39 +773,31 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     Again, click on the ** + ** symbol beside **Agent job** and search for text *helm*, select extension **Package and deploy Helm charts** and click **Add*.  See screenshot below.
 
-    ![alt tag](./images/H-11.PNG)
+    ![alt tag](./images/H-14.PNG)
 
-    Click on the **helm** task (on the left).  In the detail pane on the right, fill out the values as shown in the screenshots below.
+    Click on the **helm** task (on the left).  In the detail pane on the right, fill out the values as shown in the screenshots below.  Specify correct value for the Azure resource group.
 
-    ![alt tag](./images/H-12.PNG)
+    ![alt tag](./images/H-15.PNG)
 
-    ![alt tag](./images/H-13.PNG)
+    ![alt tag](./images/H-16.PNG)
 
-    Click on the **Deploy to Kubernetes** task on the left panel and fill out the details (numbered) as shown in the screenshot below.  This task will **apply** (update) the changes (image tag) to the kubernetes **Deployment** object on the Azure AKS cluster and do a **Rolling** deployment for the **po-service** microservice application.
+    Click on **Save** to save the release pipeline.
 
-    If you do not see your Kubernetes Cluster in the drop down menu, you will need to add it.  You can select `+NEW` and then fill out the information.  You will need the API Address, which you can find if you view your Kubernetes Cluster within the portal.  It will look similar to `akslab-ae1a2677.hcp.centralus.azmk8s.io`  Be sure to add `https://` before it when pasting it into VSTS for `Server URL`.
+    We have now finished defining the **Release pipeline** for the Claims API microservice.  This pipeline will in turn be triggered when the build pipeline completes Ok.
 
-    Additionally you will need your Kubernetes Configuration file from earlier.  Simply copy the contents in full to the `KubeConfig` section.
+2.  Enable Continuous Integration
 
-    ![alt tag](./images/E-12.PNG)
+    Edit the build pipeline.
 
-    Change the name of the release pipeline to **cd-po-service** and click **Save** on the top panel.  Provide a comment and click **OK**.
+    ![alt tag](./images/H-17.PNG)
 
-    ![alt tag](./images/E-14.PNG)
+    Click on the **Triggers** tab.
 
-    We have now finished defining the **Release pipeline**.  This pipeline will in turn be triggered whenever the build pipeline completes Ok.
-
-2.  In the po-service deployment manifest file **'./k8s-scripts/app-update-deploy.yaml'**, update the container **image** attribute value by specifying the name of your ACR repository.  You can make this change locally on your cloned repository (on the Linux VM) and then push (git push) the updates to your GitHub repository.  Alternatively, you can make this change directly in your GitHub repository (via web browser).  Search for the **image** attribute in file **'app-update-deploy.yaml'** and specify the correct **name** of your ACR repository (eg., Replace ACR_NAME in **ACR_NAME.azurecr.io**).  
-
-3.  Edit the build pipeline and click on the **Triggers** tab.  See screenshot below.
-
-    ![alt tag](./images/E-15.PNG)
+    ![alt tag](./images/H-18.PNG)
 
     Click the checkbox for both **Enable continuous integration** and **Batch changes while a build is in progress**.  Leave other fields as is.  Click on **Save & queue** menu and select the **Save** option.
 
-    ![alt tag](./images/E-16.PNG)
-
-4.  Modify the microservice code to calculate **Discount amount** and **Order total** for purchase orders.  These values will be returned in the JSON response for the **GET** API (operation).  
+3.  Modify the microservice code to calculate **Discount amount** and **Order total** for purchase orders.  These values will be returned in the JSON response for the **GET** API (operation).  
     Update the `src/main/java/ocp/s2i/springboot/rest/model/PurchaseOrder.java` class in your forked GitHub repository by using one one of these options.
     - Use Git CLI to update this Java class in your cloned repository on the Linux host.  Then commit and push the updates to your forked GitHub repository.
     - Alternatively, update this Java class using the browser by accessing your forked GitHub repository.
@@ -830,4 +822,4 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     Congrats!  You have successfully used DevOps to automate the build and deployment of a containerized microservice application on Kubernetes.  
 
-In this project, we experienced how DevOps, Microservices and Containers can be used to build next generation applications.  These three technologies are changing the way we develop and deploy software applications and are at the forefront of fueling digital transformation in enterprises today!
+In this project, we experienced how DevOps tools, Microservices and Containers can be used to build next generation applications.  These three technologies are changing the way we develop and deploy software applications and are driving digital transformation in enterprises today!
