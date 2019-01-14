@@ -465,7 +465,7 @@ Before proceeding with the next steps, feel free to go thru the **dockerfile** a
 
 2.  Create an Azure DevOps *Organization* and *Project*.
 
-    Give the Organization a meaningful name (eg., claims-api-lab) and then create a new *DevOps Project*. Give a name to your project.  See screenshots below.
+    Give the Organization a meaningful name (eg., <Your_Short_Name>) and then create a new *DevOps Project*. Give a name to your project (eg., **claims-api-lab**).  See screenshots below.
 
     ![alt tag](./images/F-03.PNG)
 
@@ -511,6 +511,14 @@ Before proceeding with the next steps, feel free to go thru the **dockerfile** a
 
     ![alt tag](./images/F-13.PNG)
 
+    Copy the **Helm** chart folder from the source directory to the staging directory.  Click on the plus symbol beside **Agent job 1**.  Search by text **copy**, select the extension **Copy Files** and click **Add**. See screenshot below.
+
+    ![alt tag](./images/F-19.PNG)
+    
+    Move the **Copy Files to:** task below the **Replace tokens** task.  Specify values for fields **Source folder**, **Contents** and **Target Folder** as shown in the screenshot below.
+
+    ![alt tag](./images/F-20.PNG)
+
     Next, we will package the application binary within a container image.  Review the **dockerfile** in the source repository to understand how the application container image is built.
 
     Click on the **Build an image** task on the left panel.  Specify *Build container image* for **Display name** field and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription.  Click on **Authorize**.  In the **Azure Container Registry** field, select the ACR which you provisioned in Section [E] above.  Check to make sure the **Docker File** field is set to `dockerfile`.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)* and enable **Qualify Image Name** checkbox.  In the **Action** field, select *Build an image*.  Also enable **Include Latest Tag** checkbox.  See screenshot below.
@@ -522,6 +530,16 @@ Before proceeding with the next steps, feel free to go thru the **dockerfile** a
     Click on the *Push an image* task on the left panel.  Specify *Push container image to ACR* for field **Display name** and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription (Under Available Azure service connections).  In the **Azure Container Registry** field, select the ACR which you provisioned in Section [E] above.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)* and enable **Qualify Image Name** checkbox.  In the **Action** field, select *Push an image*.  Also enable **Include Latest Tag** checkbox.  See screenshot below.
 
     ![alt tag](./images/F-15.PNG)
+
+    Lastly, publish the contents of the **Helm** chart directory to the artifact staging (**drop**) location.  The Helm chart will be used in the release pipeline (Section [H]) for deploying the Claims API microservice. 
+    
+    Click on the plus symbol beside **Agent job 1**.  Search by text **publish artifact**, select the extension **Publish Build Artifacts** and click **Add**.  See screenshot below.
+
+    ![alt tag](./images/F-21.PNG)
+
+    Move the **Publish Artifact:drop** task below the **Push an image** task.  Leave the default values as is.
+
+    ![alt tag](./images/F-22.PNG)
 
 4.  Run the application container build.
 
@@ -540,7 +558,7 @@ Before proceeding with the next steps, feel free to go thru the **dockerfile** a
 You have now successfully **built** the Claims API microservice container image and pushed it to the Azure Container Registry.
 
 ### G] Create an Azure Kubernetes Service (AKS) cluster and deploy Claims API microservice
-**Approx. time to complete this section: 1 - 1.5 Hours**
+**Approx. time to complete this section: 1 Hour**
 
 In this step, we will first deploy an AKS cluster on Azure.  We will then use **Helm** package manager CLI to deploy the Claims API microservice on AKS.
 
@@ -559,13 +577,20 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     az provider register -n Microsoft.ContainerService
     ```
 
-2.  (If you haven't already) Open a SSH terminal window and login to the Linux VM (Bastion host).
+2.  Check Kubernetes CLI version and available AKS versions.
+
+    (If you haven't already) Open a SSH terminal window and login to the Linux VM (Bastion host).  Refer to the command snippet below.
     ```
     # Check if kubectl is installed OK
     $ kubectl version -o yaml
+    #
+    # List the AKS versions in a specific (US West 2) region
+    $ az aks get-versions --location westus2 -o table 
     ```
 
-3.  Create an AKS cluster.
+3.  Provision an AKS cluster.
+
+    Use the latest supported Kubernetes version to deploy the AKS cluster.  At the time of this writing, version `1.11.5` was the latest AKS version. 
 
     Refer to the commands below to create the AKS cluster.  It will take a few minutes (< 10 mins) for the AKS cluster to get provisioned. 
     ```
@@ -696,47 +721,65 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 ### H] Define and execute Claims API Release pipeline in Azure DevOps
 **Approx. time to complete this section: 1 Hour**
 
-1.  Using a web browser, login to your VSTS account (if you haven't already) and select your project which you created in Section [C]. Click on *Build and Release* menu on the top panel and select *Releases*.  Next, click on *+ New pipeline*.
+1.  Create a *Release Pipeline* for the Claims API microservice.
 
-    ![alt tag](./images/E-02.PNG)
+    Using a web browser, login to your Azure DevOps account (if you haven't already) and select your project (**claims-api-lab**) which you created in Section [F]. Click on *Pipelines* menu on the left navigation panel and select *Releases*.  Next, click on *New pipeline*.  See screenshots below.
+
+    ![alt tag](./images/H-01.PNG)
+
+    ![alt tag](./images/H-02.PNG)
+
+    ![alt tag](./images/H-03.PNG)
 
     In the *Select a Template* page, click on *Empty job*.  See screenshot below.
 
-    ![alt tag](./images/E-03.PNG)
+    ![alt tag](./images/H-04.PNG)
 
-    In the *Stage* page, specify *Staging-A* as the name for the environment.  Then click on *+Add* besides *Artifacts* (under *Pipeline* tab).
+    In the *Stage* page, specify *Staging-A* as the name for the environment.  Then click on *+Add* besides *Artifacts* (under *Pipeline* tab) as shown in the screenshot below.
 
-    ![alt tag](./images/E-04.PNG)
+    ![alt tag](./images/H-05.PNG)
 
-    In the *Add artifact* page, select *Build* for **Source type**, select your VSTS project from the **Project** drop down menu and select your *Build definition* in the drop down menu for **Source (Build definition)**.  Leave the remaining field values as is and click **Add**.  See screenshot below. 
+    In the *Add artifact* page, select *Build* for **Source type**, select your Azure DevOps project from the **Project** drop down menu and select your *Build definition* in the drop down menu for **Source (Build pipeline)**.  Select *Latest* for field **Default version**.  See screenshot below. 
 
-    ![alt tag](./images/E-05.PNG)
+    ![alt tag](./images/H-06.PNG)
+
+    Click on **Add**.
+
+    Change the name of the *Release pipeline* as shown in the screenshot below.
+
+    ![alt tag](./images/H-07.PNG)
 
     In the *Pipeline* tab, click on the *trigger* icon (highlighted in yellow) and enable **Continuous deployment trigger**.  See screenshot below.
 
-    ![alt tag](./images/E-06.PNG)
+    ![alt tag](./images/H-08.PNG)
 
-    Next, click on *1 job, 0 task* in the **Stages** box under environment *Staging-A*.  Click on *Agent job* under the *Tasks* tab and make sure **Agent queue** value is set to *Hosted VS2017*.  Leave the remaining field values as is.  See screenshots below.
+    Next, click on *1 job, 0 task* in the **Stages** box under environment *Staging-A*.
 
-    ![alt tag](./images/E-07.PNG)
+    ![alt tag](./images/H-09.PNG)
 
-    ![alt tag](./images/E-071.PNG)
+    Click on *Agent job* under the *Tasks* tab and make sure **Agent pool** value is set to *Default*.  Leave the remaining field values as is.  See screenshots below.
 
-    Recall that we had installed a **Tokenizer utility** extension in VSTS in Section [C].  We will now use this extension to update the container image *Tag value* in Kubernetes deployment manifest file *./k8s-scripts/app-update-deploy.yaml*.  Open/View the deployment manifest file in an editor (vi) and search for variable **__Build.BuildNumber__**.  When we re-run (execute) the *Build* pipeline, it will generate a new tag (Build number) for the *po-service* container image.  The *Tokenizer* extension will then substitute the latest tag value in the substitution variable.
+    ![alt tag](./images/H-10.PNG)
 
-    Click on the ** + ** symbol beside **Agent job** and search for text **Tokenize with** in the *Search* text box (besides **Add tasks**). Click on **Add**.  See screenshot below.
+    Click on the ** + ** symbol beside **Agent job** and search for text **helm** in the *Search* text box (besides **Add tasks**). Select **Package and deploy Helm charts** plug-in and click on **Add**.  See screenshot below.
 
-    ![alt tag](./images/E-08.PNG)
+    ![alt tag](./images/H-11.PNG)
 
-    Click on the **Tokenizer** task and click on the ellipsis (...) besides field **Source filename**.  In the **Select File Or Folder** window, select the deployment manifest file **app-update-deploy.yaml** from the respective folder as shown in the screenshots below. Click **OK**.
+    Click on the **helm** task (on the left).  In the detail pane on the right, fill out the values as shown in the screenshots below.
 
-    ![alt tag](./images/E-09.PNG)
+    ![alt tag](./images/H-12.PNG)
 
-    ![alt tag](./images/E-10.PNG)
+    ![alt tag](./images/H-13.PNG)
 
-    Again, click on the ** + ** symbol beside **Agent job** and search for text **Deploy to Kubernetes**, select this extension and click **Add*.  See screenshot below.
+    Again, click on the ** + ** symbol beside **Agent job** and search for text *helm*, select extension **Package and deploy Helm charts** and click **Add*.  See screenshot below.
 
-    ![alt tag](./images/E-11.PNG)
+    ![alt tag](./images/H-11.PNG)
+
+    Click on the **helm** task (on the left).  In the detail pane on the right, fill out the values as shown in the screenshots below.
+
+    ![alt tag](./images/H-12.PNG)
+
+    ![alt tag](./images/H-13.PNG)
 
     Click on the **Deploy to Kubernetes** task on the left panel and fill out the details (numbered) as shown in the screenshot below.  This task will **apply** (update) the changes (image tag) to the kubernetes **Deployment** object on the Azure AKS cluster and do a **Rolling** deployment for the **po-service** microservice application.
 
