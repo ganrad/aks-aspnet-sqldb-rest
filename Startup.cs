@@ -34,6 +34,7 @@ namespace ClaimsApi
             services.AddDbContext<ClaimsContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("SqlServerDb")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            /**
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
@@ -60,6 +61,7 @@ namespace ClaimsApi
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+            **/
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,6 +76,7 @@ namespace ClaimsApi
                 app.UseHsts();
             }
 
+            /**
             // Enable middleware to serve generated Swagger as a JSON end-point
             app.UseSwagger();
             // Enable middleware to serve Swagger-ui, specifying Swagger JSON end-point.
@@ -81,7 +84,8 @@ namespace ClaimsApi
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Claims API");
             });
-
+            **/
+             
             // app.UseHttpsRedirection();
             // Add MVC middleware
             app.UseMvc();
