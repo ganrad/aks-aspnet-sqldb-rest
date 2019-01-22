@@ -787,7 +787,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     We have now finished defining the **Release pipeline** for the Claims API microservice.  This pipeline will in turn be triggered when the build pipeline completes Ok.
 
-2.  Enable Continuous Integration
+2.  Enable Continuous Integration.
 
     In DevOps, the *Continuous Integration (CI)* process is triggered when the application source code is committed to a source code management system.  In this case, the source code repository is GitHub.
 
@@ -801,33 +801,40 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     Click the checkbox for both **Enable continuous integration** and **Batch changes while a build is in progress**.  Leave other fields as is.  Click on **Save & queue** menu and select the **Save** option.
 
-3.  Expose the Claims API thru OpenAPI (formerly Swagger API)
+3.  Expose the Claims API thru OpenAPI (formerly Swagger API). Trigger and run CI and CD Pipelines.
 
     The [Open API Specification](https://swagger.io/specification/) defines a standard, language-agnostic interface to RESTful APIs which allows both humans and computers to discover and understand the capabilities of the service without access to source code, documentation or through network traffic inspection.  When defined properly, a consumer of the API can understand and interact with the remote API with minimal knowledge of the underlying implementation logic.
 
-    Modify the Claims API microservice program code by using one of the options below.
-    Update the `src/main/java/ocp/s2i/springboot/rest/model/PurchaseOrder.java` class in your forked GitHub repository by using one one of these options.
-    - Use Git CLI to update the ASP.NET Core classes in your cloned repository on the Linux host.  Then commit and push the updates to your forked GitHub repository.
-    - Alternatively, update the ASP.NET Core classes using the browser by accessing your forked GitHub repository.
+    Update the `Startup.cs` class in your forked GitHub repository by using one one of these options.
+    - Use Git CLI to update the class in your cloned repository on the Linux host.  Then commit and push the updates to your forked GitHub repository.
+    - Alternatively, update the class using the browser by accessing your forked GitHub repository.
 
-    The changes to be made to the ASP.NET Core Classes are described below.
+    The changes to be made to the `Startup.cs` class is described below.
 
-    Open a web browser tab and navigate to your forked project on GitHub.  Open **Startup.cs** file.  
+    Open a web browser tab and navigate to your forked project on GitHub.  Open **Startup.cs** file.  Click on the pencil (Edit) icon on the top right of the code view panel (see below) to edit this file.
 
     ![alt tag](./images/H-19.PNG)
 
-    Click on the pencil (Edit) icon on the top right of the code view panel (see below) to edit this file.
+    Uncomment lines 37 thru 64 (marked in red).
 
-    ![alt tag](./images/E-18.PNG)
+    ![alt tag](./images/H-20.PNG)
 
-    Uncomment lines 100 thru 108 (highlighted in yellow).
+    Uncomment lines 79 thru 87 (marked in red).
 
-    ![alt tag](./images/E-19.PNG)
+    ![alt tag](./images/H-21.PNG)
 
-    Provide a comment and commit (save) the file.  The git commit will trigger a new build (**Continuous Integration**) for the **po-service** microservice in VSTS.  Upon successful completion of the build process, the updated container images will be pushed into the ACR and the release pipeline (**Continuous Deployment**) will be executed.   As part of the CD process, the Kubernetes deployment object for the **po-service** microservice will be updated with the newly built container image.  This action will trigger a **Rolling** deployment of **po-service** microservice in AKS.  As a result, the **po-service** containers (*Pods*) from the old deployment (version 1.0) will be deleted and a new deployment (version 2.0) will be instantiated in AKS.  The new deployment will use the latest container image from the ACR and spin up new containers (*Pods*).  During this deployment process, users of the **po-service** microservice will not experience any downtime as AKS will do a rolling deployment of containers.
+    After making the changes, provide a comment and commit (save) the `Startup.cs` file.
 
-5.  Switch to a browser window and test the **po-Service** REST API.  Verify that the **po-service** API is returning two additional fields (*discountAmount* and *orderTotal*) in the JSON response.
+    The git commit will trigger a new build (**Continuous Integration**) for the Claims API microservice in Azure DevOps.  Upon successful completion of the build process, the updated container images will be pushed into the ACR and the release pipeline (**Continuous Deployment**) will be executed.   As part of the CD process, the Kubernetes deployment object for the microservice will be updated with the newly built container image.  This action will trigger a **Rolling** deployment of Claims API microservice in AKS.  As a result, the **aks-aspnetcorei-lab-claims-api** containers (*Pods*) from the old deployment (version 1.0) will be deleted and a new deployment (version 2.0) will be instantiated in AKS.  The new deployment will use the latest container image from the ACR and spin up new containers (*Pods*).  During this deployment process, users of the Claims API will not experience any downtime as AKS will do a rolling deployment of containers.
+
+5.  Verify the application updates were pushed thru DevOps CI and CD
+
+    - Switch to a browser window and test the Claims REST API.
+    - Invoke the Swagger end-point to view the generated `swagger.json` specification for the Claims API.
+      URL - `http://<Azure Load Balancer IP>/swagger/v1/swagger.json`
+    - Invoke the Swagger UI to test the Claims REST API.
+      URL - `http://<Azure Load Balancer IP>/swagger/index.html`
 
     Congrats!  You have successfully used DevOps to automate the build and deployment of a containerized microservice application on Kubernetes.  
 
-In this project, we experienced how DevOps tools, Microservices and Containers can be used to build next generation applications.  These three technologies are changing the way we develop and deploy software applications and are driving digital transformation in enterprises today!
+In this project, we experienced how DevOps tools, Microservices and Containers can be used to build next generation Web applications.  These three technologies are changing the way we develop and deploy software applications and are driving digital transformation in enterprises today!
