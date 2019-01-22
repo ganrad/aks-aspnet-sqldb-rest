@@ -173,12 +173,12 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Make sure you are in the home directory
     $ cd
     #
-    # Install Helm v2.9.1
+    # Install Helm v2.11.0
     # Create a new directory 'Helm' under home directory to store the helm binary
     $ mkdir helm
     $ cd helm
-    $ wget https://storage.googleapis.com/kubernetes-helm/helm-v2.9.1-linux-amd64.tar.gz
-    $ tar -xzvf helm-v2.9.1-linux-amd64.tar.gz
+    $ wget https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz
+    $ tar -xzvf helm-v2.11.0-linux-amd64.tar.gz
     #
     # Switch back to home directory
     $ cd
@@ -618,8 +618,8 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     # Check if Helm client is able to connect to Tiller on AKS.
     # This command should list both client and server versions.
     $ helm version
-    Client: &version.Version{SemVer:"v2.9.1", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
-    Server: &version.Version{SemVer:"v2.9.1", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
+    Client: &version.Version{SemVer:"v2.11.0", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
+    Server: &version.Version{SemVer:"v2.11.0", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
     ```
 
 5.  Configure AKS to pull application container images from ACR.
@@ -789,7 +789,9 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
 2.  Enable Continuous Integration
 
-    Edit the build pipeline.
+    In DevOps, the *Continuous Integration (CI)* process is triggered when the application source code is committed to a source code management system.  In this case, the source code repository is GitHub.
+
+    Edit the build pipeline to enable CI trigger.
 
     ![alt tag](./images/H-17.PNG)
 
@@ -799,16 +801,20 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     Click the checkbox for both **Enable continuous integration** and **Batch changes while a build is in progress**.  Leave other fields as is.  Click on **Save & queue** menu and select the **Save** option.
 
-3.  Modify the microservice code to calculate **Discount amount** and **Order total** for purchase orders.  These values will be returned in the JSON response for the **GET** API (operation).  
+3.  Expose the Claims API thru OpenAPI (formerly Swagger API)
+
+    The [Open API Specification](https://swagger.io/specification/) defines a standard, language-agnostic interface to RESTful APIs which allows both humans and computers to discover and understand the capabilities of the service without access to source code, documentation or through network traffic inspection.  When defined properly, a consumer of the API can understand and interact with the remote API with minimal knowledge of the underlying implementation logic.
+
+    Modify the Claims API microservice program code by using one of the options below.
     Update the `src/main/java/ocp/s2i/springboot/rest/model/PurchaseOrder.java` class in your forked GitHub repository by using one one of these options.
-    - Use Git CLI to update this Java class in your cloned repository on the Linux host.  Then commit and push the updates to your forked GitHub repository.
-    - Alternatively, update this Java class using the browser by accessing your forked GitHub repository.
+    - Use Git CLI to update the ASP.NET Core classes in your cloned repository on the Linux host.  Then commit and push the updates to your forked GitHub repository.
+    - Alternatively, update the ASP.NET Core classes using the browser by accessing your forked GitHub repository.
 
-    The changes to be made to the Java Class are described below.
+    The changes to be made to the ASP.NET Core Classes are described below.
 
-    Open a web browser tab and navigate to your forked project on GitHub.  Go to the **model** sub directory within **src** directory and click on **PurchaseOrder.java** file.  See screenshot below.
+    Open a web browser tab and navigate to your forked project on GitHub.  Open **Startup.cs** file.  
 
-    ![alt tag](./images/E-17.PNG)
+    ![alt tag](./images/H-19.PNG)
 
     Click on the pencil (Edit) icon on the top right of the code view panel (see below) to edit this file.
 
