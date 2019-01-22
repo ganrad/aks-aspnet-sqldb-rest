@@ -825,15 +825,15 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     After making the changes, provide a comment and commit (save) the `Startup.cs` file.
 
-    The git commit will trigger a new build (**Continuous Integration**) for the Claims API microservice in Azure DevOps.  Upon successful completion of the build process, the updated container images will be pushed into the ACR and the release pipeline (**Continuous Deployment**) will be executed.   As part of the CD process, the Kubernetes deployment object for the microservice will be updated with the newly built container image.  This action will trigger a **Rolling** deployment of Claims API microservice in AKS.  As a result, the **aks-aspnetcorei-lab-claims-api** containers (*Pods*) from the old deployment (version 1.0) will be deleted and a new deployment (version 2.0) will be instantiated in AKS.  The new deployment will use the latest container image from the ACR and spin up new containers (*Pods*).  During this deployment process, users of the Claims API will not experience any downtime as AKS will do a rolling deployment of containers.
+    The git commit will trigger a new build (**Continuous Integration**) for the Claims API microservice in Azure DevOps.  Upon successful completion of the build process, the updated container images will be pushed into the ACR and the release pipeline (**Continuous Deployment**) will be executed.   As part of the CD process, the Kubernetes deployment object for the microservice will be updated with the newly built container image.  This action will trigger a **Rolling** deployment of Claims API microservice in AKS.  As a result, the **aks-aspnetcore-lab-claims-api** containers (*Pods*) from the old deployment (version 1.0) will be deleted and a new deployment (version 2.0) will be instantiated in AKS.  The new deployment will use the latest container image from the ACR and spin up new containers (*Pods*).  During this deployment process, users of the Claims API will not experience any downtime as AKS will do a rolling deployment of containers.
 
-5.  Verify the application updates were pushed thru DevOps CI and CD
+5.  Verify the updated microservice container image was built and pushed to AKS thru Azure DevOps CI and CD pipelines.
 
     - Switch to a browser window and test the Claims REST API.
     - Invoke the Swagger end-point to view the generated `swagger.json` specification for the Claims API.
-      URL - `http://<Azure Load Balancer IP>/swagger/v1/swagger.json`
+      URL - `http://<Azure_Load_Balancer_IP>/swagger/v1/swagger.json`
     - Invoke the Swagger UI to test the Claims REST API.
-      URL - `http://<Azure Load Balancer IP>/swagger/index.html`
+      URL - `http://<Azure_Load_Balancer_IP>/swagger/index.html`
 
     Congrats!  You have successfully used DevOps to automate the build and deployment of a containerized microservice application on Kubernetes.  
 
