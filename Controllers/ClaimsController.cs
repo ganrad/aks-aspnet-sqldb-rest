@@ -31,6 +31,10 @@ namespace ClaimsApi.Controllers
         }
 
         // GET: api/claims
+
+        /// <summary>
+        /// Get a list of all medical claims records from the backend data store
+        /// </summary>
         [HttpGet]
         public ActionResult<List<ClaimItem>> GetAllClaims()
         {
@@ -42,6 +46,11 @@ namespace ClaimsApi.Controllers
         }
 
         // GET: api/claims/{id}
+
+        /// <summary>
+        /// Get a medical claims record by 'ID' from the backend data store
+        /// </summary>
+        /// <param name="id">ID of the claim record in the claims table</param>
         [HttpGet("{id}", Name = "GetClaimById")]
         public ActionResult<ClaimItem> GetClaimById(int id)
         {
@@ -60,6 +69,11 @@ namespace ClaimsApi.Controllers
         }
 
         // GET: api/claims/fetch?claimno=number
+
+        /// <summary>
+        /// Get a medical claims record by 'Claim Number' from the backend data store
+        /// </summary>
+        /// <param name="claimno">Claim number of the record in the claims table</param>
         [Route("fetch")]
         [HttpGet]
         public ActionResult<ClaimItem> GetByClaimNumber(
@@ -82,6 +96,11 @@ namespace ClaimsApi.Controllers
         }
 
         // POST: api/claims
+
+        /// <summary>
+        /// Post (Insert) a medical claim record in the backend data store
+        /// </summary>
+        /// <param name="claimItem">Claim record in JSON format to be inserted into the claims table</param>
         [HttpPost]
         public async Task<ActionResult<ClaimItem>> PostClaimItem(ClaimItem claimItem)
         {
@@ -93,6 +112,12 @@ namespace ClaimsApi.Controllers
         }
 
         // PUT: api/claims/5
+
+        /// <summary>
+        /// Update a medical claim record in the backend data store
+        /// </summary>
+        /// <param name="id">ID of the claim record in the claims table</param>
+        /// <param name="claimItem">Claim record in JSON format to be updated in the claims table</param>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutClaimItem(int id, ClaimItem claimItem)
         {
@@ -122,6 +147,11 @@ namespace ClaimsApi.Controllers
         }
 
         // DELETE: api/claims/5
+
+        /// <summary>
+        /// Delete a medical claims record by 'ID' from the backend data store
+        /// </summary>
+        /// <param name="id">ID of the claim record in the claims table</param>
         [HttpDelete("{id}")]
         public async Task<ActionResult<ClaimItem>> DeleteClaimItem(int id)
         {
