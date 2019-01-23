@@ -837,11 +837,15 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 5.  Verify the updated microservice container image was built and pushed to AKS thru Azure DevOps CI and CD pipelines.
 
     - Switch to a browser window and invoke the Claims API end-points.
+
       URL - `http://<Azure_load_balancer_ip>/api/claims`
     - Invoke the Swagger end-point to view the generated `swagger.json` specification for the Claims API.
+
       URL - `http://<Azure_load_balancer_ip>/swagger/v1/swagger.json`
     - Invoke the Swagger UI to test the Claims REST API.
+
       URL - `http://<Azure_load_balancer_ip>/swagger/index.html`
+
       You should be able to view the Swagger UI as shown the screenshot below.
 
       ![alt tag](./images/H-22.PNG)
