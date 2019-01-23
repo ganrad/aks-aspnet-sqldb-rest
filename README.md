@@ -21,10 +21,13 @@ This project demonstrates how to use Azure DevOps platform to build the applicat
 3.  A **Azure DevOps** (formerly Visual Studio Team Services) Account.  You can get a free Azure DevOps account by accessing the [Azure DevOps](https://azure.microsoft.com/en-us/services/devops/) web page.
 4.  Review [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview).  **Azure Cloud Shell** is an interactive, browser accessible shell for managing Azure resources.  You will be using the Cloud Shell to create the Bastion Host (Linux VM).
 5.  **This project assumes readers are familiar with Linux containers (`eg., docker, OCI runc, Clear Containers ...`), Container Platforms (`eg., Kubernetes`), DevOps (`Continuous Integration/Continuous Deployment`) concepts and developing/deploying Microservices.  As such, this project is primarily targeted at technical/solution architects who have a good understanding of some or all of these solutions/technologies.  If you are new to Linux Containers/Kubernetes and/or would like to get familiar with container solutions available on Microsoft Azure, please go thru the hands-on labs that are part of the [MTC Container Bootcamp](https://github.com/Microsoft/MTC_ContainerCamp) first.**
-6.  (Optional) Download and install [Microsoft SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-2017) to manage SQL Server database artifacts.
-7.  (Optional) Download and install [Postman App](https://www.getpostman.com/apps), a REST API Client used for testing the Web API's.
+6.  A terminal emulator is required to login (SSH) into the Linux VM (Bastion) host.  Download and install [Putty](https://putty.org/) or Windows Sub-System for Linux (https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+7.  (Optional) Download and install [Microsoft SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-2017) to manage SQL Server database artifacts.
+8.  (Optional) Download and install [Postman App](https://www.getpostman.com/apps), a REST API Client used for testing the Web API's.
 
-**Workflow:**
+**Functional Architecture:**
+
+![alt tag](./images/aks-aspnetcore-sqldb-rest.PNG)
 
 For easy and quick reference, readers can refer to the following on-line resources as needed.
 - [Install Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
@@ -36,8 +39,6 @@ For easy and quick reference, readers can refer to the following on-line resourc
 - [Azure Kubernetes Service (AKS) Documentation](https://docs.microsoft.com/en-us/azure/aks/)
 - [Azure Container Registry Documentation](https://docs.microsoft.com/en-us/azure/container-registry/)
 - [Azure DevOps Documentation](https://docs.microsoft.com/en-us/vsts/index?view=vsts)
-
-**Steps:**
 
 **Important Notes:**
 - AKS is a managed [Kubernetes](https://kubernetes.io/) service on Azure.  Please refer to the [AKS](https://azure.microsoft.com/en-us/services/container-service/) product web page for more details.
