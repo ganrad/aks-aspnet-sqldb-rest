@@ -90,7 +90,7 @@ In this section, we will create an Azure SQL Server instance and create a databa
     ![alt tag](./images/A-06.PNG)
 
 ### B] Provision a Linux CentOS VM on Azure (~ Bastion Host) and install pre-requisite software
-**Approx. time to complete this section: 1 Hour**
+**Approx. time to complete this section: 45 Minutes**
 
 The following tools (binaries) will be installed on the Linux VM.
 
@@ -113,7 +113,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     az vm create --resource-group myResourceGroup --name k8s-lab --image OpenLogic:CentOS:7.4:7.4.20180118 --size Standard_B2s --generate-ssh-keys --admin-username labuser --admin-password <password> --authentication-type password
     ```
 
-3.  Login into the Linux VM via SSH.  On a Windows PC, you can use a SSH client such as [Putty](https://putty.org/) or the Windows Sub-System for Linux (Windows 10) to login into the VM.
+3.  Login into the Linux VM via SSH.  On a Windows PC, you can use a SSH client such as [Putty](https://putty.org/) or the [Windows Sub-System for Linux (Windows 10)](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to login into the VM.
 
     **NOTE:** Use of Cloud Shell to SSH into the VM is **NOT** recommended.
     ```
@@ -168,7 +168,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     #
     ```
 
-6.  Install K8s CLI, Helm CLI and .NET Core SDK on this VM.
+6.  Install Kubernetes CLI, Helm CLI and .NET Core SDK on this VM.
     ```
     # Make sure you are in the home directory
     $ cd
@@ -301,7 +301,8 @@ Before proceeding, login into the Linux VM using SSH.
     # Run the microservice
     $ dotnet run
     #
-    # Press 'Control + C' to exit the program and return to the terminal prompt ($)
+    # When you are done testing:
+    #   Press 'Control + C' to exit the program and return to the terminal prompt ($)
     #
     ```
 
@@ -334,7 +335,8 @@ Before proceeding, login into the Linux VM using SSH.
     # Run the application container
     $ docker run -it --rm -p 5000:80 --name test-claims-api claims-api
     #
-    # Press 'Control + C' to exit the program and return to the terminal prompt ($)
+    # When you are done testing:
+    #   Press 'Control + C' to exit the program and return to the terminal prompt ($)
     #
     ```
 
@@ -362,8 +364,11 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
 
     It will take approx. 20 minutes to download the image (Size ~ 10+ GB).  Take a coffee break.
     ```
+    # This command will take approx. 20 mins to download the VSTS build agent container image
     $ docker pull microsoft/vsts-agent
+    #
     $ docker images
+    #
     ```
 
 2.  Generate a Azure DevOps (VSTS) personal access token (PAT).
@@ -491,7 +496,9 @@ Before proceeding with the next steps, feel free to go thru the **dockerfile** a
 
     ![alt tag](./images/F-08.PNG)
 
-    Save your build pipeline before proceeding.  On the top extensions menu in Azure DevOps, click on **Browse Markplace** (Bag icon).  Then search for text **replace tokens**.  In the results list below, click on **Replace Tokens** (By Guillaume Rouchon) plug-in.  Click on **Get it free** to install this extension in your Azure DevOps account.
+    **Save** your build pipeline before proceeding.
+
+    On the top extensions menu in Azure DevOps, click on **Browse Marketplace** (Bag icon).  Then search for text **replace tokens**.  In the results list below, click on **Replace Tokens** (By Guillaume Rouchon) plug-in.  Click on **Get it free** to install this extension in your Azure DevOps account.
 
     ![alt tag](./images/F-09.PNG)
 
@@ -499,7 +506,7 @@ Before proceeding with the next steps, feel free to go thru the **dockerfile** a
 
     ![alt tag](./images/F-10.PNG)
 
-    Define 3 variables **SQL_SRV_PREFIX**, **SQL_USER_ID** and **SQL_USER_PWD**.  These variables will be used to specify database connection string values for Azure SQL Server instance which was provisioned in Section [A].  Click on **+ Add** to add a new variable and specify the correct value for each variable as shown in the screenshot below.  For variable token descriptions, refer to Section [C] if needed.
+    Define 3 variables **SQL_SRV_PREFIX**, **SQL_USER_ID** and **SQL_USER_PWD**.  These variables will be used to specify database connection string values for Azure SQL Server instance which was provisioned in Section [A].  Click on **+ Add** to add a new variable and specify the **correct value** for each variable as shown in the screenshot below.  For variable token descriptions, refer to Section [C] if needed.
 
     ![alt tag](./images/F-11.PNG)
 
@@ -547,7 +554,7 @@ Before proceeding with the next steps, feel free to go thru the **dockerfile** a
 
     ![alt tag](./images/F-16.PNG)
 
-    Switch to the VSTS build agent terminal window and you will notice that a build request was received from VSTS and processed successfully. See below.
+    Switch to the VSTS build agent terminal window and you will notice that a build request was received from Azure DevOps and processed successfully. See below.
 
     ![alt tag](./images/F-17.PNG)
 
@@ -801,13 +808,13 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     Click the checkbox for both **Enable continuous integration** and **Batch changes while a build is in progress**.  Leave other fields as is.  Click on **Save & queue** menu and select the **Save** option.
 
-3.  Expose the Claims API thru OpenAPI (formerly Swagger API). Trigger and run CI and CD Pipelines.
+3.  Update the Claims API microservice to expose OpenAPI (formerly Swagger API) specifications for end-points.
 
     The [Open API Specification](https://swagger.io/specification/) defines a standard, language-agnostic interface to RESTful APIs which allows both humans and computers to discover and understand the capabilities of the service without access to source code, documentation or through network traffic inspection.  When defined properly, a consumer of the API can understand and interact with the remote API with minimal knowledge of the underlying implementation logic.
 
-    Update the `Startup.cs` class in your forked GitHub repository by using one one of these options.
+    Use one of the options below to update the `Startup.cs` class in your forked GitHub repository.
     - Use Git CLI to update the class in your cloned repository on the Linux host.  Then commit and push the updates to your forked GitHub repository.
-    - Alternatively, update the class using the browser by accessing your forked GitHub repository.
+    - Alternatively, update the class using the browser by accessing your forked GitHub repository (described next).
 
     The changes to be made to the `Startup.cs` class is described below.
 
@@ -829,11 +836,15 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
 5.  Verify the updated microservice container image was built and pushed to AKS thru Azure DevOps CI and CD pipelines.
 
-    - Switch to a browser window and test the Claims REST API.
+    - Switch to a browser window and invoke the Claims API end-points.
+      URL - `http://<Azure_load_balancer_ip>/api/claims`
     - Invoke the Swagger end-point to view the generated `swagger.json` specification for the Claims API.
-      URL - `http://<Azure_Load_Balancer_IP>/swagger/v1/swagger.json`
+      URL - `http://<Azure_load_balancer_ip>/swagger/v1/swagger.json`
     - Invoke the Swagger UI to test the Claims REST API.
-      URL - `http://<Azure_Load_Balancer_IP>/swagger/index.html`
+      URL - `http://<Azure_load_balancer_ip>/swagger/index.html`
+      You should be able to view the Swagger UI as shown the screenshot below.
+
+      ![alt tag](./images/H-22.PNG)
 
     Congrats!  You have successfully used DevOps to automate the build and deployment of a containerized microservice application on Kubernetes.  
 
