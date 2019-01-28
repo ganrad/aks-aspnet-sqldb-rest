@@ -851,7 +851,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
       ![alt tag](./images/H-22.PNG)
 
-### Advanced out of box Kubernetes (AKS) features
+### Explore advanced out of box Kubernetes (AKS) features
 
 In this section, we will explore a few advanced features provided by Kubernetes (AKS).
 
@@ -879,7 +879,62 @@ In this section, we will explore a few advanced features provided by Kubernetes 
 
 2.  Auto-scale application containers (*Pods*)
 
+    An [Horizontal Pod Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) automatically scales the number of Pods in a replication controller, deployment or a replica set based on observed CPU utilization. 
+
+    We will define a (HPA) resource (API object) in the *development* namespace.  Refer to thecommand snippet below.
+    ```
+    # Create the HPA API object
+    $ kubectl create -f ./k8s-resources/claims-api-hpa.yaml
+    #
+    # Wait a minute or two.
+    # List the HPA objects in 'development' namespace.  Check the value under column 'TARGETS'.
+    # The current CPU load on the Pod should be between 0% to 2%.  Also, notice the values under columns
+    # 'MINPODS', 'MAXPODS' and no. of 'REPLICAS'.  The 'current' replicas should be 1.
+    $ kubectl get hpa claims-api-hpa -n development
+    #
+    ```
+
+    If a Pod is not actively serving any requests then it's CPU utilization is minimal (0 - 2%) as noted above!   This is one of the value-add **advantages** for running applications within containers as opposed to running them within Virtual Machines.  By increasing the density of containers on Virtual or Physical machines, you can maximize resource utilization (CPU + Memory) and thereby drive down IT infrastructure costs.
+
+    Now let's increase the load on the Claims API Pod by invoking it a few times (in a loop) and observe how Kubernetes intelligently auto scales the microservice instances.  Refer to the command snippet below.
+    ```
+    # Make sure you are in the project root directory
+    $ cd ~/git-repos/aks-aspnet-sqldb-rest
+    #
+    # Update 'execute' permissions on the shell script 'start-load.sh'
+    $ chmod 700 ./shell-scripts/start-load.sh 
+    #
+    # Run the 'start-load.sh' script for a few minutes.
+    $ ./shell-scripts/start-load.sh
+    #
+    # Wait for a few minutes for the 'metrics-server' to receive the latest compute metrics
+    # from 'heapster'.
+    #
+    # Login to another terminal window via SSH. Check the no. of 'auto' scaled instances.  The underlying 'replica set' should have auto scaled the no. of instances to > 1 < 10 instances.
+    # If the CPU load doesn't move up above 50%, you may need to open up more terminal windows
+    # and run the shell script multiple times.
+    $ kubectl get hpa claims-api-hpa -n development
+    NAME             REFERENCE                                  TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+    claims-api-hpa   Deployment/aks-aspnetcore-lab-claims-api   52%/50%   1         10        2          17m
+    #
+    ```
+
+3.  Highly available application containers (*Pods*)
     
-    Congrats!  You have successfully used DevOps to automate the build and deployment of a containerized microservice application on Kubernetes.  
+    When Kubernetes auto scales application Pods, it schedules the pods to run on different cluster nodes thereby ensuring the pods are highly available.
+
+    Refer to the command snippet below to determine the nodes on which the pods have been deployed. You will observe that the pods have been deployed to two different cluster nodes.
+    ```
+    # Find out which cluster nodes are running the Claims API microservice pods.
+    $ kubectl get pods -n development -o wide
+    #
+    # Press Control-C to exit out of the shell script and wait for a few minutes.
+    # Check the no. of replicas for Claims API microservice again.  It should have been scaled
+    # down to '1' instance automatically.
+    $ kubectl get hpa claims-api-hpa -n development
+    #
+    ```
+
+Congrats!  You have successfully used DevOps to automate the build and deployment of a containerized microservice application on Kubernetes.  You have also explored a few value add features provided out of the box by Kubernetes.
 
 In this project, we experienced how DevOps tools, Microservices and Containers can be used to build next generation Web applications.  These three technologies are changing the way we develop and deploy software applications and are driving digital transformation in enterprises today!
