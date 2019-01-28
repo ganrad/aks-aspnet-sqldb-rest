@@ -881,7 +881,7 @@ In this section, we will explore a few advanced features provided by Kubernetes 
 
     An [Horizontal Pod Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) automatically scales the number of Pods in a replication controller, deployment or a replica set based on observed CPU utilization. 
 
-    We will define a (HPA) resource (API object) in the *development* namespace.  Refer to thecommand snippet below.
+    We will define a (HPA) resource (API object) in the *development* namespace.  Refer to the command snippet below.
     ```
     # Create the HPA API object
     $ kubectl create -f ./k8s-resources/claims-api-hpa.yaml
@@ -897,6 +897,7 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     If a Pod is not actively serving any requests then it's CPU utilization is minimal (0 - 2%) as noted above!   This is one of the value-add **advantages** for running applications within containers as opposed to running them within Virtual Machines.  By increasing the density of containers on Virtual or Physical machines, you can maximize resource utilization (CPU + Memory) and thereby drive down IT infrastructure costs.
 
     Now let's increase the load on the Claims API Pod by invoking it a few times (in a loop) and observe how Kubernetes intelligently auto scales the microservice instances.  Refer to the command snippet below.
+    If the CPU load for the Claims API microservice (Pod) doesn't move up above 50%, you may need to open up more terminal windows (> 2) and run the shell script multiple times.
     ```
     # Make sure you are in the project root directory
     $ cd ~/git-repos/aks-aspnet-sqldb-rest
@@ -910,9 +911,9 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     # Wait for a few minutes for the 'metrics-server' to receive the latest compute metrics
     # from 'heapster'.
     #
-    # Login to another terminal window via SSH. Check the no. of 'auto' scaled instances.  The underlying 'replica set' should have auto scaled the no. of instances to > 1 < 10 instances.
-    # If the CPU load doesn't move up above 50%, you may need to open up more terminal windows
-    # and run the shell script multiple times.
+    # Login to another terminal window via SSH. Check the no. of 'auto' scaled instances.
+    # The underlying 'replica set' should have auto scaled the no. of instances to > 1 < 10 
+    # instances.
     $ kubectl get hpa claims-api-hpa -n development
     NAME             REFERENCE                                  TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
     claims-api-hpa   Deployment/aks-aspnetcore-lab-claims-api   52%/50%   1         10        2          17m
@@ -927,6 +928,28 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     ```
     # Find out which cluster nodes are running the Claims API microservice pods.
     $ kubectl get pods -n development -o wide
+    NAME                                             READY   STATUS    RESTARTS   AGE   IP            NODE                       NOMINATED NODE
+    aks-aspnetcore-lab-claims-api-7d8ff8d494-msstk   1/1     Running   0          1m    10.244.1.23   aks-nodepool1-18961316-0   <none>
+    aks-aspnetcore-lab-claims-api-7d8ff8d494-twptm   1/1     Running   0          44m   10.244.0.14   aks-nodepool1-18961316-1   <none>
+    mysql-7cbb9c556f-g2n5k                           1/1     Running   0          4d    10.244.1.18   aks-nodepool1-18961316-0   <none>
+    po-service-c99675765-g7fq8                       1/1     Running   0          4d    10.244.0.11   aks-nodepool1-18961316-1   <none>
+    #
+    # Look at the 'aks-aspnetcore-lab-claims-api-xyz' pods at the top of the list.  Notice
+    # the values under column 'IP' and look at the 3rd Octet of the pod's IP address.
+    # The 3rd Octet in the pod IP address denotes the cluster 'Node' number.
+    #
+    # If you want to find out the node on which the pods are actually running, use the 
+    # command below. The 'Node:' attribute should contain the IP address / Name of the Node.
+    $ kubectl describe pod <pod-name> -n development
+    Name:               aks-aspnetcore-lab-claims-api-7d8ff8d494-msstk
+    Namespace:          development
+    Priority:           0
+    PriorityClassName:  <none>
+    Node:               aks-nodepool1-18961316-0/10.240.0.4
+    Start Time:         Mon, 28 Jan 2019 18:40:31 +0000
+    Labels:             app=claims-api
+                    pod-template-hash=3849948050
+    ...
     #
     # Press Control-C to exit out of the shell script and wait for a few minutes.
     # Check the no. of replicas for Claims API microservice again.  It should have been scaled
