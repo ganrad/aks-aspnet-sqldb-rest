@@ -7,18 +7,18 @@ In a nutshell, you will work on the following tasks.
 1. Deploy an **Azure SQL Server Database**.  Complete Section [A]. 
 2. Provision a **Linux VM** (Bastion Host/Jump Box) on Azure and install pre-requisite software.  Complete Section [B].
 3. Build and run the *Claims API* microservice locally on the Bastion Host.  Complete Section [C].
-4. Deploy an **Azure DevOps** build container on the Bastion Host. Complete Section [D].
+4. Deploy a **Azure DevOps Services** build agent (container) on the Bastion Host. Complete Section [D].
 5. Deploy an **Azure Container Registry** (ACR). Complete Section [E].
 6. Define a *Build Pipeline* in **Azure DevOps** (formerly Visual Studio Team Services).  Execute the build pipeline to build the ASP.NET Core application, containerize it and push the container image to the ACR.  This task focuses on the **Continuous Integration** aspect of the DevOps process.  Complete Section [F].
 7.  Deploy an **Azure Kubernetes Service** (AKS) cluster.  Deploy the *Claims API* (`claims-api`) microservice on AKS. Test the deployed microservice.  Complete Section [G].
 8.  Define a **Release Pipeline** in Azure DevOps and use **Helm** Kubernetes package manager to deploy the containerized *Claims API* microservice on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Section [H].
 
-This project demonstrates how to use Azure DevOps platform to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for accessing (retrieving / storing) medical claims records from a relational data store.  The microservice persists all claims records in a Azure SQL Server Database.
+This project demonstrates how to use Azure DevOps Services to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for accessing (retrieving / storing) medical claims records from a relational data store.  The microservice persists all claims records in a Azure SQL Server Database.
 
 **Prerequisites:**
 1.  An active **Microsoft Azure Subscription**.  You can obtain a free Azure subscription by accessing the [Microsoft Azure](https://azure.microsoft.com/en-us/?v=18.12) website.  In order to execute all the sections in this project, either your *Azure subscription* or the *Resource Group* **must** have **Owner** Role assigned to it.
 2.  A **GitHub** Account to fork and clone this GitHub repository.
-3.  A **Azure DevOps** (formerly Visual Studio Team Services) Account.  You can get a free Azure DevOps account by accessing the [Azure DevOps](https://azure.microsoft.com/en-us/services/devops/) web page.
+3.  A **Azure DevOps Services** (formerly Visual Studio Team Services) Account.  You can get a free Azure DevOps account by accessing the [Azure DevOps Services](https://azure.microsoft.com/en-us/services/devops/) web page.
 4.  Review [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview).  **Azure Cloud Shell** is an interactive, browser accessible shell for managing Azure resources.  You will be using the Cloud Shell to create the Bastion Host (Linux VM).
 5.  **This project assumes readers are familiar with Linux containers (`eg., docker, OCI runc, Clear Containers ...`), Container Platforms (`eg., Kubernetes`), DevOps (`Continuous Integration/Continuous Deployment`) concepts and developing/deploying Microservices.  As such, this project is primarily targeted at technical/solution architects who have a good understanding of some or all of these solutions/technologies.  If you are new to Linux Containers/Kubernetes and/or would like to get familiar with container solutions available on Microsoft Azure, please go thru the hands-on labs that are part of the [MTC Container Bootcamp](https://github.com/Microsoft/MTC_ContainerCamp) first.**
 6.  A **terminal emulator** is required to login (SSH) into the Linux VM (Bastion) host.  Download and install [Putty](https://putty.org/) or [Windows Sub-System for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
@@ -356,7 +356,7 @@ Before proceeding, login into the Linux VM using SSH.
 
 You have now successfully tested the Claims API microservice locally on this VM.
 
-### D] Deploy the Azure DevOps (VSTS) build container
+### D] Deploy the Azure DevOps Services build agent (Container)
 **Approx. time to complete this section: 30 minutes**
 
 If you haven't already, login to the Linux VM using a SSH terminal session.
@@ -851,6 +851,35 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
       ![alt tag](./images/H-22.PNG)
 
+### Advanced out of box Kubernetes (AKS) features
+
+In this section, we will explore a few advanced features provided by Kubernetes (AKS).
+
+1.  Self-Healing of application containers (*Pods*)
+
+    Kubernetes periodically checks the health of application containers (Pods) deployed on cluster nodes.  If an application *Pod* dies or terminates unexpectedly, the *Replication Controller* or *Deployment* automatically spawns another instance of the application Pod.
+
+    Login into the Linux VM via SSH.  Use the Kubernetes CLI to delete the Claims API microservice Pod.  Verify that the *Deployment* spawns another Pod instance almost instantaneously.  Refer to the command snippet below.
+    ```
+    # List the pods in the 'development' namespace.  Make a note of the pod name and the value
+    # under the AGE column
+    $ kubectl get pods -n development
+    #
+    # Delete the Claims API Pod by name (eg., aks-aspnetcore-lab-claims-api-xyz...)
+    $ kubectl delete pod <pod-name>
+    #
+    # List the pods in the 'development' namespace.  Verify a new pod has been instantiated.
+    # Look under the column headers 'NAME' and 'AGE'.  The Claims API pod should have a 
+    # new name and it's age should be less than a minute.
+    $ kubectl get pods -n development
+    #
+    ```
+
+    Use a browser to invoke a Claims API end-point and verify the microservice is available and returns a valid response.
+
+2.  Auto-scale application containers (*Pods*)
+
+    
     Congrats!  You have successfully used DevOps to automate the build and deployment of a containerized microservice application on Kubernetes.  
 
 In this project, we experienced how DevOps tools, Microservices and Containers can be used to build next generation Web applications.  These three technologies are changing the way we develop and deploy software applications and are driving digital transformation in enterprises today!
