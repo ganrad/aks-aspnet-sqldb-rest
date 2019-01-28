@@ -1,5 +1,6 @@
 #! /bin/bash
 while true
 do
-  wget -q -O- http://52.183.63.143/api/claims/100
+  # curl -i http://x.x.x.x/api/claims/100
+  wget -q -O- http://x.x.x.x/api/claims/100
 done
