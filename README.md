@@ -55,8 +55,8 @@ In this section, we will create an Azure SQL Server instance and create a databa
 1.  Login to the [Azure Portal](https://portal.azure.com) using your credentials and use a [Azure Cloud Shell](https://shell.azure.com) session to perform the next steps.  Azure Cloud Shell is an interactive, browser-accessible shell for managing Azure resources.  The first time you access the Cloud Shell, you will be prompted to create a resource group, storage account and file share.  You can use the defaults or click on *Advanced Settings* to customize the defaults.  Accessing the Cloud Shell is described in [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview). 
 
 2.  An Azure resource group is a logical container into which Azure resources are deployed and managed.  From the Cloud Shell, use Azure CLI to create a **Resource Group**.  Azure CLI is already pre-installed and configured to use your Azure account (subscription) in the Cloud Shell.  Alternatively, you can also use Azure Portal to create this resource group.  
-    ```
-    az group create --name myResourceGroup --location westus2
+    ```bash
+    $ az group create --name myResourceGroup --location westus2
     ```
     **NOTE:** Keep in mind, if you specify a different name for the resource group (other than **myResourceGroup**), you will need to substitute the same value in multiple CLI commands in the remainder of this project!  If you are new to Azure Cloud, it's best to use the suggested name.
 
@@ -110,21 +110,21 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     ![alt tag](./images/B-01.PNG)
 
 2.  Open the [Azure Cloud Shell](https://shell.azure.com) in a separate browser tab and use the command below to create a **CentOS 7.4** VM on Azure.  Make sure you specify the correct **resource group** name and provide a value for the *password*.  Once the command completes, it will print the VM connection info. in the JSON message (response).  Save the **Public IP address**, **Login name** and **Password** info. in a file.  Alternatively, if you prefer you can use SSH based authentication to connect to the Linux VM.  The steps for creating and using an SSH key pair for Linux VMs in Azure is described [here](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys).  You can then specify the location of the public key with the `--ssh-key-path` option to the `az vm create ...` command.
-    ```
-    az vm create --resource-group myResourceGroup --name k8s-lab --image OpenLogic:CentOS:7.4:7.4.20180118 --size Standard_B2s --generate-ssh-keys --admin-username labuser --admin-password <password> --authentication-type password
+    ```bash
+    $ az vm create --resource-group myResourceGroup --name k8s-lab --image OpenLogic:CentOS:7.4:7.4.20180118 --size Standard_B2s --generate-ssh-keys --admin-username labuser --admin-password <password> --authentication-type password
     ```
 
 3.  Login into the Linux VM via SSH.  On a Windows PC, you can use a SSH client such as [Putty](https://putty.org/) or the [Windows Sub-System for Linux (Windows 10)](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to login into the VM.
 
     **NOTE:** Use of Cloud Shell to SSH into the VM is **NOT** recommended.
-    ```
+    ```bash
     # SSH into the VM.  Substitute the public IP address for the Linux VM in the command below.
     $ ssh labuser@x.x.x.x
     #
     ```
 
 4.  Install Git client and clone [this repository](https://github.com/ganrad/aks-aspnet-sqldb-rest).  When cloning the repository, make sure to use your Account ID in the GitHub URL.
-    ```
+    ```bash
     # Switch to home directory
     $ cd
     #
@@ -149,7 +149,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     ```
 
 5.  Install Azure CLI and login into your Azure account.
-    ```
+    ```bash
     # Install Azure CLI on this VM.
     #
     # Import the Microsoft repository key.
@@ -170,7 +170,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     ```
 
 6.  Install Kubernetes CLI, Helm CLI and .NET Core SDK on this VM.
-    ```
+    ```bash
     # Make sure you are in the home directory
     $ cd
     #
@@ -211,7 +211,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     ```
 
 7.  Next, install **docker-ce** container runtime. Refer to the commands below.  You can also refer to the [Docker CE install docs for CentOS](https://docs.docker.com/install/linux/docker-ce/centos/).
-    ```
+    ```bash
     $ sudo yum install -y yum-utils device-mapper-persistent-data lvm2
     $ sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
     $ sudo yum install -y docker-ce-18.03.0.ce
@@ -221,13 +221,13 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     ```
 
     LOGOUT AND RESTART YOUR LINUX VM BEFORE PROCEEDING.  You can restart the VM via Azure Portal.  Alternatively, use the command below to reboot the VM.
-    ```
+    ```bash
     $ sudo shutdown -r now
     #
     ```
 
     Once the Linux VM is back up, log back in to the VM via SSH.  Run the command below to verify **docker** engine is running.
-    ```
+    ```bash
     $ docker info
     ```
 
@@ -248,7 +248,7 @@ Before proceeding, login into the Linux VM using SSH.
     The attribute **SqlServerDb** holds the database connection string and should point to the Azure SQL Server database instance which we provisioned in Section [A].  You should have saved the SQL Server connection string value in a file.
 
     Refer to the comands below to edit the SQL Server database *Connection string*...
-    ```
+    ```bash
     # Switch to the source code directory.  This is the directory where you cloned this GitHub repository.
     $ cd git-repos/aks-aspnet-sqldb-rest
     #
@@ -268,7 +268,7 @@ Before proceeding, login into the Linux VM using SSH.
 
 2.  Build the Claims API microservice using the .NET Core SDK.
 
-    ```
+    ```bash
     #
     # Build the Claims API microservice
     $ dotnet build
@@ -278,7 +278,7 @@ Before proceeding, login into the Linux VM using SSH.
 3.  Create and run the database migration scripts. 
   
     This step will create the database tables for persisting *Claims* records in the Azure SQL Server database.  Refer to the command snippet below.
-    ```
+    ```bash
     # Run the .NET Core CLI command to create the database migration scripts
     $ dotnet ef migrations add InitialCreate
     #
@@ -294,7 +294,7 @@ Before proceeding, login into the Linux VM using SSH.
 4.  Run the Claims API locally using the .NET Core SDK.
 
     Run the Claims API microservice in a Linux terminal window.  Refer to the commands below.
-    ```
+    ```bash
     # Make sure you are in the Claims API source code directory
     $ pwd
     /home/labuser/git-repos/aks-aspnet-sqldb-rest
@@ -308,7 +308,7 @@ Before proceeding, login into the Linux VM using SSH.
     ```
 
     Login to the Linux VM using another SSH terminal session.  Use the **Curl** command to invoke the Claims API end-point.  Refer to the command snippet below.
-    ```
+    ```bash
     # Use curl command to hit the claims api end-point.  
     $ curl -i http://localhost:5000/api/claims
     #
@@ -321,7 +321,7 @@ Before proceeding, login into the Linux VM using SSH.
 5.  Build and run the Claims API with Docker for Linux containers.
 
     In the SSH terminal window where you started the application (dotnet run), press Control-C to exit the program and return to the terminal prompt (`$`).  Then execute the instructions (see below) in this terminal window.
-    ```
+    ```bash
     # Make sure you are in the Claims API source code directory.  If not switch ($ cd ...).
     $ pwd
     /home/labuser/git-repos/aks-aspnet-sqldb-rest
@@ -344,7 +344,7 @@ Before proceeding, login into the Linux VM using SSH.
 6.  Invoke the Claims API HTTP end-point.
 
     Switch to the other SSH terminal window and invoke the Claims API HTTP end-point again using **Curl** command.
-    ```
+    ```bash
     # Use curl command to hit the claims api end-point.  
     $ curl -i http://localhost:5000/api/claims
     #
@@ -364,7 +364,7 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
 1.  Pull the Azure DevOps (VSTS) build agent container from docker hub.
 
     It will take approx. 20 minutes to download the image (Size ~ 10+ GB).  Take a coffee break.
-    ```
+    ```bash
     # This command will take approx. 20 mins to download the VSTS build agent container image
     $ docker pull microsoft/vsts-agent
     #
@@ -403,7 +403,7 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
     VSTS_POOL | VSTS Agent Pool Name.  For this lab, use value *Default*.  **NOTE:** In case you use a different name for the pool, you will need to first create this pool in your VSTS account.  Otherwise the agent will not be able to connect to the pool.
 
     In the Linux terminal window, start the Azure DevOps (VSTS) build container.  See command snippet below.
-    ```
+    ```bash
     # Substitute the correct values for VSTS_ACCOUNT, VSTS_POOL and VSTS_TOKEN before running this command
     #
     $ docker run -e VSTS_ACCOUNT=<Org. Name> -e VSTS_TOKEN=<PAT Token> VSTS_POOL=Default -v /var/run/docker.sock:/var/run/docker.sock --name vstsagent --rm -it microsoft/vsts-agent
@@ -578,17 +578,17 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 1.  Ensure the *Resource provider* for AKS service is enabled (registered) for your subscription.
 
     A quick and easy way to verify this is, use the Azure portal and go to *->Azure Portal->Subscriptions->Your Subscription->Resource providers->Microsoft.ContainerService->(Ensure registered)*.  Alternatively, you can use Azure CLI to register all required service providers.  See below.
-    ```
-    az provider register -n Microsoft.Network
-    az provider register -n Microsoft.Storage
-    az provider register -n Microsoft.Compute
-    az provider register -n Microsoft.ContainerService
+    ```bash
+    $ az provider register -n Microsoft.Network
+    $ az provider register -n Microsoft.Storage
+    $ az provider register -n Microsoft.Compute
+    $ az provider register -n Microsoft.ContainerService
     ```
 
 2.  Check Kubernetes CLI version and available AKS versions.
 
     (If you haven't already) Open a SSH terminal window and login to the Linux VM (Bastion host).  Refer to the command snippet below.
-    ```
+    ```bash
     # Check if kubectl is installed OK
     $ kubectl version -o yaml
     #
@@ -601,7 +601,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     Use the latest supported Kubernetes version to deploy the AKS cluster.  At the time of this writing, version `1.11.5` was the latest AKS version. 
 
     Refer to the commands below to create the AKS cluster.  It will take a few minutes (< 10 mins) for the AKS cluster to get provisioned. 
-    ```
+    ```bash
     # Create a 2 Node AKS cluster
     $ az aks create --resource-group myResourceGroup --name akscluster --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.11.5"
     #
@@ -610,7 +610,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     ```
 
 4.  Connect to the AKS cluster and initialize Helm package manager.
-    ```
+    ```bash
     # Configure kubectl to connect to the AKS cluster
     $ az aks get-credentials --resource-group myResourceGroup --name akscluster
     #
@@ -645,7 +645,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
     After updating the shell script, execute it.  Refer to the commands below.
 
-    ```
+    ```bash
     # Change file permissions to allow script execution.
     $ chmod 700 ./shell-scripts/acr-auth.sh
     #
@@ -659,7 +659,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     A kubernetes *Namespace* is a container object used to group applications and their associated resources.  We will be deploying the Claims API microservice container within the **development** namespace.
     
     Refer to the commands below.
-    ```
+    ```bash
     # Make sure you are in the *aks-aspnet-sqldb-rest* directory.
     $ cd ~/git-repos/aks-aspnet-sqldb-rest
     #
@@ -694,7 +694,7 @@ When the *Claims API* (`claims-api`) microservice end-point is invoked the first
 In a Kubernetes cluster, applications deployed within pods communicate with each other via *Services*.  A Service is responsible for forwarding all incoming requests to the backend application *Pods*.  A service can also expose an *External IP Address* so that applications that are external to the AKS cluster can access services deployed within the cluster.
 
 Use the command below to determine the *External* (public) IP address (Azure load balancer IP) assigned to the `claims-api` Service end-point.
-```
+```bash
 # List the kubernetes service objects
 $ kubectl get svc -n development
 ```
@@ -860,7 +860,7 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     Kubernetes periodically checks the health of application containers (Pods) deployed on cluster nodes.  If an application *Pod* dies or terminates unexpectedly, the *Replication Controller* or *Deployment* automatically spawns another instance of the application Pod.
 
     Login into the Linux VM via SSH.  Use the Kubernetes CLI to delete the Claims API microservice Pod.  Verify that the *Deployment* spawns another Pod instance almost instantaneously.  Refer to the command snippet below.
-    ```
+    ```bash
     # List the pods in the 'development' namespace.  Make a note of the pod name and the value
     # under the AGE column
     $ kubectl get pods -n development
@@ -882,7 +882,7 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     An [Horizontal Pod Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) automatically scales the number of Pods in a replication controller, deployment or a replica set based on observed CPU utilization. 
 
     We will define a (HPA) resource (API object) in the *development* namespace.  Refer to the command snippet below.
-    ```
+    ```bash
     # Create the HPA API object
     $ kubectl create -f ./k8s-resources/claims-api-hpa.yaml
     #
@@ -899,7 +899,7 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     Now let's increase the load on the Claims API Pod by invoking it a few times (in a loop) and observe how Kubernetes intelligently auto scales the microservice instances.  Refer to the command snippet below.
 
     If the CPU load for the Claims API microservice (Pod) doesn't move up above 50%, you may need to run the shell script multiple times in multiple terminal (> 2) windows.
-    ```
+    ```bash
     # Make sure you are in the project root directory
     $ cd ~/git-repos/aks-aspnet-sqldb-rest
     #
@@ -926,7 +926,7 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     When Kubernetes auto scales application Pods, it schedules the pods to run on different cluster nodes thereby ensuring the pods are highly available.
 
     Refer to the command snippet below to determine the nodes on which the Claims API pods have been deployed. Assuming there are two active Pods, these pods should have been deployed to two different cluster nodes.
-    ```
+    ```bash
     # Find out which cluster nodes are running the Claims API microservice pods.
     $ kubectl get pods -n development -o wide
     NAME                                             READY   STATUS    RESTARTS   AGE   IP            NODE                       NOMINATED NODE
