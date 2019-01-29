@@ -972,7 +972,7 @@ In this section, we will explore a few advanced features provided by Kubernetes 
 
     Verify the automatic load balancing behavior provided by Kubernetes *Services* layer by following the instructions in the code snippet below.
 
-    ```Shell
+    ```bash
     # Press Control-C and exit out of the shell script.  Then edit the `start-load.sh` using
     # 'vi' or 'nano' editor.  Uncomment the 'sleep 2' shell command line.  Save the shell
     # script. Re-run the 'start-load.sh` script.
