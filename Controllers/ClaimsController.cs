@@ -36,13 +36,24 @@ namespace ClaimsApi.Controllers
         /// Get a list of all medical claims records from the backend data store
         /// </summary>
         [HttpGet]
-        public ActionResult<List<ClaimItem>> GetAllClaims()
+        public async Task<ActionResult<List<ClaimItem>>> GetAllClaims()
         {
             _logger.LogInformation("GetAllClaims()");
+	    var localIp = await getPodIpAddress();
+	    _logger.LogInformation($"Pod IP Address: {localIp}");
+            Request.HttpContext.Response.Headers.Add("X-Pod-IpAddr",localIp);
             return _context.ClaimItems.
                 Include(claimItem => claimItem.SubscriberInfo).
                 Include(claimItem => claimItem.ServiceLineDetails).
                 Include(claimItem => claimItem.PlanPayment).ToList();
+        }
+
+	private async Task<String> getPodIpAddress() {
+            var ips = await System.Net.Dns.GetHostAddressesAsync(System.Net.Dns.GetHostName());
+            var ipAddrString = "";
+            foreach (System.Net.IPAddress ip in ips)
+                ipAddrString += ip.ToString();
+            return ipAddrString;
         }
 
         // GET: api/claims/{id}
