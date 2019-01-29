@@ -897,7 +897,8 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     If a Pod is not actively serving any requests then it's CPU utilization is minimal (0 - 2%) as noted above!   This is one of the value-add **advantages** for running applications within containers as opposed to running them within Virtual Machines.  By increasing the density of containers on Virtual or Physical machines, you can maximize resource utilization (CPU + Memory) and thereby drive down IT infrastructure costs.
 
     Now let's increase the load on the Claims API Pod by invoking it a few times (in a loop) and observe how Kubernetes intelligently auto scales the microservice instances.  Refer to the command snippet below.
-    If the CPU load for the Claims API microservice (Pod) doesn't move up above 50%, you may need to open up more terminal windows (> 2) and run the shell script multiple times.
+
+    If the CPU load for the Claims API microservice (Pod) doesn't move up above 50%, you may need to run the shell script multiple times in multiple terminal (> 2) windows.
     ```
     # Make sure you are in the project root directory
     $ cd ~/git-repos/aks-aspnet-sqldb-rest
@@ -951,10 +952,42 @@ In this section, we will explore a few advanced features provided by Kubernetes 
                     pod-template-hash=3849948050
     ...
     #
+    ```
+
+4.  Automatic load balancing of container (*Pod*) instances
+
+    The Claims API microservice is exposed over an Azure Load Balancer (ALB) Public IP.  This IP is bridged to the Kubernetes cluster network.  As a result, the incoming HTTP request is intercepted by the ALB and forwarded to the AKS agent-pool (Cluster nodes).  The Kubernetes services (cluster network) layer then receives the request and distributes the HTTP traffic evenly (round-robin) to the Pod instances.  When there are multiple Pod instances for a given application, the incoming HTTP requests are distributed evenly across those Pod instances.
+
+    Re-run the shell script `start-load.sh` and look at the HTTP response header **X-Pod-IpAddr**.  This header contains the IP address of the Pod instance serving the HTTP request.  When two or more instances of the Claims API microservice are active (eg., 2 Pods), the HTTP requests should be served by the Pod instances in a round robin manner.
+
+    Here is a sample output of the HTTP response header.
+    ```
+    HTTP/1.1 200 OK
+    Date: Tue, 29 Jan 2019 02:55:34 GMT
+    Content-Type: application/json; charset=utf-8
+    Server: Kestrel
+    Transfer-Encoding: chunked
+    X-Pod-IpAddr: 10.244.1.25
+    ```
+
+    Verify the automatic load balancing behavior provided by Kubernetes *Services* layer by following the instructions in the code snippet below.
+
+    ```
+    # Press Control-C and exit out of the shell script.  Then edit the `start-load.sh` using
+    # 'vi' or 'nano' editor.  Uncomment the 'sleep 2' shell command line.  Save the shell
+    # script. Re-run the 'start-load.sh` script.
+    $ ./shell-scripts/start-load.sh
+    #
+    # Observe the value of the 'X-Pod-IpAddr' HTTP Response Header.  It should alternate
+    # among the Pod IP addresses.
+    #
     # Press Control-C to exit out of the shell script and wait for a few minutes.
     # Check the no. of replicas for Claims API microservice again.  It should have been scaled
     # down to '1' instance automatically.
     $ kubectl get hpa claims-api-hpa -n development
+    #
+    # (Optional) Delete the HPA
+    $ kubectl delete hpa claims-api-hpa -n development
     #
     ```
 
