@@ -13,5 +13,14 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+# Replace tokens with variable values in XML or JSON configuration files
+- task: FileTransform@1
+  inputs:
+    folderPath: '$(System.DefaultWorkingDirectory)/' 
+    #enableXmlTransform: # Optional
+    #xmlTransformationRules: '-transform **\*.Release.config -xml **\*.config-transform **\*.$(Release.EnvironmentName).config -xml **\*.config' # Optional
+    fileType: json
+    targetFiles: appsettings.json
+
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
