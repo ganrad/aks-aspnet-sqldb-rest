@@ -32,6 +32,3 @@ steps:
     command: buildAndPush
     repository: csulabtest.azurecr.io/claims-api
     Dockerfile: ./dockerfile
-
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
