@@ -24,7 +24,7 @@ steps:
   displayName: Login to ACR
   inputs:
     command: login
-    containerRegistry: $(acrName)
+    containerRegistry: $(acrSvcConnection)
 
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
