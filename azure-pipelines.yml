@@ -34,5 +34,5 @@ steps:
   displayName: Build and Push to ACR
   inputs:
     command: buildAndPush
-    repository: csulabtest.azurecr.io/claims-api
+    repository: claims-api
     Dockerfile: ./dockerfile
