@@ -14,7 +14,7 @@
 # - azure-pipelines
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'AKS-Agent-Pool'
 
 steps:
 # Replace tokens with variable values in XML or JSON configuration files
