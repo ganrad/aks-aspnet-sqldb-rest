@@ -2,6 +2,7 @@
 # Language : ASP.NET Core 2.2
 # Date: 08-19-2019
 # Author: Ganesh Radhakrishnan (ganrad01@gmail.com)
+# 
 # Description:
 # Build & Deploy the 'claims-api' .NET Core microservice on AKS.
 # The container image will be built and pushed to an ACR
@@ -14,9 +15,6 @@
 
 pool:
   vmImage: 'ubuntu-latest'
-
-variables:
-  buildConfiguration: 'Release'
 
 steps:
 # Replace tokens with variable values in XML or JSON configuration files
