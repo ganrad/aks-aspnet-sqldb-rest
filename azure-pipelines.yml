@@ -16,7 +16,6 @@
 pool:
   name: AKS-Agent-Pool
 
-
 steps:
 # Replace tokens with variable values in XML or JSON configuration files
 - task: FileTransform@1
