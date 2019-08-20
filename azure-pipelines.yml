@@ -1,5 +1,11 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
+# Microservice : Claims API Microservice
+# Language : ASP.NET Core 2.2
+# Date: 08-19-2019
+# Author: Ganesh Radhakrishnan (ganrad01@gmail.com)
+# Description:
+# Build & Deploy the 'claims-api' .NET Core microservice on AKS.
+# The container image will be built and pushed to an ACR
+#
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
