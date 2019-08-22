@@ -27,7 +27,6 @@ variables:
     kubernetesCluster: akscluster
 
 steps:
-# Replace tokens with variable values in XML or JSON configuration files
 - task: FileTransform@1
   displayName: Replace values for DB connection string
   name: replace_db_Values
