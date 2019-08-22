@@ -24,20 +24,31 @@ steps:
 # Replace tokens with variable values in XML or JSON configuration files
 - task: FileTransform@1
   displayName: Replace values for DB connection string
+  name: replace_db_Values
   inputs:
     folderPath: '$(System.DefaultWorkingDirectory)/' 
     fileType: json
     targetFiles: appsettings.json
 
+- script: "echo 'Starting docker build...'"
+  displayName: Build start
+  name: echo_build_start
+
 - task: Docker@2
   displayName: Login to ACR
+  name: docker_login
   inputs:
     command: login
     containerRegistry: $(acrSvcConnection)
 
 - task: Docker@2
   displayName: Build and Push to ACR
+  name: docker_build_push
   inputs:
     command: buildAndPush
     repository: claims-api
     Dockerfile: ./dockerfile
+
+- script: "echo 'Finished docker build...'"
+  displayName: Build complete
+  name: echo_build_complete
