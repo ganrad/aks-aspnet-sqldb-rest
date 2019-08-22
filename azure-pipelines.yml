@@ -63,13 +63,32 @@ steps:
   name: echo_helm_start
 
 - task: HelmDeploy@0
-  displayName: Helm deploy
+  displayName: Helm init
+  name: helm_init
+  inputs:
+    connectionType: Azure Resource Manager
+    azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+    azureResourceGroup: $(azureResourceGroup)
+    kubernetesCluster: $(kubernetesCluster)
+    command: init
+    upgradetiller: false
+    waitForExecution: true
+    arguments: --client-only
+
+- task: HelmDeploy@0
+  displayName: Helm upgrade
   name: helm_deploy
   inputs:
     connectionType: Azure Resource Manager
     azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
     azureResourceGroup: $(azureResourceGroup)
     kubernetesCluster: $(kubernetesCluster)
+    command: upgrade
+    chartType: filepath
+    chartPath: $(Build.ArtifactStagingDirectory)/sampleapp-v0.2.0.tgz
+    releaseName: azuredevopsdemo
+    install: true
+    waitForExecution: true
 
 - script: "echo 'Starting Helm Deploy...'"
   displayName: Helm deploy end
