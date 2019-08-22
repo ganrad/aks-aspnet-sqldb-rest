@@ -20,6 +20,12 @@ pool:
   - k8s-cli -equals kubectl
   - k8s-pm -equals helm
 
+variables:
+    azureSubscriptionEndpoint: "Microsoft Azure Internal Consumption (f99e3e10-4fe2-476a-bf9c-e2e1be9e7a53)"
+    azureContainerRegistry: csulabtest.azurecr.io
+    azureResourceGroup: csu-dev-grts-rg
+    kubernetesCluster: akscluster
+
 steps:
 # Replace tokens with variable values in XML or JSON configuration files
 - task: FileTransform@1
@@ -30,7 +36,7 @@ steps:
     fileType: json
     targetFiles: appsettings.json
 
-- script: "echo 'Starting docker build...'"
+- script: "echo 'Starting docker Build...'"
   displayName: Build start
   name: echo_build_start
 
@@ -49,6 +55,23 @@ steps:
     repository: claims-api
     Dockerfile: ./dockerfile
 
-- script: "echo 'Finished docker build...'"
+- script: "echo 'Finished docker Build...'"
   displayName: Build complete
   name: echo_build_complete
+
+- script: "echo 'Starting Helm Deploy...'"
+  displayName: Helm deploy start
+  name: echo_helm_start
+
+- task: HelmDeploy@0
+  displayName: Helm deploy
+  name: helm_deploy
+  inputs:
+    connectionType: Azure Resource Manager
+    azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+    azureResourceGroup: $(azureResourceGroup)
+    kubernetesCluster: $(kubernetesCluster)
+
+- script: "echo 'Starting Helm Deploy...'"
+  displayName: Helm deploy end
+  name: echo_helm_end
