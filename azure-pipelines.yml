@@ -15,10 +15,10 @@
 
 pool:
   name: AKS-Agent-Pool
-  demands:
-  - Agent.OS -equals Linux
-  - k8s-cli -equals kubectl
-  - k8s-pm -equals helm
+  # demands:
+  # - Agent.OS -equals Linux
+  # - k8s-cli -equals kubectl
+  # - k8s-pm -equals helm
 
 steps:
 # Replace tokens with variable values in XML or JSON configuration files
