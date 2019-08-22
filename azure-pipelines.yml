@@ -23,6 +23,7 @@ pool:
 steps:
 # Replace tokens with variable values in XML or JSON configuration files
 - task: FileTransform@1
+  displayName: Replace values for DB connection string
   inputs:
     folderPath: '$(System.DefaultWorkingDirectory)/' 
     fileType: json
