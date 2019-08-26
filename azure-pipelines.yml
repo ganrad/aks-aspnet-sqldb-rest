@@ -21,7 +21,7 @@ pool:
   - k8s-pm -equals helm
 
 variables:
-    azureSubscriptionEndpoint: "Microsoft Azure Internal Consumption (f99e3e10-4fe2-476a-bf9c-e2e1be9e7a53)"
+    azureSubscriptionEndpoint: "<Specify Azure RM Connection>"
     azureContainerRegistry: csulabtest.azurecr.io
     azureResourceGroup: csu-dev-grts-rg
     kubernetesCluster: akscluster
