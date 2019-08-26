@@ -84,9 +84,10 @@ steps:
     azureResourceGroup: $(azureResourceGroup)
     kubernetesCluster: $(kubernetesCluster)
     command: upgrade
+    arguments: --namespace development
     chartType: filepath
-    chartPath: $(Build.ArtifactStagingDirectory)/sampleapp-v0.2.0.tgz
-    releaseName: azuredevopsdemo
+    chartPath: $(System.DefaultWorkingDirectory)/claims-api
+    releaseName: aks-aspnetcore-lab
     install: true
     waitForExecution: true
 
