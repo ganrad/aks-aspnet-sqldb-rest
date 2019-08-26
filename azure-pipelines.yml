@@ -53,6 +53,9 @@ steps:
     command: buildAndPush
     repository: claims-api
     Dockerfile: ./dockerfile
+    tags:  |
+      latest
+      $(Build.BuildId)
 
 - script: "echo 'Finished docker Build...'"
   displayName: Build complete
