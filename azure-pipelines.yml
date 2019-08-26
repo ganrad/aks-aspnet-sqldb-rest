@@ -1,12 +1,20 @@
+#
 # Microservice : Claims API Microservice
 # Language : ASP.NET Core 2.2
 # Date: 08-19-2019
 # Author: Ganesh Radhakrishnan (ganrad01@gmail.com)
 # 
 # Description:
-# Build & Deploy the 'claims-api' .NET Core microservice on AKS.
-# The container image will be built and pushed to an ACR
-#
+# Pipeline script (yaml) for building and deploying the 'claims-api' .NET Core microservice on AKS.
+# The container image will be built and pushed to an ACR & then deployed to AKS
+# 
+# IMPORTANT:
+# This pipeline requires the following two variables to be set. See below -
+#   1. 'acrSvcConnection' :  Create a 'Service Connection' to ACR in Azure DevOps Services (Project settings) and then specify the service connection name
+#      as the value of this variable.
+#   2. 'ConnectionStrings.SqlServerDb' : Specify the connection string for 'Azure SQL Server' as the value of this variable.  For the SQL Server
+#      connection string value, refer to 'appsettings.json' file.
+# 
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
