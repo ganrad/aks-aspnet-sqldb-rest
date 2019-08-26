@@ -10,7 +10,7 @@
 # 
 # IMPORTANT:
 # This pipeline requires the following variables to be set.
-#   - 'acrSvcConnection' :  Create a 'Service Connection' to ACR in Azure DevOps Services (Project settings) and then specify the service connection name.
+#   - 'acrSvcConnection' :  Create a 'Service Connection' for ACR in Azure DevOps Services (Project settings) and then specify the service connection name.
 #   - 'ConnectionStrings.SqlServerDb' : The connection string for 'Azure SQL Server'.  Refer to 'appsettings.json' file.
 #   - 'azureSubscriptionEndpoint' : Azure DevOps ARM Connection name
 #   - 'azureContainerRegistry' : Azure Container Registry name
