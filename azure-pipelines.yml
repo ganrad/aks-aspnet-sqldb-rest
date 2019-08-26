@@ -9,11 +9,13 @@
 # The container image will be built and pushed to an ACR & then deployed to AKS
 # 
 # IMPORTANT:
-# This pipeline requires the following two variables to be set. See below -
-#   1. 'acrSvcConnection' :  Create a 'Service Connection' to ACR in Azure DevOps Services (Project settings) and then specify the service connection name
-#      as the value of this variable.
-#   2. 'ConnectionStrings.SqlServerDb' : Specify the connection string for 'Azure SQL Server' as the value of this variable.  For the SQL Server
-#      connection string value, refer to 'appsettings.json' file.
+# This pipeline requires the following variables to be set.
+#   - 'acrSvcConnection' :  Create a 'Service Connection' to ACR in Azure DevOps Services (Project settings) and then specify the service connection name.
+#   - 'ConnectionStrings.SqlServerDb' : The connection string for 'Azure SQL Server'.  Refer to 'appsettings.json' file.
+#   - 'azureSubscriptionEndpoint' : Azure DevOps ARM Connection name
+#   - 'azureContainerRegistry' : Azure Container Registry name
+#   - 'azureResourceGroup' : Azure Resource Group name
+#   - 'kubernetesCluster' : Azure Kubernetes Service cluster name
 # 
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
@@ -29,7 +31,7 @@ pool:
   - k8s-pm -equals helm
 
 variables:
-    azureSubscriptionEndpoint: "<Specify Azure RM Connection>"
+    azureSubscriptionEndpoint: <Specify Azure RM Connection>
     azureContainerRegistry: <Azure Container Registry name - name.azurecr.io>
     azureResourceGroup: <Azure Resource Group - name>
     kubernetesCluster: <Azure Kubernetes Service - name>
@@ -95,7 +97,7 @@ steps:
     azureResourceGroup: $(azureResourceGroup)
     kubernetesCluster: $(kubernetesCluster)
     command: upgrade
-    arguments: --namespace development --set image.repository=csulabtest.azurecr.io/claims-api --set image.tag=$(Build.BuildId)
+    arguments: --namespace development --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId)
     chartType: filepath
     chartPath: $(System.DefaultWorkingDirectory)/claims-api
     releaseName: aks-aspnetcore-lab
