@@ -87,7 +87,7 @@ steps:
     azureResourceGroup: $(azureResourceGroup)
     kubernetesCluster: $(kubernetesCluster)
     command: upgrade
-    arguments: --namespace development --atomic --cleanup-on-fail --set image.repository=csulabtest.azurecr.io/claims-api --set image.tag=$(Build.BuildId)
+    arguments: --namespace development --set image.repository=csulabtest.azurecr.io/claims-api --set image.tag=$(Build.BuildId)
     chartType: filepath
     chartPath: $(System.DefaultWorkingDirectory)/claims-api
     releaseName: aks-aspnetcore-lab
