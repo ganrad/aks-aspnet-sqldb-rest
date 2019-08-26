@@ -22,9 +22,9 @@ pool:
 
 variables:
     azureSubscriptionEndpoint: "<Specify Azure RM Connection>"
-    azureContainerRegistry: csulabtest.azurecr.io
-    azureResourceGroup: csu-dev-grts-rg
-    kubernetesCluster: akscluster
+    azureContainerRegistry: <Azure Container Registry name - name.azurecr.io>
+    azureResourceGroup: <Azure Resource Group - name>
+    kubernetesCluster: <Azure Kubernetes Service - name>
 
 steps:
 - task: FileTransform@1
