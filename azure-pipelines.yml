@@ -90,6 +90,6 @@ steps:
     install: true
     waitForExecution: true
 
-- script: "echo 'Starting Helm Deploy...'"
+- script: "echo 'Finished Helm Deploy...'"
   displayName: Helm deploy end
   name: echo_helm_end
