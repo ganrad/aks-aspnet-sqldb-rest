@@ -87,11 +87,11 @@ steps:
     azureResourceGroup: $(azureResourceGroup)
     kubernetesCluster: $(kubernetesCluster)
     command: upgrade
-    arguments: --namespace development
+    arguments: --namespace development --set image.repository=csulabtest.azurecr.io/claims-api --set image.tag=$(Build.BuildId)
     chartType: filepath
     chartPath: $(System.DefaultWorkingDirectory)/claims-api
     releaseName: aks-aspnetcore-lab
-    overrideValues: image.repository=csulabtest.azurecr.io/claims-api,image.tag=$(Build.BuildId)
+    # overrideValues: image.repository=csulabtest.azurecr.io/claims-api,image.tag=$(Build.BuildId)
     install: true
     waitForExecution: true
 
