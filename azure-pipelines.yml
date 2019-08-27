@@ -16,6 +16,8 @@
 #   - 'azureContainerRegistry' : Azure Container Registry name
 #   - 'azureResourceGroup' : Azure Resource Group name
 #   - 'kubernetesCluster' : Azure Kubernetes Service cluster name
+#
+# Additionally, ensure the 'pool' name matches the name of the Azure DevOps Pipeline Agent!
 # 
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core

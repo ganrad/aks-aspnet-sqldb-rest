@@ -852,6 +852,54 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
       ![alt tag](./images/H-22.PNG)
 
+### I] Define and execute Claims API Delivery pipeline in Azure DevOps
+**Approx. time to complete this section: 1 Hour**
+
+1.  Import this GitHub repository into Azure DevOps *Repos*
+
+    Using a web browser, login to your Azure DevOps account (if you haven't already) and select your project (**claims-api-lab**) which you created in Section [F]. 
+    
+    ![alt tag](./images/H-01.PNG)
+
+    Click on *Repos* menu on the left navigational panel.  Then click on *Import* as shown in the screenshot below.
+
+    ![alt tag](./images/I-01.png)
+
+    Specify the URL to your forked GitHub repository as shown in the screenshot below.  Remember to substitute your GitHub account name in the URL.
+
+    ![alt tag](./images/I-02.png)
+
+2.  Update the Delivery Pipeline YAML file
+
+    In the *Repos* view, click on `azure-pipelines.yml` file.  See screenshot below.
+
+    ![alt tag](./images/I-03.png)
+
+    Click on the pencil icon to edit this file.  Specify correct values for the variables defined in this yaml file.  Refer to the *Description* section for an explanation of the variables.  After updating the variable values, click on **Save**. 
+
+3.  Define and execute the Azure DevOps Delivery Pipeline
+
+    Click on *Pipelines* menu on the left navigational panel.  Click on *Builds* and then click on *+ New* drop down menu.  Select *New build pipeline* menu item.  See screenshot below.    
+
+    ![alt tag](./images/I-04.png)
+
+    In the *New Pipeline* wizard, select **Azure Repos Git YAML** (first item) in the *Connect* page as shown below.
+
+    ![alt tag](./images/I-05.png)
+
+    Next, select `aks-aspnet-sqldb-rest` repository which you imported in Step [1] above.
+
+    In the *Configure* page, select *Existing Azure Pipelines YAML file**.  Then select the `azure-pipelines.yml` file in the **Path** drop down field.  Click **Create**.  See screenshot below.
+
+    ![alt tag](./images/I-06.png)
+
+    Click **Run**.
+
+    After the pipeline completes OK, verify the following
+    - A new container image for *Claims API* microservice was built and pushed into ACR
+    - A new version of the Claims API microservice (Pod) was deployed on AKS.  Verify the container image in the Pod manifest matches the container image (tag and Digest) pushed into ACR.
+    
+
 ### Explore advanced out of box Kubernetes (AKS) features
 
 In this section, we will explore a few advanced features provided by Kubernetes (AKS).
