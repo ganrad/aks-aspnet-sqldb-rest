@@ -1,0 +1,110 @@
+#
+# Microservice : Claims API Microservice
+# Language : ASP.NET Core 2.2
+# Date: 08-19-2019
+# Author: Ganesh Radhakrishnan (ganrad01@gmail.com)
+# 
+# Description:
+# Pipeline script (yaml) for building and deploying the 'claims-api' .NET Core microservice on AKS.
+# The container image will be built and pushed to an ACR & then deployed to AKS
+# 
+# IMPORTANT:
+# This pipeline requires the following variables to be set.
+#   - 'acrSvcConnection' :  Create a 'Service Connection' for ACR in Azure DevOps Services (Project settings) and then specify the service connection name.
+#   - 'ConnectionStrings.SqlServerDb' : The connection string for 'Azure SQL Server'.  Refer to 'appsettings.json' file.
+#   - 'azureSubscriptionEndpoint' : Azure DevOps ARM Connection name
+#   - 'azureContainerRegistry' : Azure Container Registry name
+#   - 'azureResourceGroup' : Azure Resource Group name
+#   - 'kubernetesCluster' : Azure Kubernetes Service cluster name
+# 
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+# trigger:
+# - azure-pipelines
+
+pool:
+  name: AKS-Agent-Pool
+  demands:
+  - Agent.OS -equals Linux
+  - k8s-cli -equals kubectl
+  - k8s-pm -equals helm
+
+variables:
+    azureSubscriptionEndpoint: <Specify Azure RM Connection>
+    azureContainerRegistry: <Azure Container Registry name - name.azurecr.io>
+    azureResourceGroup: <Azure Resource Group - name>
+    kubernetesCluster: <Azure Kubernetes Service - name>
+
+steps:
+- task: FileTransform@1
+  displayName: Replace values for DB connection string
+  name: replace_db_Values
+  inputs:
+    folderPath: '$(System.DefaultWorkingDirectory)/' 
+    fileType: json
+    targetFiles: appsettings.json
+
+- script: "echo 'Starting docker Build...'"
+  displayName: Build start
+  name: echo_build_start
+
+- task: Docker@2
+  displayName: Login to ACR
+  name: docker_login
+  inputs:
+    command: login
+    containerRegistry: $(acrSvcConnection)
+
+- task: Docker@2
+  displayName: Build and Push to ACR
+  name: docker_build_push
+  inputs:
+    command: buildAndPush
+    repository: claims-api
+    Dockerfile: ./dockerfile
+    tags:  |
+      latest
+      $(Build.BuildId)
+
+- script: "echo 'Finished docker Build...'"
+  displayName: Build complete
+  name: echo_build_complete
+
+- script: "echo 'Starting Helm Deploy...'"
+  displayName: Helm deploy start
+  name: echo_helm_start
+
+- task: HelmDeploy@0
+  displayName: Helm init
+  name: helm_init
+  inputs:
+    connectionType: Azure Resource Manager
+    azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+    azureResourceGroup: $(azureResourceGroup)
+    kubernetesCluster: $(kubernetesCluster)
+    command: init
+    upgradetiller: false
+    waitForExecution: true
+    arguments: --client-only
+
+- task: HelmDeploy@0
+  displayName: Helm upgrade
+  name: helm_deploy
+  inputs:
+    connectionType: Azure Resource Manager
+    azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+    azureResourceGroup: $(azureResourceGroup)
+    kubernetesCluster: $(kubernetesCluster)
+    command: upgrade
+    arguments: --namespace development --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId)
+    chartType: filepath
+    chartPath: $(System.DefaultWorkingDirectory)/claims-api
+    releaseName: aks-aspnetcore-lab
+    # overrideValues: image.repository=csulabtest.azurecr.io/claims-api,image.tag=$(Build.BuildId)
+    install: true
+    waitForExecution: true
+
+- script: "echo 'Finished Helm Deploy...'"
+  displayName: Helm deploy end
+  name: echo_helm_end
