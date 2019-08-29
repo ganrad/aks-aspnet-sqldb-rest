@@ -861,45 +861,73 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
     
     ![alt tag](./images/H-01.PNG)
 
-    Click on *Repos* menu on the left navigational panel.  Then click on *Import* as shown in the screenshot below.
+    Click on **Repos** menu on the left navigational panel.  Then click on **Import** as shown in the screenshot below.
 
-    ![alt tag](./images/I-01.png)
+    ![alt tag](./images/I-01.PNG)
 
     Specify the URL to your forked GitHub repository as shown in the screenshot below.  Remember to substitute your GitHub account name in the URL.
 
-    ![alt tag](./images/I-02.png)
+    ![alt tag](./images/I-02.PNG)
 
-2.  Update the Delivery Pipeline YAML file
+    Click on **Import**.
 
-    In the *Repos* view, click on `azure-pipelines.yml` file.  See screenshot below.
+2.  Create a *Service Connection* for ACR and copy the *Azure Resource Manager Connection* name
 
-    ![alt tag](./images/I-03.png)
+    Click on **Project settings** as shown in the screen shot below.
 
-    Click on the pencil icon to edit this file.  Specify correct values for the variables defined in this yaml file.  Refer to the *Description* section for an explanation of the variables.  After updating the variable values, click on **Save**. 
+    ![alt tag](./images/I-03.PNG)
 
-3.  Define and execute the Azure DevOps Delivery Pipeline
+    Click on **Service Connections** under *Project Settings*. Then click on **+ New service connection** and select **Docker registry**. See screenshot below.
+
+    ![alt tag](./images/I-04.PNG)
+
+    Select **Azure Container Registry** for **Registry type** and specify **acrSvcConnection** for **Connection name**. Select your Azure subscription in the **Azure subscription** drop down field.  In the **Azure container registry** field, select the ACR which you created in Section [E].  See screenshot below.
+
+    ![alt tag](./images/I-05.PNG)
+
+    Click **OK**.
+
+    Copy and save the *name* of the Azure Resource Manager Connection which was created when you deployed the *Build* pipeline in Section [F].  See screenshot below and copy the value circled in yellow. 
+
+    ![alt tag](./images/I-06.PNG)
+
+3.  Update the Delivery Pipeline YAML file
+
+    Back in the *Repos* view, click on `azure-pipelines.yml` file.  See screenshot below.
+
+    ![alt tag](./images/I-07.PNG)
+
+    Click on the pencil icon to edit this file.  See screenshot below.
+
+    ![alt tag](./images/I-08.PNG)
+
+    Specify correct values for the variables defined in this yaml file.  Refer to the *Description* section for an explanation of the variables.  After updating the variable values, click on **Commit**. 
+
+4.  Define and execute the Azure DevOps Delivery Pipeline
 
     Click on *Pipelines* menu on the left navigational panel.  Click on *Builds* and then click on *+ New* drop down menu.  Select *New build pipeline* menu item.  See screenshot below.    
 
-    ![alt tag](./images/I-04.png)
+    ![alt tag](./images/I-09.PNG)
 
     In the *New Pipeline* wizard, select **Azure Repos Git YAML** (first item) in the *Connect* page as shown below.
 
-    ![alt tag](./images/I-05.png)
+    ![alt tag](./images/I-10.PNG)
 
-    Next, select `aks-aspnet-sqldb-rest` repository which you imported in Step [1] above.
+    In the next tab, select the `aks-aspnet-sqldb-rest` repository which you imported in Step [1] above.
 
-    In the *Configure* page, select *Existing Azure Pipelines YAML file**.  Then select the `azure-pipelines.yml` file in the **Path** drop down field.  Click **Create**.  See screenshot below.
+    In the *Configure* page, select *Existing Azure Pipelines YAML file**.  Then select the `azure-pipelines.yml` file in the **Path** drop down field.  Click **Continue**.  See screenshot below.
 
-    ![alt tag](./images/I-06.png)
+    ![alt tag](./images/I-11.png)
 
-    Click **Run**.
+    In the **Review** tab, click on **Run** as shown in the screenshot below.
+
+    ![alt tag](./images/I-12.png)
 
     After the pipeline completes OK, verify the following
     - A new container image for *Claims API* microservice was built and pushed into ACR
+    - Verify a new revision for the Claims API microservice application (**aks-aspnetcore-lab**) was deployed successfully.  Check the update date and time.
     - A new version of the Claims API microservice (Pod) was deployed on AKS.  Verify the container image in the Pod manifest matches the container image (tag and Digest) pushed into ACR.
     
-
 ### Explore advanced out of box Kubernetes (AKS) features
 
 In this section, we will explore a few advanced features provided by Kubernetes (AKS).
