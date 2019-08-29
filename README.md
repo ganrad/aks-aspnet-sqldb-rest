@@ -925,8 +925,8 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     After the pipeline completes OK, verify the following
     - A new container image for *Claims API* microservice was built and pushed into ACR
-    - Verify a new revision for the Claims API microservice application (**aks-aspnetcore-lab**) was deployed successfully.  Check the update date and time.
-    - A new version of the Claims API microservice (Pod) was deployed on AKS.  Verify the container image in the Pod manifest matches the container image (tag and Digest) pushed into ACR.
+    - Verify a new revision for the Claims API microservice application (**aks-aspnetcore-lab**) was deployed successfully on AKS.  Check the update date and time of the release revision.
+    - Verify the container image in the Pod manifest matches the container image (tag and Digest) pushed into ACR.
     
 ### Explore advanced out of box Kubernetes (AKS) features
 
