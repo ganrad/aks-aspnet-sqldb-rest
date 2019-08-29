@@ -917,11 +917,11 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     In the *Configure* page, select *Existing Azure Pipelines YAML file**.  Then select the `azure-pipelines.yml` file in the **Path** drop down field.  Click **Continue**.  See screenshot below.
 
-    ![alt tag](./images/I-11.png)
+    ![alt tag](./images/I-11.PNG)
 
     In the **Review** tab, click on **Run** as shown in the screenshot below.
 
-    ![alt tag](./images/I-12.png)
+    ![alt tag](./images/I-12.PNG)
 
     After the pipeline completes OK, verify the following
     - A new container image for *Claims API* microservice was built and pushed into ACR
