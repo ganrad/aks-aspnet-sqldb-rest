@@ -893,7 +893,9 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
 3.  Update the Delivery Pipeline YAML file
 
-    Back in the *Repos* view, click on `azure-pipelines.yml` file.  See screenshot below.
+    Back in the *Repos* view, click on `azure-pipelines.yml` file.  Review the tasks defined in the pipeline.  You can refer to the [YAML schema reference](https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema) in the Azure DevOps Services documentation for a detailed reference guide and description of built-in tasks.
+
+    See screenshot below.
 
     ![alt tag](./images/I-07.PNG)
 
