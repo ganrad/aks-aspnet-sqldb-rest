@@ -40,6 +40,7 @@ For easy and quick reference, readers can refer to the following on-line resourc
 - [Azure Kubernetes Service (AKS) Documentation](https://docs.microsoft.com/en-us/azure/aks/)
 - [Azure Container Registry Documentation](https://docs.microsoft.com/en-us/azure/container-registry/)
 - [Azure DevOps Documentation](https://docs.microsoft.com/en-us/vsts/index?view=vsts)
+- [Zero instrumentation application monitoring for Kubernetes with Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/kubernetes)
 
 **Important Notes:**
 - AKS is a managed [Kubernetes](https://kubernetes.io/) service on Azure.  Please refer to the [AKS](https://azure.microsoft.com/en-us/services/container-service/) product web page for more details.
@@ -904,6 +905,12 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
     ![alt tag](./images/I-08.PNG)
 
     Specify correct values for the variables defined in this yaml file.  Refer to the *Description* section for an explanation of the variables.  After updating the variable values, click on **Commit**. 
+
+4.  Enable metrics collection using Application Insights SDK
+
+    In this step, we will enable metrics collection by updating the Claims API application code.  Once metrics collection is enabled, the Application Insights SDK will instrument the application at runtime and send telemetry (server requests, server response times, availability, failed requests etc) data to Azure.  This is a *Zero instrumentation* application monitoring solution (currently in public preview for AKS).  Refer to the *Prerequisites* section for links to Application Insights documentation.
+
+    In the *Repos* view, click on `
 
 4.  Create a Azure DevOps Delivery Pipeline and execute it
 
