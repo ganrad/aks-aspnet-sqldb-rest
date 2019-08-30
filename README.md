@@ -950,6 +950,8 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     In the next tab, select the `aks-aspnet-sqldb-rest` repository which you imported in Step [1] above.
 
+    ![alt tag](./images/I-19.PNG)
+
     In the *Configure* page, select *Existing Azure Pipelines YAML file**.  Then select the `azure-pipelines.yml` file in the **Path** drop down field.  Click **Continue**.  See screenshot below.
 
     ![alt tag](./images/I-11.PNG)
