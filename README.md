@@ -958,10 +958,11 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/I-12.PNG)
 
-    After the pipeline completes OK, verify the following
+    After the pipeline completes OK, verify the following (left as an exercise)
     - A new container image for *Claims API* microservice was built and pushed into ACR
     - Verify a new revision for the Claims API microservice application (**aks-aspnetcore-lab**) was deployed successfully on AKS.  Check the update date and time of the release revision.
     - Verify the container image in the Pod manifest matches the container image (tag and Digest) pushed into ACR.
+    - Use the Azure Portal and access the *Application Insights* instance.  Generate some API traffic and review the application map, live stream metrics, dashboards, server response times, backend (Azure SQL DB) calls and response times.
     
 ### Explore advanced out of box Kubernetes (AKS) features
 
