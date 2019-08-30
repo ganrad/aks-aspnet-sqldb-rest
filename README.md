@@ -908,11 +908,37 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
 4.  Enable metrics collection using Application Insights SDK
 
-    In this step, we will enable metrics collection by updating the Claims API application code.  Once metrics collection is enabled, the Application Insights SDK will instrument the application at runtime and send telemetry (server requests, server response times, availability, failed requests etc) data to Azure.  This is a *Zero instrumentation* application monitoring solution (currently in public preview for AKS).  Refer to the *Prerequisites* section for links to Application Insights documentation.
+    In this step, we will first create an *Application Insights* instance via the Azure Portal.  Login to the Azure portal and search for *Application Insights* under *All services*.  See screenshot below.
 
-    In the *Repos* view, click on `
+    ![alt tag](./images/I-15.PNG)
 
-4.  Create a Azure DevOps Delivery Pipeline and execute it
+    Click on **Application Insights**.  In the Application Insights blade, click on **+ Add**.
+
+    ![alt tag](./images/I-16.PNG)
+
+    Specify values for **Subscription**, **Resource Group**, **Name** and **Region** and click **Review + create**.
+
+    ![alt tag](./images/I-17.PNG)
+    
+    Click on the **Overview** tab of the *Application Insights* instance and copy the value of the **Instrumentation Key** as shown in the screenshot below.  We will need to specify this value when we update the application code.
+
+    ![alt tag](./images/I-18.PNG)
+
+    Enable metrics collection by updating the Claims API application code.  Once metrics collection is enabled, the Application Insights SDK will instrument the application at runtime and send telemetry (server requests, server response times, availability, failed requests etc) data to Azure.  This is a *Zero instrumentation* application monitoring solution (currently in public preview for AKS).  Refer to the *Prerequisites* section for links to Application Insights documentation.
+
+    In the *Repos* view, click on `Program.cs` file.  Edit this file by clicking on the *pencil* icon.  Uncomment line # 22 as shown in the screenshot below.
+
+    ![alt tag](./images/I-13.PNG)
+
+    Click on **Commit**.
+
+    Next, edit file 'appsettings.json`.  Update the Application Insights *Instrumentation Key* as shown in the screenshot below.
+
+    ![alt tag](./images/I-14.PNG)
+
+    Click on **Commit**.
+
+5.  Create a Azure DevOps Delivery Pipeline and execute it
 
     Click on *Pipelines* menu on the left navigational panel.  Click on *Builds* and then click on *+ New* drop down menu.  Select *New build pipeline* menu item.  See screenshot below.    
 
