@@ -604,8 +604,9 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
     Refer to the commands below to create the AKS cluster.  It will take a few minutes (< 10 mins) for the AKS cluster to get provisioned. 
     ```bash
-    # Create a 2 Node AKS cluster
-    $ az aks create --resource-group myResourceGroup --name akscluster --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.11.5"
+    # Create a 2 Node AKS cluster v1.14.5.  This is not the latest patch release.
+    # We will upgrade to the latest patch release in a subsequent lab/Section. 
+    $ az aks create --resource-group myResourceGroup --name akscluster --location westus2 --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.14.5"
     #
     # Verify state of AKS cluster
     $ az aks show -g myResourceGroup -n akscluster --output table
