@@ -973,7 +973,7 @@ In this section, we will explore value add features for administering & managing
 
 1.  [Scale the AKS cluster](https://docs.microsoft.com/en-us/azure/aks/scale-cluster)
 
-    Scaling the number of nodes in an AKS cluster is as simple as issuing one simple CLI command.  The cluster nodes can be scaled up or down by specifying the desired no. of nodes in the *--node-count** parameter.
+    Manually scaling the number of nodes in an AKS cluster is as simple as issuing one simple CLI command.  The cluster nodes can be scaled up or down by specifying the desired no. of nodes in the *--node-count** parameter.
 
     Login to the Linux VM via SSH.  Issue the commands in the terminal window.
     ```bash
@@ -991,6 +991,7 @@ In this section, we will explore value add features for administering & managing
     $ kubectl get nodes
     #
     ```
+    [Auto-scaling](https://docs.microsoft.com/en-us/azure/aks/cluster-autoscaler) an AKS cluster is currently in public preview.
 
 2.  [Upgrade an AKS cluster](https://docs.microsoft.com/en-us/azure/aks/upgrade-cluster)
 
