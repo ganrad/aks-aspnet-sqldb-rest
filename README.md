@@ -967,7 +967,51 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
     - Verify the container image in the Pod manifest matches the container image (tag and Digest) pushed into ACR.
     - Use the Azure Portal and access the *Application Insights* instance.  Generate some API traffic and review the application map, live stream metrics, dashboards, server response times, backend (Azure SQL DB) calls and response times.
     
-### Explore advanced out of box Kubernetes (AKS) features
+### Explore out of box AKS features
+
+In this section, we will explore value add features for administering & managing the AKS cluster.
+
+1.  [Scale the AKS cluster](https://docs.microsoft.com/en-us/azure/aks/scale-cluster)
+
+    Scaling the number of nodes in an AKS cluster is as simple as issuing one simple CLI command.  The cluster nodes can be scaled up or down by specifying the desired no. of nodes in the *--node-count** parameter.
+
+    Login to the Linux VM via SSH.  Issue the commands in the terminal window.
+    ```bash
+    # Retrieve the name of the node pool
+    $ az aks show --resource-group myResourceGroup --name akscluster --query agentPoolProfiles
+    #
+    # Scale the nodes in the node pool to 3.  Substitute the name of the node pool name.
+    # The scale command will run for a few minutes.
+    $ az aks scale --resource-group myResourceGroup --name akscluster --node-count 3 --nodepool-name <your node pool name>
+    #
+    # Verify the number of nodes in the node pool has scaled up by 1.  Check the value of 'count'.
+    $ az aks show --resource-group myResourceGroup --name akscluster --query agentPoolProfiles
+    #
+    # There should be 3 nodes listed in the output
+    $ kubectl get nodes
+    #
+    ```
+
+2.  [Upgrade an AKS cluster](https://docs.microsoft.com/en-us/azure/aks/upgrade-cluster)
+
+    Upgrading an AKS cluster is equally simple.  The nodes in the cluster are upgraded to the desired Kubernetes release sequentially one after the other.  This ensures the applications deployed on the cluster are available during the upgrade process and there is no disruption to the business.
+
+    Refer to the command snippet below.
+    ```bash
+    # List all the AKS versions 
+    $ az aks get-versions -l westus2 -o table
+    #
+    # List the available upgrade versions for the AKS cluster
+    $ az aks get-upgrades -g myResourceGroup -n akscluster -o table
+    #
+    # Upgrade the AKS cluster to v1.14.6.  Then confirm (y) the upgrade.
+    # Be patient.  The upgrade will run for a few minutes!
+    $ az aks upgrade -g myResourceGroup -n akscluster --kubernetes-version 1.14.6
+    #
+    # Verify the nodes have been upgraded by checking the value under the 'KubernetesVersion' column
+    $ az aks show -g myResourceGroup -n akscluster -o table
+    #
+    ```
 
 In this section, we will explore a few advanced features provided by Kubernetes (AKS).
 
