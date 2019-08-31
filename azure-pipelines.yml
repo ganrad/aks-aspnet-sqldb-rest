@@ -11,11 +11,11 @@
 # IMPORTANT:
 # This pipeline requires the following variables to be set.
 #   - 'acrSvcConnection' :  Create a 'Service Connection' for ACR in Azure DevOps Services (Project settings) and then specify the service connection name.
-#   - 'ConnectionStrings.SqlServerDb' : The connection string for 'Azure SQL Server'.  Refer to 'appsettings.json' file.
 #   - 'azureSubscriptionEndpoint' : Azure DevOps ARM Connection name
 #   - 'azureContainerRegistry' : Azure Container Registry name
 #   - 'azureResourceGroup' : Azure Resource Group name
 #   - 'kubernetesCluster' : Azure Kubernetes Service cluster name
+#   - 'sqlDbConnectionString' : Azure SQL DB Connection String value. Refer to 'appsettings.json' file.
 #
 # Additionally, ensure the 'pool' name matches the name of the Azure DevOps Pipeline Agent!
 # 
@@ -26,17 +26,21 @@
 # - azure-pipelines
 
 pool:
-  name: AKS-Agent-Pool
-  demands:
-  - Agent.OS -equals Linux
-  - k8s-cli -equals kubectl
-  - k8s-pm -equals helm
+  name: Default
+####
+#  name: AKS-Agent-Pool
+#  demands:
+#  - Agent.OS -equals Linux
+#  - k8s-cli -equals kubectl
+#  - k8s-pm -equals helm
+####
 
 variables:
     azureSubscriptionEndpoint: <Specify Azure RM Connection>
     azureContainerRegistry: <Azure Container Registry name - name.azurecr.io>
     azureResourceGroup: <Azure Resource Group - name>
     kubernetesCluster: <Azure Kubernetes Service - name>
+    sqlDbConnectionString: <Azure SQL DB Connection String>
 
 steps:
 - task: FileTransform@1
@@ -99,7 +103,7 @@ steps:
     azureResourceGroup: $(azureResourceGroup)
     kubernetesCluster: $(kubernetesCluster)
     command: upgrade
-    arguments: --namespace development --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId)
+    arguments: --namespace development --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)"
     chartType: filepath
     chartPath: $(System.DefaultWorkingDirectory)/claims-api
     releaseName: aks-aspnetcore-lab
