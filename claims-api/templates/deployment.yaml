@@ -24,7 +24,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-          - name: ConnectionStrings_SqlServerDb
+          - name: ConnectionStrings__SqlServerDb
             value: "{{ .Values.sqldb.connectionString }}"
           ports:
             - name: http
