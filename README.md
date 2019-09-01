@@ -21,7 +21,7 @@ This project demonstrates how to use Azure DevOps Services to build the applicat
 2.  A **GitHub** Account to fork and clone this GitHub repository.
 3.  A **Azure DevOps Services** (formerly Visual Studio Team Services) Account.  You can get a free Azure DevOps account by accessing the [Azure DevOps Services](https://azure.microsoft.com/en-us/services/devops/) web page.
 4.  Review [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview).  **Azure Cloud Shell** is an interactive, browser accessible shell for managing Azure resources.  You will be using the Cloud Shell to create the Bastion Host (Linux VM).
-5.  This project assumes readers/attendees are familiar with Linux Containers (*docker*), Kubernetes, DevOps (*Continuous Integration/Continuous Deployment*) concepts and developing/deploying Microservices in one or more programming languages.  If you are new to Linux Containers please first go thru the tutorials [here](https://docs.microsoft.com/en-us/dotnet/core/docker/intro-net-docker).
+5.  This project assumes readers/attendees are familiar with Linux Containers (*docker engine*), Kubernetes, DevOps (*Continuous Integration/Continuous Deployment*) concepts and developing/deploying Microservices in one or more programming languages.  If you are new to Linux Containers please first go thru the tutorials [here](https://docs.microsoft.com/en-us/dotnet/core/docker/intro-net-docker).
 6.  A **terminal emulator** is required to login (SSH) into the Linux VM (Bastion) host.  Download and install [Putty](https://putty.org/) or [Windows Sub-System for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 7.  (Optional) Download and install [Microsoft SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-2017) to manage SQL Server database artifacts.
 8.  (Optional) Download and install [Postman App](https://www.getpostman.com/apps), a REST API Client used for testing the Web API's.
@@ -856,6 +856,8 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
 ### I] Define and execute Claims API Delivery pipeline in Azure DevOps
 **Approx. time to complete this section: 1 Hour**
+
+In this section, we will build and deploy a *Continuous Delivery* pipeline in Azure DevOps Services.  A Continuous Delivery pipeline automates the build, test and deployment steps into a single release workflow.  We will also enable *Zero Instrumentation Monitoring" of the Claims API Microservice application via Azure Application Insights.
 
 1.  Import this GitHub repository into Azure DevOps *Repos*
 
