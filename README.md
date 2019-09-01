@@ -857,7 +857,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 ### I] Define and execute Claims API Delivery pipeline in Azure DevOps
 **Approx. time to complete this section: 1 Hour**
 
-In this section, we will build and deploy a *Continuous Delivery* pipeline in Azure DevOps Services.  A Continuous Delivery pipeline automates the build, test and deployment steps into a single release workflow.  We will also enable *Zero Instrumentation Monitoring" of the Claims API Microservice application via Azure Application Insights.
+In this section, we will build and deploy a *Continuous Delivery* pipeline in Azure DevOps Services.  A Continuous Delivery pipeline automates the build, test and deployment steps and combines them into a single release workflow.  We will also enable *Zero Instrumentation Monitoring" of the Claims API Microservice application via Azure Application Insights.
 
 1.  Import this GitHub repository into Azure DevOps *Repos*
 
