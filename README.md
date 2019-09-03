@@ -791,7 +791,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-14.PNG)
 
-    Click on the **helm** task (on the left).  In the detail pane on the right, fill out the values as shown in the screenshots below.  Specify correct value for the following fields.
+    Click on the **helm** task (on the left).  In the detail pane on the right, specify correct values for the following fields.
     - Display name = `helm upgrade`
     - Connection Type = `Azure Resource Manager`
     - Azure subscription
