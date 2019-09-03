@@ -769,7 +769,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-08.PNG)
 
-    In the **Stages** box under environment *Staging-A*, click on *1 job, 0 task*. 
+    In the **Stages** box under environment *Staging-A*, click on **1 job, 0 task**. 
 
     ![alt tag](./images/H-09.PNG)
 
@@ -791,11 +791,30 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-14.PNG)
 
-    Click on the **helm** task (on the left).  In the detail pane on the right, fill out the values as shown in the screenshots below.  Specify correct value for the Azure resource group.
+    Click on the **helm** task (on the left).  In the detail pane on the right, fill out the values as shown in the screenshots below.  Specify correct value for the following fields.
+    - Display name = `helm upgrade`
+    - Connection Type = `Azure Resource Manager`
+    - Azure subscription
+    - Azure resource group
+    - AKS Cluster name
+    - AKS namespace = `development`
+    - Command = `upgrade`
+    - Chart Type = `File Path`
+    - Chart Path = `$(System.DefaultWorkingDirectory/_claims-api-lab-CI/drop/claims-api`
+    - Release name = `aks-aspnetcore-lab`
+    - Arguments = `--set image.repository=<your-acr-repo>.azurecr.io/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString=$(sqlDbConnectionString)`
+
+    See screenshots below.
 
     ![alt tag](./images/H-15.PNG)
 
     ![alt tag](./images/H-16.PNG)
+
+    Switch to the **Variables** tab, define a new variable `sqlDbConnectionString` and specify correct value for the Azure SQL Server DB connection string.  See screenshots below.
+
+    ![alt tag](./images/H-23.PNG)
+
+    ![alt tag](./images/H-24.PNG)
 
     Click on **Save** to save the release pipeline.
 
