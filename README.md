@@ -459,35 +459,49 @@ In this step, we will deploy an instance of Azure Container Registry to store co
 ### F] Define and execute Claims API Build pipeline in Azure DevOps
 **Approx. time to complete this section: 1 Hour**
 
-In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (microsoft/dotnet).  Finally, the built application container is pushed into ACR which you deployed in Section [E].
+In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (mcr.microsoft.com/dotnet/core/aspnet).  Finally, the built application container is pushed into ACR an which you deployed in Section [E].
 
-Before proceeding with the next steps, feel free to go thru the **dockerfile** and Claims API source files in the GitHub repository.  This will help you understand how the container is built when the continuous integration (CI) pipeline is executed in Azure DevOps.
+Before proceeding with the next steps, take a few minutes and go thru the **dockerfile** and Claims API source files in the GitHub repository.  This will help you understand how the container is built when the continuous integration (CI) pipeline is executed in Azure DevOps Services.
 
-1.  Enable *Preview* features in Azure DevOps.
+1.  Enable/Verify *Preview* features in Azure DevOps Services.
 
-    If you haven't already done so, login to [Azure DevOps](https://www.visualstudio.com/team-services/) using your Microsoft Live ID (or Azure AD ID).  Click on your profile picture (top right corner) and then click on **Preview Features**.  Ensure the check box for feature **New YAML pipeline creation experience** is disabled.  See screenshots below.
+    If you haven't already done so, login to [Azure DevOps](https://www.visualstudio.com/team-services/) using your Microsoft Live ID (or Azure AD ID).  Click on your profile picture (top right corner) and then click on **Preview Features**as shown in the screenshot below.
 
     ![alt tag](./images/F-01.PNG)
 
-    ![alt tag](./images/F-02.PNG)
+    Ensure the following *Preview* features are **disabled**.
+    - Analytics Views (Optional)
+    - Experimental Themes
+    - Multi-stage pipelines
+    - New account manager (Optional)
+    - New service connections experience
+    - New Test Plans Page
+    - New user hub
+    - Project Permissions Settings page
 
 2.  Create an Azure DevOps *Organization* and *Project*.
 
-    Give the Organization a meaningful name (eg., <Your_Short_Name>) and then create a new *DevOps Project*. Give a name to your project (eg., **claims-api-lab**).  See screenshots below.
+    (Optional) Create an *Organization* and give it a meaningful name (eg., <Your_Short_Name>).
+
+    Next, create a new *DevOps Project*. Assign a meaningful name to your project (eg., **claims-api-lab**).  Select the **Private** project radio button.  See screenshots below.
 
     ![alt tag](./images/F-03.PNG)
 
     ![alt tag](./images/F-04.PNG)
 
-3.  Create a **Build** definition and define tasks which will execute as part of the application build process.
+3.  Create a **Build** pipeline and define tasks to build application binaries and a *claims-api* container image.
 
     Click on **Pipelines** in the left navigational menu and then select *Builds*.  Then click on **New pipeline**.
 
     ![alt tag](./images/F-05.PNG)
 
+    In the *New pipeline* definition wizard, click on **Use the classic editor** as shown in the screenshot below.  We will use the *YAML Delivery Pipeline** feature in a subsequent lab.
+
+    ![alt tag](./images/F-23.PNG)
+
     In the **Select a source** page, select *GitHub* as the source repository. Give your connection a *name* and then select *Authorize using OAuth* link.  Optionally, you can use a GitHub *personal access token* instead of OAuth.  When prompted, sign in to your **GitHub account**.  Then select *Authorize* to grant access to your Azure DevOps account.
 
-    Once authorized, select the **GitHub Repo** which you forked in Section [B] above.  Make sure you replace the account name in the **GitHub URL** with your account name.  Then hit continue.
+    Once authorized, select the **GitHub Repo** which you forked in Section [B] above.  Make sure you replace the account name in the **GitHub URL** with your account name.  Leave the value in the **Default branch for manual and scheduled builds** field as **master.  Then hit continue.
 
     ![alt tag](./images/F-06.PNG)
 
@@ -495,49 +509,31 @@ Before proceeding with the next steps, feel free to go thru the **dockerfile** a
 
     ![alt tag](./images/F-07.PNG)
 
-    Select *Default* in the **Agent Queue** field.  The VSTS build agent which you deployed in Section [D] connects to this *queue* and listens for build requests.
+    Select *Default* in the **Agent Pool** field.  The Azure DevOps build agent which you deployed in Section [D] is associated with this *pool* and listens for build requests.  When you queue a build, it executes on an agent from this *Default* pool.
 
     ![alt tag](./images/F-08.PNG)
 
     **Save** your build pipeline before proceeding.
 
-    On the top extensions menu in Azure DevOps, click on **Browse Marketplace** (Bag icon).  Then search for text **replace tokens**.  In the results list below, click on **Replace Tokens** (By Guillaume Rouchon) plug-in.  Click on **Get it free** to install this extension in your Azure DevOps account.
-
-    ![alt tag](./images/F-09.PNG)
-
-    Edit your DevOps build definition and click on the **Variables** tab as shown in the screenshot below.
-
-    ![alt tag](./images/F-10.PNG)
-
-    Define 3 variables **SQL_SRV_PREFIX**, **SQL_USER_ID** and **SQL_USER_PWD**.  These variables will be used to specify database connection string values for Azure SQL Server instance which was provisioned in Section [A].  Click on **+ Add** to add a new variable and specify the **correct value** for each variable as shown in the screenshot below.  For variable token descriptions, refer to Section [C] if needed.
-
-    ![alt tag](./images/F-11.PNG)
-
-    Switch back to the **Tasks** tab and click on the plus symbol beside **Agent job 1**.  Search by text **replace tokens** and then select the extension **Replace Tokens** which you just installed in the previous step.  Click **Add**.  See screenshot below.
-
-    ![alt tag](./images/F-12.PNG)
-
-    Move the **Replace tokens** task to the top of the task list (click and drag the task).  Then update values of fields **Display name** and **Target files** as shown in the screenshot below.
-
-    ![alt tag](./images/F-13.PNG)
+    ![alt tag](./images/F-24.PNG)
 
     Copy the **Helm** chart folder from the source directory to the staging directory.  Click on the plus symbol beside **Agent job 1**.  Search by text **copy**, select the extension **Copy Files** and click **Add**. See screenshot below.
 
     ![alt tag](./images/F-19.PNG)
     
-    Move the **Copy Files to:** task below the **Replace tokens** task.  Specify values for fields **Source folder**, **Contents** and **Target Folder** as shown in the screenshot below.
+    Move the **Copy Files to:** task to the top, above the **Build an image** task.  Specify values for fields **Source folder**, **Contents** and **Target Folder** as shown in the screenshot below.
 
     ![alt tag](./images/F-20.PNG)
 
     Next, we will package the application binary within a container image.  Review the **dockerfile** in the source repository to understand how the application container image is built.
 
-    Click on the **Build an image** task on the left panel.  Specify *Build container image* for **Display name** field and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription.  Click on **Authorize**.  In the **Azure Container Registry** field, select the ACR which you provisioned in Section [E] above.  Check to make sure the **Docker File** field is set to `dockerfile`.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)* and enable **Qualify Image Name** checkbox.  In the **Action** field, select *Build an image*.  Also enable **Include Latest Tag** checkbox.  See screenshot below.
+    Click on the **Build an image** task on the left panel.  Select *0.* for **Task version**.  Specify *Build container image* for **Display name** field and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription.  Click on **Authorize**.  In the **Azure Container Registry** field, select the ACR which you provisioned in Section [E] above.  In the **Action** field, select *Build an image*.  Check to make sure the **Docker File** field is set to `dockerfile`.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)* and enable **Qualify Image Name** checkbox.  Also enable **Include Latest Tag** checkbox.  See screenshot below.
 
     ![alt tag](./images/F-14.PNG)
 
-    Once the application container image has been built, we will push it into the ACR.
+    Once the application container image has been built, it has to be pushed into the ACR.
 
-    Click on the *Push an image* task on the left panel.  Specify *Push container image to ACR* for field **Display name** and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription (Under Available Azure service connections).  In the **Azure Container Registry** field, select the ACR which you provisioned in Section [E] above.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)* and enable **Qualify Image Name** checkbox.  In the **Action** field, select *Push an image*.  Also enable **Include Latest Tag** checkbox.  See screenshot below.
+    Click on the *Push an image* task on the left panel.  Select *0.* for **Task version**.  Specify *Push container image to ACR* for field **Display name** and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription (Under Available Azure service connections).  In the **Azure Container Registry** field, select the ACR which you provisioned in Section [E] above.  In the **Action** field, select *Push an image*.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)* and enable **Qualify Image Name** checkbox.  Enable **Include Latest Tag** checkbox.  See screenshot below.
 
     ![alt tag](./images/F-15.PNG)
 
@@ -551,7 +547,7 @@ Before proceeding with the next steps, feel free to go thru the **dockerfile** a
 
     ![alt tag](./images/F-22.PNG)
 
-4.  Run the application container build.
+4.  Run the application and container image builds.
 
     At the top of the page, click **Save and Queue** to save the build definition and queue it for execution. Click on the **Build number** on the top of the page to view the progress of the build.  Wait for the build process to finish.  When all build tasks complete OK and the build process finishes, you will see the screen below.
 
