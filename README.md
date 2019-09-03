@@ -459,7 +459,7 @@ In this step, we will deploy an instance of Azure Container Registry to store co
 ### F] Define and execute Claims API Build pipeline in Azure DevOps
 **Approx. time to complete this section: 1 Hour**
 
-In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (mcr.microsoft.com/dotnet/core/aspnet).  Finally, the built application container is pushed into ACR an which you deployed in Section [E].
+In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (mcr.microsoft.com/dotnet/core/aspnet).  Finally, the application container image is pushed into the ACR which you deployed in Section [E].
 
 Before proceeding with the next steps, take a few minutes and go thru the **dockerfile** and Claims API source files in the GitHub repository.  This will help you understand how the container is built when the continuous integration (CI) pipeline is executed in Azure DevOps Services.
 
@@ -495,7 +495,7 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
     ![alt tag](./images/F-05.PNG)
 
-    In the *New pipeline* definition wizard, click on **Use the classic editor** as shown in the screenshot below.  We will use the *YAML Delivery Pipeline** feature in a subsequent lab.
+    In the *New pipeline* definition wizard, click on **Use the classic editor** as shown in the screenshot below.  We will use the **YAML Delivery Pipeline** feature in a subsequent lab.
 
     ![alt tag](./images/F-23.PNG)
 
