@@ -662,9 +662,16 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     # Make sure you are in the *aks-aspnet-sqldb-rest* directory.
     $ cd ~/git-repos/aks-aspnet-sqldb-rest
     #
-    # Use Helm to deploy the Claims API microservice on AKS.  Make sure to specify the name
-    # of your ACR repository in the '--set image.repository=<your-acr-repo>.azurecr.io/claims-api' parameter.
-    $ helm upgrade aks-aspnetcore-lab ./claims-api --install --namespace development --set image.repository=<your-acr-repo>.azurecr.io/claims-api
+    # Use Helm to deploy the Claims API microservice on AKS.  Make sure to specify -
+    #   - Name of ACR repository in parameter 'image.repository'.  Substitute the correct value for the name of your 
+    #     ACR.
+    #     eg., --set image.repository=<your-acr-repo>.azurecr.io/claims-api
+    #
+    #   - Azure SQL Server DB Connection string in parameter 'sqldb.connectionString'.  Remember to substitute the
+    #     correct values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD.
+    #     eg., --set sqldb.connectionString="Server=tcp:#{SQL_SRV_PREFIX}#.database.windows.net;Initial Catalog=ClaimsDB;Persist Security Info=False;User ID=#{SQL_USER_ID}#;Password=#{SQL_USER_PWD}#;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    # 
+    $ helm upgrade aks-aspnetcore-lab ./claims-api --install --namespace development --set image.repository=<your-acr-repo>.azurecr.io/claims-api --set sqldb.connectionString="Server=tcp:#{SQL_SRV_PREFIX}#.database.windows.net,1433;Initial Catalog=ClaimsDB;Persist Security Info=False;User ID=#{SQL_USER_ID}#;Password=#{SQL_USER_PWD}#;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     #
     # List the Kubernetes namespaces.  Verify that the 'development' namespace got created.
     $ kubectl get namespaces
