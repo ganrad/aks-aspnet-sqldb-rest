@@ -491,7 +491,7 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
 3.  Create a **Build** pipeline and define tasks to build application binaries and a *claims-api* container image.
 
-    Click on **Pipelines** in the left navigational menu and then select *Builds*.  Then click on **New pipeline**.
+    Click on **Pipelines** in the left navigational menu and select *Builds*.  Then click on **New pipeline**.
 
     ![alt tag](./images/F-05.PNG)
 
@@ -501,15 +501,15 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
     In the **Select a source** page, select *GitHub* as the source repository. Give your connection a *name* and then select *Authorize using OAuth* link.  Optionally, you can use a GitHub *personal access token* instead of OAuth.  When prompted, sign in to your **GitHub account**.  Then select *Authorize* to grant access to your Azure DevOps account.
 
-    Once authorized, select the **GitHub Repo** which you forked in Section [B] above.  Make sure you replace the account name in the **GitHub URL** with your account name.  Leave the value in the **Default branch for manual and scheduled builds** field as **master.  Then hit continue.
+    Once authorized, select the **GitHub Repo** which you forked in Section [B] above.  Make sure you replace the account name in the **GitHub URL** with your account name.  Leave the value in the **Default branch for manual and scheduled builds** field as **master**.  Then hit continue.
 
     ![alt tag](./images/F-06.PNG)
 
-    Search for text *Docker* in the **Select a template** field and then select *Docker container* task.  Then click apply.
+    Search for text *Docker* in the **Select a template** field and then select *Docker container* task.  Click **Apply**.
 
     ![alt tag](./images/F-07.PNG)
 
-    Select *Default* in the **Agent Pool** field.  The Azure DevOps build agent which you deployed in Section [D] is associated with this *pool* and listens for build requests.  When you queue a build, it executes on an agent from this *Default* pool.
+    Select *Default* in the **Agent Pool** field.  The Azure DevOps build agent which you deployed in Section [D] is connected to this *pool* and listens for build requests on a queue.  When you queue a build, the build executes on an agent which is connected to this *Default* pool.
 
     ![alt tag](./images/F-08.PNG)
 
@@ -527,13 +527,13 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
     Next, we will package the application binary within a container image.  Review the **dockerfile** in the source repository to understand how the application container image is built.
 
-    Click on the **Build an image** task on the left panel.  Select *0.* for **Task version**.  Specify *Build container image* for **Display name** field and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription.  Click on **Authorize**.  In the **Azure Container Registry** field, select the ACR which you provisioned in Section [E] above.  In the **Action** field, select *Build an image*.  Check to make sure the **Docker File** field is set to `dockerfile`.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)* and enable **Qualify Image Name** checkbox.  Also enable **Include Latest Tag** checkbox.  See screenshot below.
+    Click on the **Build an image** task on the left panel.  Select *0.* for **Task version**.  Specify *Build container image* for **Display name** field and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription.  Click on **Authorize**.  In the **Azure Container Registry** field, select the ACR which you provisioned in Section [E] above.  In the **Action** field, select *Build an image*.  Check to make sure the **Docker File** field is set to `dockerfile`.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)*.  Enable **Qualify Image Name** and **Include Latest Tag** checkboxes.  See screenshot below.
 
     ![alt tag](./images/F-14.PNG)
 
     Once the application container image has been built, it has to be pushed into the ACR.
 
-    Click on the *Push an image* task on the left panel.  Select *0.* for **Task version**.  Specify *Push container image to ACR* for field **Display name** and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription (Under Available Azure service connections).  In the **Azure Container Registry** field, select the ACR which you provisioned in Section [E] above.  In the **Action** field, select *Push an image*.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)* and enable **Qualify Image Name** checkbox.  Enable **Include Latest Tag** checkbox.  See screenshot below.
+    Click on the *Push an image* task on the left panel.  Select *0.* for **Task version**.  Specify *Push container image to ACR* for field **Display name** and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription (Under Available Azure service connections).  In the **Azure Container Registry** field, select the ACR which you provisioned in Section [E] above.  In the **Action** field, select *Push an image*.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)*. Enable **Qualify Image Name** and **Include Latest Tag** checkboxes.  See screenshot below.
 
     ![alt tag](./images/F-15.PNG)
 
