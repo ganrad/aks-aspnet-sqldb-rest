@@ -312,7 +312,7 @@ Before proceeding, login into the Linux VM using SSH.
     Login to the Linux VM using another SSH terminal session.  Use the **Curl** command to invoke the Claims API end-point.  Refer to the command snippet below.
     ```bash
     # Use curl command to hit the claims api end-point.  
-    $ curl -i http://localhost:5000/api/claims
+    $ curl -i http://localhost:5000/api/v1/claims
     #
     ```
 
@@ -348,7 +348,7 @@ Before proceeding, login into the Linux VM using SSH.
     Switch to the other SSH terminal window and invoke the Claims API HTTP end-point again using **Curl** command.
     ```bash
     # Use curl command to hit the claims api end-point.  
-    $ curl -i http://localhost:5000/api/claims
+    $ curl -i http://localhost:5000/api/v1/claims
     #
     ```
 
@@ -711,22 +711,22 @@ The above command will list the **IP Address** (both internal and external) for 
 
 Use the *External-IP* address in the API end-point URL when invoking the Claims API. Substitute the *External-IP* address in place of **Azure_load_balancer_ip**.
 
-The REST API exposed by this microservice can be accessed by using the _context-path_ (or Base Path) `api/claims/`.  The REST API endpoint's exposed are as follows.
+The REST API exposed by this microservice can be accessed by using the _context-path_ (or Base Path) `api/v1/claims/`.  The REST API endpoint's exposed are as follows.
 
 URI Template | HTTP VERB | DESCRIPTION
 ------------ | --------- | -----------
-api/claims/ | GET | List all available medical claims records in the backend database.
-api/claims/{id} | GET | Retrieve all details for a medical claim by `claim id`
-api/claims/fetch?{claimno=value} | GET | Search and retrieve all details for a specific claim record by `claim number` 
-api/claims/ | POST | Create/Store a new medical claim record in the backend database.  The API consumes and produces claims records in `JSON` format.
-api/claims/{id} | PUT | Update an existing claims record in the backend database. The API consumes and produces claims records in `JSON` format.
-api/claims/{id} | DELETE | Delete a claim record in the backend database.
+api/v1/claims/ | GET | List all available medical claims records in the backend database.
+api/v1/claims/{id} | GET | Retrieve all details for a medical claim by `claim id`
+api/v1/claims/fetch?{claimno=value} | GET | Search and retrieve all details for a specific claim record by `claim number` 
+api/v1/claims/ | POST | Create/Store a new medical claim record in the backend database.  The API consumes and produces claims records in `JSON` format.
+api/v1/claims/{id} | PUT | Update an existing claims record in the backend database. The API consumes and produces claims records in `JSON` format.
+api/v1/claims/{id} | DELETE | Delete a claim record in the backend database.
 
 You can access the Claims REST API (end-points) using a Web browser or by using a REST client such as *Postman*.
 
 Claims API URL's examples:
-- http://<Azure_load_balancer_ip>/api/claims
-- http://<Azure_load_balancer_ip>/api/claims/100
+- http://<Azure_load_balancer_ip>/api/v1/claims
+- http://<Azure_load_balancer_ip>/api/v1/claims/100
 
 Congrats!!  You have just built an *ASP.NET Core Web API* and deployed it as a containerized microservice on *Azure Kubernetes Service*!!
 
@@ -896,7 +896,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     - Switch to a browser window and invoke the Claims API end-points.
 
-      URL - `http://<Azure_load_balancer_ip>/api/claims`
+      URL - `http://<Azure_load_balancer_ip>/api/v1/claims`
     - Invoke the Swagger end-point to view the generated `swagger.json` specification for the Claims API.
 
       URL - `http://<Azure_load_balancer_ip>/swagger/v1/swagger.json`

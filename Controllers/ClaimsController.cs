@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ClaimsApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class ClaimsController : ControllerBase
     {
