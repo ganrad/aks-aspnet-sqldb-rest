@@ -747,11 +747,11 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-03.PNG)
 
-    In the *Select a Template* page, click on *Empty job*.  See screenshot below.
+    In the *Select a Template* page, click on **Empty job**.  See screenshot below.
 
     ![alt tag](./images/H-04.PNG)
 
-    In the *Stage* page, specify *Dev-Env* as the name for the environment.  Then click on *+Add* besides *Artifacts* (under *Pipeline* tab) as shown in the screenshot below.
+    In the *Stage* page, specify **Dev-Env** as the name for the environment.  Then click on *+Add* besides *Artifacts* (under *Pipeline* tab) as shown in the screenshot below.
 
     ![alt tag](./images/H-05.PNG)
 
@@ -773,11 +773,11 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-09.PNG)
 
-    Click on *Agent job* under the *Tasks* tab and make sure **Agent pool** value is set to *Default*.  Leave the remaining field values as is.  See screenshot below.
+    Click on **Agent job** under the *Tasks* tab and make sure **Agent pool** value is set to *Default*.  Leave the remaining field values as is.  See screenshot below.
 
     ![alt tag](./images/H-10.PNG)
 
-    Click on the ** + ** symbol beside **Agent job** and search for text **helm** in the *Search* text box (besides **Add tasks**). Select **Package and deploy Helm charts** plug-in and click on **Add**.  See screenshot below.
+    Click on the **" + "** symbol beside **Agent job** and search for text **helm** in the *Search* text box (besides **Add tasks**). Select **Package and deploy Helm charts** plug-in and click on **Add**.  See screenshot below.
 
     ![alt tag](./images/H-11.PNG)
 
@@ -787,7 +787,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-13.PNG)
 
-    Again, click on the ** + ** symbol beside **Agent job** and search for text *helm*, select extension **Package and deploy Helm charts** and click **Add**.  See screenshot below.
+    Again, click on the **" + "** symbol beside **Agent job** and search for text *helm*, select extension **Package and deploy Helm charts** and click **Add**.  See screenshot below.
 
     ![alt tag](./images/H-14.PNG)
 
