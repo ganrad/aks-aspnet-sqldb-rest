@@ -888,9 +888,17 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     The git commit will trigger a new build (**Continuous Integration**) for the Claims API microservice in Azure DevOps Services.  Upon successful completion of the build process, the updated container images will be pushed into the ACR and the release pipeline (**Continuous Deployment**) will be executed.
 
+    Verify the status of the *Build process* in Azure DevOps Services.  See screenshot below.
+
+    ![alt tag](./images/H-31.PNG)
+
     As part of the Release (CD) process, the Kubernetes deployment object for the microservice in **development** namespace will be updated with the newly built container image.  This action will trigger a **Rolling** deployment of Claims API microservice in AKS.  During the *Rolling* deployment, consumers of the *Claims API* microservice will not experience any downtime.  The **aks-aspnetcore-lab-claims-api** container (*Pod*) from the old deployment (version 1.0) will be deleted and a new deployment (version 2.0) will be instantiated in AKS.  The new deployment will spawn a new container instance from the latest container image pushed into ACR.   
 
     After the *Claims API* microservice is deployed in the **Dev-Env** region (Namespace = development), you will experience first hand how to **Approve** and promote the containerized application to the **QA-Env** region (Namespace = qa-test) on AKS.  The new deployment will use the latest container image from ACR and spin up a new container (*Pod*) in the **qa-test** namespace on AKS.
+
+    Verify the status of the *Release process* in Azure DevOps Services. See screenshot below.
+
+    ![alt tag](./images/H-32.PNG)
 
 4.  Verify the updated microservice container image was built and pushed to AKS thru Azure DevOps CI and CD pipelines.
 
