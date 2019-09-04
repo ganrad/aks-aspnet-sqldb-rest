@@ -728,7 +728,7 @@ Claims API URL's examples:
 - http://<Azure_load_balancer_ip>/api/claims
 - http://<Azure_load_balancer_ip>/api/claims/100
 
-Congrats!  You have just built an *ASP.NET Core Web API* and deployed it as a containerized microservice on *Azure Kubernetes Service*!!
+Congrats!!  You have just built an *ASP.NET Core Web API* and deployed it as a containerized microservice on *Azure Kubernetes Service*!!
 
 In the next section, we will define a *Release Pipeline* in Azure DevOps to automate containerized application deployments on AKS.
 
@@ -908,7 +908,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
       ![alt tag](./images/H-22.PNG)
 
-    Congrats !!  At this point, you have successfully built the *Claims API* microservice, packaged this application within a container image, pushed the container image into an ACR instance and finally deployed the containerized application in both **Dev-Env** and **QA-Env** regions (namespaces) on AKS.  Cool !!
+    Congrats!!  At this point, you have successfully built the *Claims API* microservice, packaged this application within a container image, pushed the container image into an ACR instance and finally deployed the containerized application in both **Dev-Env** and **QA-Env** regions (namespaces) on AKS.  Cool!!
 
 ### I] Define and execute Claims API *Delivery Pipeline* in Azure DevOps
 **Approx. time to complete this section: 1 Hour**
