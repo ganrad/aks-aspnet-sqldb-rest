@@ -751,7 +751,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-04.PNG)
 
-    In the *Stage* page, specify **Dev-Env** as the name for the environment.  Then click on *+Add* besides *Artifacts* (under *Pipeline* tab) as shown in the screenshot below.
+    In the *Stage* page, specify **Dev-Env** as the name for the environment.  Then click on **+Add** besides *Artifacts* (under *Pipeline* tab) as shown in the screenshot below.
 
     ![alt tag](./images/H-05.PNG)
 
@@ -815,6 +815,34 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
     ![alt tag](./images/H-23.PNG)
 
     ![alt tag](./images/H-24.PNG)
+
+    In Azure DevOps Services, each **Stage** in a release pipeline represents a deployment target.  A deployment target in turn represents an application platform (PaaS service) hosted in a given region.  AKS is used as the PaaS service in this project.  It is worth mentioning that with Azure DevOps Services, applications can also be easily deployed on **Azure App Service** PaaS.
+
+    Next, we will add another deployment target for **QA region**.  The *Claims API microservice* will first be deployed to AKS in the **Dev** region and if the deployment succeeds, the application would be deployed to **QA** region.  In AKS, a **Namespace** is usually used to denote a *Region* (eg., Development, QA, Pre-production and Production).
+
+    In the **Pipeline** tab, select stage **Dev-Env** and click on **+ Add** besides **Stages**. Click on **Clone stage** and specify **QA-Env** as the name of the stage.  See screenshots below.
+
+    ![alt tag](./images/H-25.PNG)
+
+    ![alt tag](./images/H-26.PNG)
+
+    Next, click on **Pre-deployment conditions** for stage *QA-Env* as shown in the screenshot below.
+
+    ![alt tag](./images/H-27.PNG)
+
+    In the **Pre-deployment conditions** window under **Triggers**, select **After Stage** (*Dev-Env* should be pre-selected).  This setting ensures *QA-Env* stage is triggered only after *Dev-Env* stage completes successfully.  Enable **Pre-deployment approvals** and select one or two users who can approve deployment of application to *QA-Env* region.  See screenshot below.
+
+    ![alt tag](./images/H-28.PNG)
+
+    Explore other **Pre-deployment conditions** settings.
+
+    Click on **1 job, 2 tasks** under **QA-Env** stage.
+
+    ![alt tag](./images/H-29.PNG)
+
+    Click on **helm upgrade** task and change the Kubernetes **Namespace** to **qa-test** as shown in the figure below. Leave all other field values as is.
+
+    ![alt tag](./images/H-30.PNG)
 
     Click on **Save** to save the release pipeline.
 
