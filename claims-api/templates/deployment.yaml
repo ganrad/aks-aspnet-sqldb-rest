@@ -32,7 +32,7 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /api/claims/100
+              path: /api/v1/claims/100
               port: http
               initialDelaySeconds: {{ .Values.checks.livenessInitialDelay }}
               periodSeconds: {{ .Values.checks.livenessProbeDelay }}
