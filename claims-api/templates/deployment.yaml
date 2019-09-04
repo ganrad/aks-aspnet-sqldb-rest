@@ -38,7 +38,7 @@ spec:
               periodSeconds: {{ .Values.checks.livenessProbeDelay }}
           readinessProbe:
             httpGet:
-              path: /api/claims/100
+              path: /api/v1/claims/100
               port: http
           resources:
 {{ toYaml .Values.resources | indent 12 }}
