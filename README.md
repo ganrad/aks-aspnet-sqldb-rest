@@ -840,7 +840,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-29.PNG)
 
-    Click on **helm upgrade** task and change the Kubernetes **Namespace** to **qa-test** as shown in the figure below. Leave all other field values as is.
+    Click on **helm upgrade** task.  Change the Kubernetes **Namespace** to **qa-test** and the Helm **Release Name** to **aks-aspnetcore-lab-qa** as shown in the screenshot below. Leave all other field values as is.
 
     ![alt tag](./images/H-30.PNG)
 
