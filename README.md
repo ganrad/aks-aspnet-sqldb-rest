@@ -111,7 +111,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
 
     ![alt tag](./images/B-01.PNG)
 
-2.  Open the [Azure Cloud Shell](https://shell.azure.com) in a separate browser tab and use the command below to create a **CentOS 7.4** VM on Azure.  Make sure you specify the correct **resource group** name and provide a value for the *password*.  Once the command completes, it will print the VM connection info. in the JSON message (response).  Save the **Public IP address**, **Login name** and **Password** info. in a file.  Alternatively, if you prefer you can use SSH based authentication to connect to the Linux VM.  The steps for creating and using an SSH key pair for Linux VMs in Azure is described [here](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys).  You can then specify the location of the public key with the `--ssh-key-path` option to the `az vm create ...` command.
+2.  Open the [Azure Cloud Shell](https://shell.azure.com) in a separate browser tab and use the command below to create a **CentOS 7.5** VM on Azure.  Make sure you specify the correct **resource group** name and provide a value for the *password*.  Once the command completes, it will print the VM connection info. in the JSON message (response).  Save the **Public IP address**, **Login name** and **Password** info. in a file.  Alternatively, if you prefer you can use SSH based authentication to connect to the Linux VM.  The steps for creating and using an SSH key pair for Linux VMs in Azure is described [here](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys).  You can then specify the location of the public key with the `--ssh-key-path` option to the `az vm create ...` command.
     ```bash
     $ az vm create --resource-group myResourceGroup --name k8s-lab --image OpenLogic:CentOS:7.5:latest --size Standard_B2s --generate-ssh-keys --admin-username labuser --admin-password <password> --authentication-type password
     ```
@@ -509,7 +509,7 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
     ![alt tag](./images/F-07.PNG)
 
-    Select *Default* in the **Agent Pool** field.  The Azure DevOps build agent which you deployed in Section [D] is connected to this *pool* and listens for build requests on a queue.  When you queue a build, the build executes on an agent which is connected to this *Default* pool.
+    Select *Default* in the **Agent Pool** field.  The Azure DevOps build agent which you deployed in Section [D] is connected to this *pool* and listens for build requests on a queue.  When you queue a build, the build executes on an agent which is connected to this **Default** pool.
 
     ![alt tag](./images/F-08.PNG)
 
@@ -537,7 +537,7 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
     ![alt tag](./images/F-15.PNG)
 
-    Lastly, publish the contents of the **Helm** chart directory to the artifact staging (**drop**) location.  The Helm chart will be used in the release pipeline (Section [H]) for deploying the Claims API microservice. 
+    Next, publish the contents of the **Helm** chart directory to the artifact staging (**drop**) location.  The Helm chart will be used in the release pipeline (Section [H]) for deploying the Claims API microservice on AKS. 
     
     Click on the plus symbol beside **Agent job 1**.  Search by text **publish artifact**, select the extension **Publish Build Artifacts** and click **Add**.  See screenshot below.
 
@@ -818,7 +818,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     Click on **Save** to save the release pipeline.
 
-    We have now finished defining the **Release pipeline** for the Claims API microservice.  This pipeline will in turn be triggered when the build pipeline completes Ok.
+    We have now finished defining the **Release pipeline** for the Claims API microservice.  This pipeline will in turn be triggered when the build pipeline completes successfully.
 
 2.  Enable Continuous Integration.
 
