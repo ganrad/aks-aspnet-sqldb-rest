@@ -456,7 +456,7 @@ In this step, we will deploy an instance of Azure Container Registry to store co
 
     ![alt tag](./images/E-02.PNG)
 
-### F] Define and execute Claims API Build pipeline in Azure DevOps
+### F] Define and execute Claims API *Build Pipeline* in Azure DevOps
 **Approx. time to complete this section: 1 Hour**
 
 In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (mcr.microsoft.com/dotnet/core/aspnet).  Finally, the application container image is pushed into the ACR which you deployed in Section [E].
@@ -732,7 +732,7 @@ Congrats!  You have just built an *ASP.NET Core Web API* and deployed it as a co
 
 In the next section, we will define a *Release Pipeline* in Azure DevOps to automate containerized application deployments on AKS.
 
-### H] Define and execute Claims API Release pipeline in Azure DevOps
+### H] Define and execute Claims API *Release Pipeline* in Azure DevOps
 **Approx. time to complete this section: 1 Hour**
 
 1.  Create a *Release Pipeline* for the Claims API microservice.
@@ -751,7 +751,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-04.PNG)
 
-    In the *Stage* page, specify *Staging-A* as the name for the environment.  Then click on *+Add* besides *Artifacts* (under *Pipeline* tab) as shown in the screenshot below.
+    In the *Stage* page, specify *Dev-Env* as the name for the environment.  Then click on *+Add* besides *Artifacts* (under *Pipeline* tab) as shown in the screenshot below.
 
     ![alt tag](./images/H-05.PNG)
 
@@ -769,7 +769,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-08.PNG)
 
-    In the **Stages** box under environment *Staging-A*, click on **1 job, 0 task**. 
+    In the **Stages** box under environment *Dev-Env*, click on **1 job, 0 task**. 
 
     ![alt tag](./images/H-09.PNG)
 
@@ -876,7 +876,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
       ![alt tag](./images/H-22.PNG)
 
-### I] Define and execute Claims API Delivery pipeline in Azure DevOps
+### I] Define and execute Claims API *Delivery Pipeline* in Azure DevOps
 **Approx. time to complete this section: 1 Hour**
 
 In this section, we will build and deploy a *Continuous Delivery* pipeline in Azure DevOps Services.  A Continuous Delivery pipeline automates the build, test and deployment steps and combines them into a single release workflow.  We will also enable *Zero Instrumentation Monitoring* of the Claims API Microservice application via Azure Application Insights.
