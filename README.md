@@ -361,15 +361,17 @@ You have now successfully tested the Claims API microservice locally on this VM.
 ### D] Deploy the Azure DevOps Services build agent (Container)
 **Approx. time to complete this section: 30 minutes**
 
-Use one of the options below for deploying the *Azure DevOps Services* self-hosted build agent on the Linux VM.  **Option 1** is recommended for users who are well versed in container technology and are familiar with docker engine. Alternatively, if you are new to containers, it's best to follow along the instructions in **Option 2**.
+Use one of the options below for deploying the *Azure DevOps Services* self-hosted build agent on the Linux VM.  **Option 1** is recommended for advanced users who are well versed in container technology and are familiar with docker engine. Alternatively, if you are new to containers, it's best to follow along the instructions in **Option 2**.
+
+Although the Azure DevOps build agent (formerly VSTS build agent) container image is currently supported and available for download from docker hub, for production deployments Microsoft recommends customers to build their own Azure DevOps agent container images (*Option 1*).
 
 **Option 1:**
-Although the Azure DevOps build agent (formerly VSTS build agent) container image is currently supported and available for download from docker hub, Microsoft recommends customers to build their own Azure DevOps agent container images.  This solution affords more flexibility allowing customers to include additional application build tools and utilities within the image to meet their needs and requirements.  To run the Azure DevOps build agent, you can either follow the Microsoft recommended approach by referring to one of the links below or follow the instructions in this Section to download and use the Azure DevOps/VSTS build agent.
+This solution affords more flexibility allowing customers to include additional application build tools and utilities within the image to meet their specific needs and requirements.  To build and run the Azure DevOps self-hosted build agent, refer to one of the links below. 
 - [Build and deploy Azure DevOps Pipeline Agent on AKS](https://github.com/ganrad/Az-DevOps-Agent-On-AKS)
 - [Azure DevOps Services Self-hosted Linux agents](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/v2-linux?view=azure-devops)
 
 **Option 2:**
-In this step, we will download the [Azure DevOps (VSTS) build agent](https://hub.docker.com/_/microsoft-azure-pipelines-vsts-agent) container image from docker hub and run a container instance on the Linux VM.  In subsequent steps, we will configure *Azure DevOps Services* to use this build container as a *self-hosted* agent to perform application and container builds.
+Download the [Azure DevOps (VSTS) build agent](https://hub.docker.com/_/microsoft-azure-pipelines-vsts-agent) container image from docker hub and run a container instance on the Linux VM.  
 
 If you haven't already, login to the Linux VM using a SSH terminal session.
 
@@ -452,6 +454,8 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
     ```
 
     Minimize this terminal window for now as you will only be using it to view the results of a Azure DevOps build.  Before proceeding, open another terminal (WSL Ubuntu/Putty) window and login (SSH) into the Linux VM.
+
+In subsequent sections, we will configure *Azure DevOps Services* to use the build container as a *self-hosted* agent to perform application and container builds.
 
 ### E] Deploy Azure Container Registry (ACR)
 **Approx. time to complete this section: 10 minutes**
