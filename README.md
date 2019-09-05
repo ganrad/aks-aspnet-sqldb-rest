@@ -22,7 +22,7 @@ This project demonstrates how to use Azure DevOps Services to build the applicat
 3.  A **Azure DevOps Services** (formerly Visual Studio Team Services) Account.  You can get a free Azure DevOps account by accessing the [Azure DevOps Services](https://azure.microsoft.com/en-us/services/devops/) web page.
 4.  Review [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview).  **Azure Cloud Shell** is an interactive, browser accessible shell for managing Azure resources.  You will be using the Cloud Shell to create the Bastion Host (Linux VM).
 5.  This project assumes readers/attendees are familiar with Linux Containers (*docker engine*), Kubernetes, DevOps (*Continuous Integration/Continuous Deployment*) concepts and developing/deploying Microservices in one or more programming languages.  If you are new to Linux Containers please first go thru the tutorials [here](https://docs.microsoft.com/en-us/dotnet/core/docker/intro-net-docker).
-6.  A **terminal emulator** is required to login (SSH) into the Linux VM (Bastion) host.  Download and install [Putty](https://putty.org/) or [Windows Sub-System for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+6.  A **terminal emulator** is required to login (SSH) into the Linux VM (Bastion) host.  Download and install [Putty](https://putty.org/), [Git bash](https://gitforwindows.org/) or [Windows Sub-System for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 7.  (Optional) Download and install [Microsoft SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-2017) to manage SQL Server database artifacts.
 8.  (Optional) Download and install [Postman App](https://www.getpostman.com/apps), a REST API Client used for testing the Web API's.
 
@@ -360,6 +360,16 @@ You have now successfully tested the Claims API microservice locally on this VM.
 
 ### D] Deploy the Azure DevOps Services build agent (Container)
 **Approx. time to complete this section: 30 minutes**
+
+Use one of the options below for deploying the *Azure DevOps Services* self-hosted build agent on the Linux VM.  **Option 1** is recommended for users who are well versed in container technology and are familiar with docker engine. Alternatively, if you are new to containers, it's best to follow along the instructions in **Option 2**.
+
+**Option 1:**
+Although the Azure DevOps build agent (formerly VSTS build agent) container image is currently supported and available for download from docker hub, Microsoft recommends customers to build their own Azure DevOps agent container images.  This solution affords more flexibility allowing customers to include additional application build tools and utilities within the image to meet their needs and requirements.  To run the Azure DevOps build agent, you can either follow the Microsoft recommended approach by referring to one of the links below or follow the instructions in this Section to download and use the Azure DevOps/VSTS build agent.
+- [Build and deploy Azure DevOps Pipeline Agent on AKS](https://github.com/ganrad/Az-DevOps-Agent-On-AKS)
+- [Azure DevOps Services Self-hosted Linux agents](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/v2-linux?view=azure-devops)
+
+**Option 2:**
+In this step, we will download the [Azure DevOps (VSTS) build agent](https://hub.docker.com/_/microsoft-azure-pipelines-vsts-agent) container image from docker hub and run a container instance on the Linux VM.  In subsequent steps, we will configure *Azure DevOps Services* to use this build container as a *self-hosted* agent to perform application and container builds.
 
 If you haven't already, login to the Linux VM using a SSH terminal session.
 
