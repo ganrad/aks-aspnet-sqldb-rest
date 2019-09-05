@@ -567,7 +567,7 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
     ![alt tag](./images/F-16.PNG)
 
-    Switch to the VSTS build agent terminal window and you will notice that a build request was received from Azure DevOps and processed successfully. See below.
+    Switch to the Azure DevOps build agent terminal window and you will notice that a build request was received from Azure DevOps and processed successfully. See below.
 
     ![alt tag](./images/F-17.PNG)
 
