@@ -4,7 +4,7 @@ This project describes the steps for building and deploying a real world **Medic
 **Description:**
 
 In a nutshell, you will work on the following tasks.
-1. Deploy an **Azure SQL Server Database**.  [Complete Section A](#A]-Deploy-an-Azure-SQL-Server-and-Database)
+1. Deploy an **Azure SQL Server Database**.  [Complete Section A](#A.-Deploy-an-Azure-SQL-Server-and-Database)
 2. Provision a **Linux VM** (Bastion Host/Jump Box) on Azure and install pre-requisite software.  Complete Section [B].
 3. Build and run the *Claims API* microservice locally on the Bastion Host.  Complete Section [C].
 4. Deploy a **Azure DevOps Services** build agent (container) on the Bastion Host. Complete Section [D].
@@ -49,7 +49,7 @@ For easy and quick reference, readers can refer to the following on-line resourc
 - This project requires **all** resources to be deployed to the same Azure **Resource Group**.
 - Specify either **eastus**, **westus**, **westus2** or **centralus** as the *location* for the Azure *Resource Group* and the *AKS cluster*.
 
-## A] Deploy an Azure SQL Server and Database
+##A. Deploy an Azure SQL Server and Database
 **Approx. time to complete this section: 20 minutes**
 
 In this section, we will create an Azure SQL Server instance and create a database (`ClaimsDB`).  This database will be used by the Claims API microservice to persist *Claims* records.
