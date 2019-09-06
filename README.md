@@ -4,7 +4,7 @@ This project describes the steps for building and deploying a real world **Medic
 **Description:**
 
 In a nutshell, you will work on the following tasks.
-1. Deploy an **Azure SQL Server Database**.  [Complete Section A](#A.-Deploy-an-Azure-SQL-Server-and-Database)
+1. Deploy an **Azure SQL Server Database**.  [Complete Section A](#a.-deploy-an-azure-sql-server-and-database)
 2. Provision a **Linux VM** (Bastion Host/Jump Box) on Azure and install pre-requisite software.  Complete Section [B].
 3. Build and run the *Claims API* microservice locally on the Bastion Host.  Complete Section [C].
 4. Deploy a **Azure DevOps Services** build agent (container) on the Bastion Host. Complete Section [D].
