@@ -22,7 +22,7 @@ namespace ClaimsApi.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class ClaimsController : ControllerBase
+    public class ClaimsController : Controller
     {
         private readonly ClaimsContext _context;
         private readonly ILogger _logger;
@@ -43,10 +43,13 @@ namespace ClaimsApi.Controllers
 
         // ID09082019.sn
         // GET: api/v1/claims/healthz
+	// when this method is called, dotnet runtime automagically does the backend (sql db) check!
 
-	[HttpGet("/healthz")]
+	[HttpGet("healthz")]
         public JsonResult checkHealth()
 	{
+	    _logger.LogInformation("checkHealth() called ....");
+
 	    Dictionary<string, string> health = new Dictionary<string,string>();
 	    health.Add("api","api/v1/claims");
 	    // perform checks on the api's 
