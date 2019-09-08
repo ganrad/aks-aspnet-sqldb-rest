@@ -7,6 +7,17 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+/**
+* Author : Ganesh Radhakrishnan, garadha (Microsoft)
+* Email : ganrad01@gmail.com
+* Dated : 11-18-2018
+* Description:
+* Controller for the Claims API microservice
+*
+* Notes:
+* ID09082019: garadha: Added method for readiness and liveness probes.
+*/
+
 namespace ClaimsApi.Controllers
 {
     [Route("api/v1/[controller]")]
@@ -30,7 +41,24 @@ namespace ClaimsApi.Controllers
             }
         }
 
-        // GET: api/claims
+        // ID09082019.sn
+        // GET: api/v1/claims/healthz
+
+	[HttpGet("/healthz")]
+        public JsonResult checkHealth()
+	{
+	    Dictionary<string, string> health = new Dictionary<string,string>();
+	    health.Add("api","api/v1/claims");
+	    // perform checks on the api's 
+	    health.Add("apiCheck","OK");
+	    // check connectivity to backend (SQL server db)
+	    health.Add("backendCheck","Ok");
+
+	    return Json(health);
+	}
+        // ID09082019.en
+
+        // GET: api/v1/claims
 
         /// <summary>
         /// Get a list of all medical claims records from the backend data store
@@ -56,7 +84,7 @@ namespace ClaimsApi.Controllers
             return ipAddrString;
         }
 
-        // GET: api/claims/{id}
+        // GET: api/v1/claims/{id}
 
         /// <summary>
         /// Get a medical claims record by 'ID' from the backend data store
@@ -79,7 +107,7 @@ namespace ClaimsApi.Controllers
             return item;
         }
 
-        // GET: api/claims/fetch?claimno=number
+        // GET: api/v1/claims/fetch?claimno=number
 
         /// <summary>
         /// Get a medical claims record by 'Claim Number' from the backend data store
@@ -106,7 +134,7 @@ namespace ClaimsApi.Controllers
             return item;
         }
 
-        // POST: api/claims
+        // POST: api/v1/claims
 
         /// <summary>
         /// Post (Insert) a medical claim record in the backend data store
@@ -122,7 +150,7 @@ namespace ClaimsApi.Controllers
             return CreatedAtAction("GetClaimById", new { id = claimItem.ClaimItemId }, claimItem);
         }
 
-        // PUT: api/claims/5
+        // PUT: api/v1/claims/5
 
         /// <summary>
         /// Update a medical claim record in the backend data store
@@ -157,7 +185,7 @@ namespace ClaimsApi.Controllers
             return NoContent();
         }
 
-        // DELETE: api/claims/5
+        // DELETE: api/v1/claims/5
 
         /// <summary>
         /// Delete a medical claims record by 'ID' from the backend data store
