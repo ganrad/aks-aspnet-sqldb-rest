@@ -86,9 +86,7 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
     Click on **Save**.
 
-    ```diff
-    - **NOTE**: Remember to delete the firewall rule setting once you have finished working on all labs in this project.
-    ```
+    **NOTE**: Remember to delete the firewall rule setting once you have finished working on all labs in this project.
 
 5.  In the **ClaimsDB** tab, click on **Connection strings** in the left navigational panel (blade).  Copy the SQL Server database connection string under the **ADO.NET** tab and save the value in a file.  We will need this connection string in the next sections to configure the SQL Server database for the Claims API microservice.  See screenshot below.
 
