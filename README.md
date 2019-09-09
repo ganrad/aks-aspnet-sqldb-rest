@@ -6,8 +6,8 @@ Table of Contents
 In a nutshell, you will work on the following tasks.
 <!--ts-->
   A. [Deploy an Azure SQL Server Database](#a-deploy-an-azure-sql-server-and-database)
-2. Provision a **Linux VM** (Bastion Host/Jump Box) on Azure and install pre-requisite software.  Complete Section [B].
-3. Build and run the *Claims API* microservice locally on the Bastion Host.  Complete Section [C].
+  B. [Provision a Linux VM (Bastion Host/Jump Box) on Azure and install pre-requisite software](#b-provision-a-linux-centos-vm-on-azure)
+  C. [Build and run the Claims API microservice locally on the Bastion Host](#c-build-and-run-the-claims-api-microservice-locally-on-the-linux-vm)
 4. Deploy a **Azure DevOps Services** build agent (container) on the Bastion Host. Complete Section [D].
 5. Deploy an **Azure Container Registry** (ACR). Complete Section [E].
 6. Define a **Build Pipeline** in *Azure DevOps Services*.  Execute the build pipeline to build the ASP.NET Core application, containerize it and push the container image to the ACR.  This task focuses on the **Continuous Integration** aspect of the DevOps process.  Complete Section [F].
@@ -94,10 +94,10 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
     ![alt tag](./images/A-06.PNG)
 
-### B. Provision a Linux CentOS VM on Azure (~ Bastion Host) and install pre-requisite software
+### B. Provision a Linux CentOS VM on Azure
 **Approx. time to complete this section: 45 Minutes**
 
-The following tools (binaries) will be installed on the Linux VM.
+The following tools (binaries) will be installed on the Linux VM (~ Bastion Host).
 
 - Azure DevOps (VSTS) build agent (docker container). The build container will be used for running application and container builds.
 - Azure CLI 2.0 client.  Azure CLI will be used to administer and manage all Azure resources including the AKS cluster resources.
