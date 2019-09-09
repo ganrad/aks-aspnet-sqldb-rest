@@ -190,7 +190,8 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     $ sudo -i blkid
     #
     # Use 'vi' or 'nano' editor to update the '/etc/fstab' file.  Add a line as follows.
-    # UUID=33333333-3b3b-3c3c-3d3d-3e3e3e3e3e3e   /var/lib/docker  xfs    defaults,nofail   1  2
+    # IMPORTANT : Substitute the UUID value of '/dev/sdc1' drive which you copied, output of previous command ('blkid').
+    UUID=33333333-3b3b-3c3c-3d3d-3e3e3e3e3e3e   /var/lib/docker  xfs    defaults,nofail   1  2
     #
     ```
 
