@@ -15,7 +15,7 @@ Table of Contents
     * [Invoking the Claims API Microservice REST API](#invoking-the-claims-api-microservice-rest-api)
   * [H. Define and execute a Release Pipeline in Azure DevOps Services](#h-define-and-execute-claims-api-release-pipeline-in-azure-devops-services)
   * [I. Deploy a Delivery Pipeline in Azure DevOps Services](#i-define-and-execute-claims-api-delivery-pipeline-in-azure-devops-services)
-  * [J. Explore out of box AKS features](#j-explore-out-of-box-aks-features]
+  * [J. Explore out of box AKS features](#j-explore-out-of-box-aks-features)
 <!--te-->
 
 This project demonstrates how to use Azure DevOps Services to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for accessing (retrieving / storing) medical claims records from a relational data store.  The microservice persists all claims records in a Azure SQL Server Database.
