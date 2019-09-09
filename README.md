@@ -186,12 +186,16 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     #
     # To ensure the drive remains mounted after rebooting the VM, add it to the '/etc/fstab' file
     #
-    # First determine the UUID of the drive '/dev/sdc1'.  The output should list the UUID of this drive.  Note it down.
+    # First determine the UUID of the drive '/dev/sdc1'.  The output of this command should list the UUID's of 
+    # of all drives on this system/VM.  Note down (Copy) the UUID of the '/dev/sdc1' drive.
     $ sudo -i blkid
     #
-    # Use 'vi' or 'nano' editor to update the '/etc/fstab' file.  Add a line as follows.
+    # Use 'vi' or 'nano' editor to update the '/etc/fstab' file.  You will need to use 'sudo'.  Add a line as follows.
     # IMPORTANT : Substitute the UUID value of '/dev/sdc1' drive which you copied, output of previous command ('blkid').
     UUID=33333333-3b3b-3c3c-3d3d-3e3e3e3e3e3e   /var/lib/docker  xfs    defaults,nofail   1  2
+    #
+    # Verify the content of '/etc/fstab/ file.  Make sure the drive '/dev/sdc1' is listed in the output
+    $ sudo cat /etc/fstab
     #
     ```
 
@@ -220,6 +224,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     #
     # Switch to home directory
     $ cd
+    #
     ```
 
 6.  Install Azure CLI and login into your Azure account.
@@ -288,12 +293,14 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
 
     Refer to the commands below.  You can also refer to the [Docker CE install docs for CentOS](https://docs.docker.com/install/linux/docker-ce/centos/).
     ```bash
+    #
     $ sudo yum install -y yum-utils device-mapper-persistent-data lvm2
     $ sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
     $ sudo yum install -y docker-ce docker-ce-cli containerd.io
     $ sudo systemctl enable docker
     # sudo groupadd docker (This command is no longer needed!)
     $ sudo usermod -aG docker labuser
+    #
     ```
 
     LOGOUT AND RESTART YOUR LINUX VM BEFORE PROCEEDING.  You can restart the VM via Azure Portal.  Alternatively, use the command below to reboot the VM.
