@@ -16,6 +16,7 @@ service:
 checks:
   livenessInitialDelay: 5
   livenessProbeDelay: 3600
+  readinessProbeDelay: 5
 
 ingress:
   enabled: false

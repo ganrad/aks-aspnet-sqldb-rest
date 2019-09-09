@@ -41,7 +41,7 @@ spec:
               path: /api/v1/claims/healthz
               port: http
             initialDelaySeconds: {{ .Values.checks.livenessInitialDelay }}
-            periodSeconds: {{ .Values.checks.livenessProbeDelay }}
+            periodSeconds: {{ .Values.checks.readinessProbeDelay }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
