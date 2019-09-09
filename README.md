@@ -124,8 +124,7 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
     ![alt tag](./images/A-06.PNG)
 
-    Copy the SQL Server database connection string under the **ADO.NET** tab.  In the connection string, remove the listener port address including the 'comma' (**,1433**) before saving this string in a file.  If the **comma** and the port number are present in the connection string then application deployments will **fail**.
-    We will need the SQL Server db connection string in the next sections to configure the SQL Server database for the Claims API microservice.
+    Copy the SQL Server database connection string under the **ADO.NET** tab.  In the connection string, remove the listener port address including the 'comma' (**,1433**) before saving this string in a file.  If the **comma** and the port number are present in the connection string then application deployments will **fail**.  We will need the SQL Server db connection string in the next sections to configure the SQL Server database for the Claims API microservice.
 
 ### B. Provision a Linux CentOS VM on Azure
 **Approx. time to complete this section: 45 Minutes**
