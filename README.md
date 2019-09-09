@@ -53,10 +53,10 @@ Table of contents
 =================
 
 <!--ts-->
-   * [Deploy an Azure SQL Server and Database](#deploy-an-azure-sql-server-and-database)
+   * [A. Deploy an Azure SQL Server and Database](#a.-deploy-an-azure-sql-server-and-database)
 <!--te-->
 
-## Deploy an Azure SQL Server and Database
+## A. Deploy an Azure SQL Server and Database
 **Approx. time to complete this section: 20 minutes**
 
 In this section, we will create an Azure SQL Server instance and create a database (`ClaimsDB`).  This database will be used by the Claims API microservice to persist *Claims* records.
