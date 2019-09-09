@@ -34,12 +34,14 @@ spec:
             httpGet:
               path: /api/v1/claims/healthz
               port: http
-              initialDelaySeconds: {{ .Values.checks.livenessInitialDelay }}
-              periodSeconds: {{ .Values.checks.livenessProbeDelay }}
+            initialDelaySeconds: {{ .Values.checks.livenessInitialDelay }}
+            periodSeconds: {{ .Values.checks.livenessProbeDelay }}
           readinessProbe:
             httpGet:
               path: /api/v1/claims/healthz
               port: http
+            initialDelaySeconds: {{ .Values.checks.livenessInitialDelay }}
+            periodSeconds: {{ .Values.checks.livenessProbeDelay }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
