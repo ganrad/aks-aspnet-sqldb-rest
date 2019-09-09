@@ -111,16 +111,23 @@ The following tools (binaries) will be installed on the Linux VM (~ Bastion Host
 
 Follow the steps below to create the Bastion host (Linux VM) and install pre-requisite software on this VM.
 
-1.  Fork this [GitHub repository](https://github.com/ganrad/aks-aspnet-sqldb-rest) to **your** GitHub account.  In the browser window, click on **Fork** in the upper right hand corner to get a separate copy of this project added to your GitHub account.  You must be signed in to your GitHub account in order to fork this repository.
+1.  Fork this [GitHub repository](https://github.com/ganrad/aks-aspnet-sqldb-rest) to **your** GitHub account.
+
+    In the browser window, click on **Fork** in the upper right hand corner to get a separate copy of this project added to your GitHub account.  You must be signed in to your GitHub account in order to fork this repository.
 
     ![alt tag](./images/B-01.PNG)
 
-2.  Open the [Azure Cloud Shell](https://shell.azure.com) in a separate browser tab and use the command below to create a **CentOS 7.5** VM on Azure.  Make sure you specify the correct **resource group** name and provide a value for the *password*.  Once the command completes, it will print the VM connection info. in the JSON message (response).  Save the **Public IP address**, **Login name** and **Password** info. in a file.  Alternatively, if you prefer you can use SSH based authentication to connect to the Linux VM.  The steps for creating and using an SSH key pair for Linux VMs in Azure is described [here](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys).  You can then specify the location of the public key with the `--ssh-key-path` option to the `az vm create ...` command.
+2.  Create a Linux CentOS VM (Bastion Host).
+
+    Open the [Azure Cloud Shell](https://shell.azure.com) in a separate browser tab and use the command below to create a **CentOS 7.5** VM on Azure.  Make sure you specify the correct **resource group** name and provide a value for the *password*.  Once the command completes, it will print the VM connection info. in the JSON message (response).  Save the **Public IP address**, **Login name** and **Password** info. in a file.  Alternatively, if you prefer you can use SSH based authentication to connect to the Linux VM.  The steps for creating and using an SSH key pair for Linux VMs in Azure is described [here](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys).  You can then specify the location of the public key with the `--ssh-key-path` option to the `az vm create ...` command.
+
     ```bash
-    $ az vm create --resource-group myResourceGroup --name k8s-lab --image OpenLogic:CentOS:7.5:latest --size Standard_B2s --generate-ssh-keys --admin-username labuser --admin-password <password> --authentication-type password
+    $ az vm create --resource-group myResourceGroup --name k8s-lab --image OpenLogic:CentOS:7.5:latest --size Standard_B2s --data-disk-sizes-gb 128 --generate-ssh-keys --admin-username labuser --admin-password <password> --authentication-type password
     ```
 
-3.  Login into the Linux VM via SSH.  On a Windows PC, you can use a SSH client such as [Putty](https://putty.org/) or the [Windows Sub-System for Linux (Windows 10)](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to login into the VM.
+3.  Login into the Linux VM via SSH.
+
+    On a Windows PC, you can use a SSH client such as [Putty](https://putty.org/), [Git Bash](https://gitforwindows.org/) or the [Windows Sub-System for Linux (Windows 10)](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to login into the VM.
 
     **NOTE:** Use of Cloud Shell to SSH into the VM is **NOT** recommended.
     ```bash
@@ -129,7 +136,37 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     #
     ```
 
-4.  Install Git client and clone [this repository](https://github.com/ganrad/aks-aspnet-sqldb-rest).  When cloning the repository, make sure to use your Account ID in the GitHub URL.
+4.  Format and mount a separate file system for docker storage.
+
+    Docker engine stores container instances (writeable layers), images and container logs in `/var/lib/docker` directory.  As container images are built and instances are spawned, this directory tends to fill up pretty quickly.  To avoid running out of space on the OS file system, we will format a new partition on an empty data disk (created during VM provisioning), write a file system in the new partition and then mount the file system onto the docker storage directory.
+    ```bash
+    #
+    # Partition the disk with fdisk
+    $ (echo n; echo p; echo 1; echo ; echo ; echo w) | sudo fdisk /dev/sdc
+    #
+    # Write a file system to the partition using 'mkfs' command
+    $ sudo mkfs -t xfs /dev/sdc1
+    #
+    # Mount the disk so it's accessible in the operation system
+    $ sudo mkdir -p /var/lib/docker && sudo mount /dev/sdc1 /var/lib/docker
+    #
+    # Verify the disk got mounted property.  The output should display filesystem '/dev/sdc1' mounted on directory
+    # '/var/lib/docker'
+    $ df -h
+    #
+    # To ensure the drive remains mounted after rebooting the VM, add it to the '/etc/fstab' file
+    #
+    # First determine the UUID of the drive '/dev/sdc1'.  The output should list the UUID of this drive.  Note it down.
+    $ sudo -i blkid
+    #
+    # Use 'vi' or 'nano' editor to update the '/etc/fstab' file.  Add a line as follows.
+    # UUID=33333333-3b3b-3c3c-3d3d-3e3e3e3e3e3e   /var/lib/docker  xfs    defaults,nofail   1  2
+    #
+    ```
+
+5.  Install Git client and clone [this repository](https://github.com/ganrad/aks-aspnet-sqldb-rest).
+
+    When cloning the repository, make sure to use your Account ID in the GitHub URL.
     ```bash
     # Switch to home directory
     $ cd
@@ -154,7 +191,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     $ cd
     ```
 
-5.  Install Azure CLI and login into your Azure account.
+6.  Install Azure CLI and login into your Azure account.
     ```bash
     # Install Azure CLI on this VM.
     #
@@ -175,7 +212,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     #
     ```
 
-6.  Install Kubernetes CLI, Helm CLI and .NET Core SDK on this VM.
+7.  Install Kubernetes CLI, Helm CLI and .NET Core SDK on this VM.
     ```bash
     # Make sure you are in the home directory
     $ cd
@@ -216,7 +253,9 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     #
     ```
 
-7.  Next, install **docker-ce** container runtime. Refer to the commands below.  You can also refer to the [Docker CE install docs for CentOS](https://docs.docker.com/install/linux/docker-ce/centos/).
+8.  Install **docker-ce** container runtime.
+
+    Refer to the commands below.  You can also refer to the [Docker CE install docs for CentOS](https://docs.docker.com/install/linux/docker-ce/centos/).
     ```bash
     $ sudo yum install -y yum-utils device-mapper-persistent-data lvm2
     $ sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
@@ -238,12 +277,12 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     ```
 
 ### C. Build and run the Claims API microservice locally on the Linux VM
-**Approx. time to complete this section: 45 minutes**
+**Approx. time to complete this section: 1 hour**
 
 In this section, we will work on the following tasks
 - Configure the Azure SQL Server connection string in the Claims API microservice (source code)
 - Build the Claims API microservice using the .NET Core 2.2 SDK
-- Run the .NET Core *Entity Framework* migrations to create the relational database tables in Azure SQL Server provisioned in Section [A].  These tables will be used to persist Claims records.
+- Run the .NET Core *Entity Framework* migrations to create the relational database tables in Azure SQL Server provisioned in [Section A](#a-deploy-an-azure-sql-server-and-database).  These tables will be used to persist Claims records.
 - Run the Claims API microservice locally using the .NET Core 2.2 SDK
 - Build the microservice Docker container and run the container
 
@@ -251,7 +290,7 @@ Before proceeding, login into the Linux VM using SSH.
 
 1.  Update the Azure SQL Server database connection string value in the **appsettings.json** file.
 
-    The attribute **SqlServerDb** holds the database connection string and should point to the Azure SQL Server database instance which we provisioned in Section [A].  You should have saved the SQL Server connection string value in a file.
+    The attribute **SqlServerDb** holds the database connection string and should point to the Azure SQL Server database instance which we provisioned in [Section A](#a-deploy-an-azure-sql-server-and-database).  You should have saved the SQL Server connection string value in a file.
 
     Refer to the comands below to edit the SQL Server database *Connection string*...
     ```bash
@@ -470,14 +509,14 @@ In this step, we will deploy an instance of Azure Container Registry (ACR) to st
 
     ![alt tag](./images/E-01.PNG)
 
-2.  Click on **Add** to create a new ACR instance.  Give a meaningful name to your registry and make a note of it.  Select an Azure **Subscription**, select the **Resource group** which you created in Section [A] and leave the **Location** field as-is.  The location should default to the location assigned to the resource group.  Select the **Basic** pricing tier.  Click **Create** when you are done.
+2.  Click on **Add** to create a new ACR instance.  Give a meaningful name to your registry and make a note of it.  Select an Azure **Subscription**, select the **Resource group** which you created in [Section A](#a-deploy-an-azure-sql-server-and-database) and leave the **Location** field as-is.  The location should default to the location assigned to the resource group.  Select the **Basic** pricing tier.  Click **Create** when you are done.
 
     ![alt tag](./images/E-02.PNG)
 
 ### F. Define and execute Claims API Build Pipeline in Azure DevOps Services
 **Approx. time to complete this section: 1 Hour**
 
-In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (mcr.microsoft.com/dotnet/core/aspnet).  Finally, the application container image is pushed into the ACR which you deployed in Section [E].
+In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (mcr.microsoft.com/dotnet/core/aspnet).  Finally, the application container image is pushed into the ACR which you deployed in [Section E](#e-deploy-azure-container-registry).
 
 Before proceeding with the next steps, take a few minutes and go thru the **dockerfile** and Claims API source files in the GitHub repository.  This will help you understand how the container is built when the continuous integration (CI) pipeline is executed in Azure DevOps Services.
 
@@ -519,7 +558,7 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
     In the **Select a source** page, select *GitHub* as the source repository. Give your connection a *name* and then select *Authorize using OAuth* link.  Optionally, you can use a GitHub *personal access token* instead of OAuth.  When prompted, sign in to your **GitHub account**.  Then select *Authorize* to grant access to your Azure DevOps account.
 
-    Once authorized, select the **GitHub Repo** which you forked in Section [B] above.  Make sure you replace the account name in the **GitHub URL** with your account name.  Leave the value in the **Default branch for manual and scheduled builds** field as **master**.  Then hit continue.
+    Once authorized, select the **GitHub Repo** which you forked in [Section B](#b-provision-a-linux-centos-vm-on-azure) above.  Make sure you replace the account name in the **GitHub URL** with your account name.  Leave the value in the **Default branch for manual and scheduled builds** field as **master**.  Then hit continue.
 
     ![alt tag](./images/F-06.PNG)
 
@@ -527,7 +566,7 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
     ![alt tag](./images/F-07.PNG)
 
-    Select *Default* in the **Agent Pool** field.  The Azure DevOps build agent which you deployed in Section [D] is connected to this *pool* and listens for build requests on a queue.  When you queue a build, the build executes on an agent which is connected to this **Default** pool.
+    Select *Default* in the **Agent Pool** field.  The Azure DevOps build agent which you deployed in [Section D](#d-deploy-the-azure-devops-services-build-agent) is connected to this *pool* and listens for build requests on a queue.  When you queue a build, the build executes on an agent which is connected to this **Default** pool.
 
     ![alt tag](./images/F-08.PNG)
 
@@ -545,17 +584,17 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
     Next, we will package the application binary within a container image.  Review the **dockerfile** in the source repository to understand how the application container image is built.
 
-    Click on the **Build an image** task on the left panel.  Select *0.* for **Task version**.  Specify *Build container image* for **Display name** field and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription.  Click on **Authorize**.  In the **Azure Container Registry** field, select the ACR which you provisioned in Section [E] above.  In the **Action** field, select *Build an image*.  Check to make sure the **Docker File** field is set to `dockerfile`.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)*.  Enable **Qualify Image Name** and **Include Latest Tag** checkboxes.  See screenshot below.
+    Click on the **Build an image** task on the left panel.  Select *0.* for **Task version**.  Specify *Build container image* for **Display name** field and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription.  Click on **Authorize**.  In the **Azure Container Registry** field, select the ACR which you provisioned in [Section E](#e-deploy-azure-container-registry) above.  In the **Action** field, select *Build an image*.  Check to make sure the **Docker File** field is set to `dockerfile`.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)*.  Enable **Qualify Image Name** and **Include Latest Tag** checkboxes.  See screenshot below.
 
     ![alt tag](./images/F-14.PNG)
 
     Once the application container image has been built, it has to be pushed into the ACR.
 
-    Click on the *Push an image* task on the left panel.  Select *0.* for **Task version**.  Specify *Push container image to ACR* for field **Display name** and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription (Under Available Azure service connections).  In the **Azure Container Registry** field, select the ACR which you provisioned in Section [E] above.  In the **Action** field, select *Push an image*.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)*. Enable **Qualify Image Name** and **Include Latest Tag** checkboxes.  See screenshot below.
+    Click on the *Push an image* task on the left panel.  Select *0.* for **Task version**.  Specify *Push container image to ACR* for field **Display name** and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription (Under Available Azure service connections).  In the **Azure Container Registry** field, select the ACR which you provisioned in [Section E](#e-deploy-azure-container-registry) above.  In the **Action** field, select *Push an image*.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)*. Enable **Qualify Image Name** and **Include Latest Tag** checkboxes.  See screenshot below.
 
     ![alt tag](./images/F-15.PNG)
 
-    Next, publish the contents of the **Helm** chart directory to the artifact staging (**drop**) location.  The Helm chart will be used in the release pipeline (Section [H]) for deploying the Claims API microservice on AKS. 
+    Next, publish the contents of the **Helm** chart directory to the artifact staging (**drop**) location.  The Helm chart will be used in the release pipeline [Section H](#h-define-and-execute-claims-api-release-pipeline-in-azure-devops-services) for deploying the Claims API microservice on AKS. 
     
     Click on the plus symbol beside **Agent job 1**.  Search by text **publish artifact**, select the extension **Publish Build Artifacts** and click **Add**.  See screenshot below.
 
@@ -755,7 +794,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
 1.  Create a *Release Pipeline* for the Claims API microservice.
 
-    Using a web browser, login to your Azure DevOps account (if you haven't already) and select your project (**claims-api-lab**) which you created in Section [F]. 
+    Using a web browser, login to your Azure DevOps account (if you haven't already) and select your project (**claims-api-lab**) which you created in [Section F](#f-define-and-execute-claims-api-build-pipeline-in-azure-devops-services). 
 
     ![alt tag](./images/H-01.PNG)
 
@@ -943,7 +982,7 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
 
 1.  Import this GitHub repository into Azure DevOps *Repos*
 
-    Using a web browser, login to your Azure DevOps account (if you haven't already) and select your project (**claims-api-lab**) which you created in Section [F]. 
+    Using a web browser, login to your Azure DevOps account (if you haven't already) and select your project (**claims-api-lab**) which you created in [Section F](#f-define-and-execute-claims-api-build-pipeline-in-azure-devops-services). 
     
     ![alt tag](./images/H-01.PNG)
 
@@ -967,13 +1006,13 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
 
     ![alt tag](./images/I-04.PNG)
 
-    In the **Add a Docker Registry service connection** page, select **Azure Container Registry** for **Registry type** and specify **acrSvcConnection** for **Connection name**. In the **Azure subscription** drop down field, select your Azure subscription.  In the **Azure container registry** field, select the ACR which you created in Section [E].  See screenshot below.
+    In the **Add a Docker Registry service connection** page, select **Azure Container Registry** for **Registry type** and specify **acrSvcConnection** for **Connection name**. In the **Azure subscription** drop down field, select your Azure subscription.  In the **Azure container registry** field, select the ACR which you created in [Section E](#e-deploy-azure-container-registry).  See screenshot below.
 
     ![alt tag](./images/I-05.PNG)
 
     Click **OK**.
 
-    Copy and save the *name* of the Azure Resource Manager Connection which was created when you deployed the *Build* pipeline in Section [F].  See screenshot below. Copy and save the value circled in yellow.  You will need this value in the next step. 
+    Copy and save the *name* of the Azure Resource Manager Connection which was created when you deployed the *Build* pipeline in [Section F](#f-define-and-execute-claims-api-build-pipeline-in-azure-devops-services).  See screenshot below. Copy and save the value circled in yellow.  You will need this value in the next step. 
 
     ![alt tag](./images/I-06.PNG)
 
