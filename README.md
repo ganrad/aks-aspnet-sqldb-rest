@@ -1,10 +1,11 @@
 #  Build and deploy an ASP.NET Core 2.2 Web API on Azure Kubernetes Service
 This project describes the steps for building and deploying a real world **Medical Claims Processing** microservice application (**Claims API**) on Azure Kubernetes Service.
 
-**Description:**
-
+Table of Contents
+=================
 In a nutshell, you will work on the following tasks.
-1. Deploy an **Azure SQL Server Database**.  Complete Section [A].
+<!--ts-->
+  A. [Deploy an Azure SQL Server Database](#a-deploy-an-azure-sql-server-and-database)
 2. Provision a **Linux VM** (Bastion Host/Jump Box) on Azure and install pre-requisite software.  Complete Section [B].
 3. Build and run the *Claims API* microservice locally on the Bastion Host.  Complete Section [C].
 4. Deploy a **Azure DevOps Services** build agent (container) on the Bastion Host. Complete Section [D].
@@ -13,6 +14,7 @@ In a nutshell, you will work on the following tasks.
 7.  Deploy an **Azure Kubernetes Service** (AKS) cluster.  Using **Helm** CLI, deploy the *Claims API* (`claims-api`) microservice on AKS. Test the deployed microservice.  Complete Section [G].
 8.  Define a **Release Pipeline** in *Azure DevOps Services*. Use **Helm** Kubernetes package manager to deploy the containerized *Claims API* microservice in multiple regions (namespaces) on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Section [H].
 9.  Deploy a **Delivery Pipeline** in *Azure DevOps Services*.  A delivery pipeline combines and integrates both CI & CD workflows into a single process.  Use the **Azure Pipelines YAML** feature to build and deploy the *Claims API* microservice on AKS. Complete Section [I].
+<!--te-->
 
 This project demonstrates how to use Azure DevOps Services to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for accessing (retrieving / storing) medical claims records from a relational data store.  The microservice persists all claims records in a Azure SQL Server Database.
 
@@ -48,13 +50,6 @@ For easy and quick reference, readers can refer to the following on-line resourc
 - Commands which are required to be issued on a Linux terminal window are prefixed with a `$` sign.  Lines that are prefixed with the `#` symbol are to be treated as comments.
 - This project requires **all** resources to be deployed to the same Azure **Resource Group**.
 - Specify either **eastus**, **westus**, **westus2** or **centralus** as the *location* for the Azure *Resource Group* and the *AKS cluster*.
-
-Table of contents
-=================
-
-<!--ts-->
-   * [A. Deploy an Azure SQL Server and Database](#a-deploy-an-azure-sql-server-and-database)
-<!--te-->
 
 ## A. Deploy an Azure SQL Server and Database
 **Approx. time to complete this section: 20 minutes**
