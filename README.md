@@ -1051,7 +1051,7 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
     - Verify the container image in the Pod manifest matches the container image (tag and Digest) pushed into ACR.
     - Use the Azure Portal and access the *Application Insights* instance.  Generate some API traffic and review the application map, live stream metrics, dashboards, server response times, backend (Azure SQL DB) calls and response times.
     
-### J. Explore out of box AKS features
+## J. Explore out of box AKS features
 
 In this section, we will explore value add features for administering & managing the AKS cluster.
 
