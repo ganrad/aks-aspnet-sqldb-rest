@@ -11,11 +11,11 @@ Table of Contents
   * [D. Deploy a Azure DevOps Services build agent on the Bastion Host](#d-deploy-the-azure-devops-services-build-agent)
   * [E. Deploy an Azure Container Registry (ACR)](#e-deploy-azure-container-registry)
   * [F. Define and execute a Build Pipeline in Azure DevOps Services](#f-define-and-execute-claims-api-build-pipeline-in-azure-devops-services)
-  * [G. Deploy an Azure Kubernetes Service (AKS) cluster](#g-create-an-azure-kubernetes-service-cluster-deploy-claims-api-microservice)
+  * [G. Deploy an Azure Kubernetes Service (AKS) cluster](#g-create-an-azure-kubernetes-service-cluster-and-deploy-claims-api-microservice)
     * [Invoking the Claims API Microservice REST API](#invoking-the-claims-api-microservice-rest-api)
   * [H. Define and execute a Release Pipeline in Azure DevOps Services](#h-define-and-execute-claims-api-release-pipeline-in-azure-devops-services)
   * [I. Deploy a Delivery Pipeline in Azure DevOps Services](#i-define-and-execute-claims-api-delivery-pipeline-in-azure-devops-services)
-  * [Explore out of box AKS features](#explore-out-of-box-aks-features]
+  * [J. Explore out of box AKS features](#explore-out-of-box-aks-features]
 <!--te-->
 
 This project demonstrates how to use Azure DevOps Services to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for accessing (retrieving / storing) medical claims records from a relational data store.  The microservice persists all claims records in a Azure SQL Server Database.
@@ -1051,7 +1051,7 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
     - Verify the container image in the Pod manifest matches the container image (tag and Digest) pushed into ACR.
     - Use the Azure Portal and access the *Application Insights* instance.  Generate some API traffic and review the application map, live stream metrics, dashboards, server response times, backend (Azure SQL DB) calls and response times.
     
-### Explore out of box AKS features
+### J. Explore out of box AKS features
 
 In this section, we will explore value add features for administering & managing the AKS cluster.
 
