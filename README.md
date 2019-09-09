@@ -53,7 +53,7 @@ Table of contents
 =================
 
 <!--ts-->
-   * [A. Deploy an Azure SQL Server and Database](#a\.-deploy-an-azure-sql-server-and-database)
+   * [A. Deploy an Azure SQL Server and Database](#a-deploy-an-azure-sql-server-and-database)
 <!--te-->
 
 ## A. Deploy an Azure SQL Server and Database
