@@ -3,17 +3,19 @@ This project describes the steps for building and deploying a real world **Medic
 
 Table of Contents
 =================
-In a nutshell, you will work on the following tasks.
+
 <!--ts-->
-  A. [Deploy an Azure SQL Server Database](#a-deploy-an-azure-sql-server-and-database)
-  B. [Provision a Linux VM (Bastion Host/Jump Box) on Azure and install pre-requisite software](#b-provision-a-linux-centos-vm-on-azure)
-  C. [Build and run the Claims API microservice locally on the Bastion Host](#c-build-and-run-the-claims-api-microservice-locally-on-the-linux-vm)
-4. Deploy a **Azure DevOps Services** build agent (container) on the Bastion Host. Complete Section [D].
-5. Deploy an **Azure Container Registry** (ACR). Complete Section [E].
-6. Define a **Build Pipeline** in *Azure DevOps Services*.  Execute the build pipeline to build the ASP.NET Core application, containerize it and push the container image to the ACR.  This task focuses on the **Continuous Integration** aspect of the DevOps process.  Complete Section [F].
-7.  Deploy an **Azure Kubernetes Service** (AKS) cluster.  Using **Helm** CLI, deploy the *Claims API* (`claims-api`) microservice on AKS. Test the deployed microservice.  Complete Section [G].
-8.  Define a **Release Pipeline** in *Azure DevOps Services*. Use **Helm** Kubernetes package manager to deploy the containerized *Claims API* microservice in multiple regions (namespaces) on AKS. This task focuses on the **Continuous Deployment** aspect of the DevOps process.  Complete Section [H].
-9.  Deploy a **Delivery Pipeline** in *Azure DevOps Services*.  A delivery pipeline combines and integrates both CI & CD workflows into a single process.  Use the **Azure Pipelines YAML** feature to build and deploy the *Claims API* microservice on AKS. Complete Section [I].
+  * [A. Deploy an Azure SQL Server Database](#a-deploy-an-azure-sql-server-and-database)
+  * [B. Provision a Linux VM (Bastion Host/Jump Box) on Azure and install pre-requisite software](#b-provision-a-linux-centos-vm-on-azure)
+  * [C. Build and run the Claims API microservice locally on the Bastion Host](#c-build-and-run-the-claims-api-microservice-locally-on-the-linux-vm)
+  * [D. Deploy a Azure DevOps Services build agent on the Bastion Host](#d-deploy-the-azure-devops-services-build-agent)
+  * [E. Deploy an Azure Container Registry (ACR)](#e-deploy-azure-container-registry)
+  * [F. Define and execute a Build Pipeline in Azure DevOps Services](#f-define-and-execute-claims-api-build-pipeline-in-azure-devops-services)
+  * [G. Deploy an Azure Kubernetes Service (AKS) cluster](#g-create-an-azure-kubernetes-service-cluster-deploy-claims-api-microservice)
+    * [Invoking the Claims API Microservice REST API](#invoking-the-claims-api-microservice-rest-api)
+  * [H. Define and execute a Release Pipeline in Azure DevOps Services](#h-define-and-execute-claims-api-release-pipeline-in-azure-devops-services)
+  * [I. Deploy a Delivery Pipeline in Azure DevOps Services](#i-define-and-execute-claims-api-delivery-pipeline-in-azure-devops-services)
+  * [Explore out of box AKS features](#explore-out-of-box-aks-features]
 <!--te-->
 
 This project demonstrates how to use Azure DevOps Services to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for accessing (retrieving / storing) medical claims records from a relational data store.  The microservice persists all claims records in a Azure SQL Server Database.
@@ -360,7 +362,7 @@ Before proceeding, login into the Linux VM using SSH.
 
 You have now successfully tested the Claims API microservice locally on this VM.
 
-### D. Deploy the Azure DevOps Services build agent (Container)
+### D. Deploy the Azure DevOps Services build agent
 **Approx. time to complete this section: 30 minutes**
 
 Use one of the options below for deploying the *Azure DevOps Services* self-hosted build agent on the Linux VM.  **Option 1** is recommended for advanced users who are well versed in container technology and are familiar with docker engine. Alternatively, if you are new to containers, it's best to follow along the instructions in **Option 2**.
@@ -459,10 +461,10 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
 
 In subsequent sections, we will configure *Azure DevOps Services* to use the build container as a *self-hosted* agent to perform application and container builds.
 
-### E. Deploy Azure Container Registry (ACR)
+### E. Deploy Azure Container Registry
 **Approx. time to complete this section: 10 minutes**
 
-In this step, we will deploy an instance of Azure Container Registry to store container images which we will build in later steps.  A container registry such as ACR allows us to store multiple versions of application container images in one centralized repository and consume them from multiple nodes (VMs/Servers) where our applications are deployed.
+In this step, we will deploy an instance of Azure Container Registry (ACR) to store container images which we will build in later steps.  A container registry such as ACR allows us to store multiple versions of application container images in one centralized repository and consume them from multiple nodes (VMs/Servers) where our applications are deployed.
 
 1.  Login to your Azure portal account.  Then click on **Container registries** in the navigational panel on the left.  If you don't see this option in the nav. panel then click on **All services**, scroll down to the **COMPUTE** section and click on the star beside **Container registries**.  This will add the **Container registries** option to the service list in the navigational panel.  Now click on the **Container registries** option.  You will see a page as displayed below.
 
@@ -472,7 +474,7 @@ In this step, we will deploy an instance of Azure Container Registry to store co
 
     ![alt tag](./images/E-02.PNG)
 
-### F. Define and execute Claims API *Build Pipeline* in Azure DevOps Services
+### F. Define and execute Claims API Build Pipeline in Azure DevOps Services
 **Approx. time to complete this section: 1 Hour**
 
 In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (mcr.microsoft.com/dotnet/core/aspnet).  Finally, the application container image is pushed into the ACR which you deployed in Section [E].
@@ -579,7 +581,7 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
 You have now successfully **built** the Claims API microservice container image and pushed it to the Azure Container Registry.
 
-### G. Create an Azure Kubernetes Service (AKS) cluster and deploy Claims API microservice
+### G. Create an Azure Kubernetes Service cluster and deploy Claims API microservice
 **Approx. time to complete this section: 1 Hour**
 
 In this step, we will first deploy an AKS cluster on Azure.  We will then use **Helm** package manager CLI to deploy the Claims API microservice on AKS.
@@ -748,7 +750,7 @@ Congrats!!  You have just built an *ASP.NET Core Web API* and deployed it as a c
 
 In the next section, we will define a *Release Pipeline* in Azure DevOps to automate containerized application deployments on AKS.
 
-### H. Define and execute Claims API *Release Pipeline* in Azure DevOps Services
+### H. Define and execute Claims API Release Pipeline in Azure DevOps Services
 **Approx. time to complete this section: 1 Hour**
 
 1.  Create a *Release Pipeline* for the Claims API microservice.
@@ -934,7 +936,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
 Congrats!!  At this point, you have successfully built the *Claims API* microservice, packaged this application within a container image, pushed the container image into an ACR instance and finally deployed the containerized application in both **development** and **test-qa** namespaces (regions) on AKS.  Cool!!
 
-### I. Define and execute Claims API *Delivery Pipeline* in Azure DevOps Services
+### I. Define and execute Claims API Delivery Pipeline in Azure DevOps Services
 **Approx. time to complete this section: 1 Hour**
 
 In this section, we will build and deploy a *Continuous Delivery* pipeline in Azure DevOps Services.  A Continuous Delivery pipeline automates the build, test and deployment steps and combines them into a single release workflow.  We will also enable *Zero Instrumentation Monitoring* of the Claims API Microservice application via Azure Application Insights.
