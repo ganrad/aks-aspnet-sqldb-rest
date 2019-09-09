@@ -72,7 +72,7 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
 3.  Create a Azure SQL Server (managed instance) and database.
 
-    In the Azure Portal, click on **Create a resource**, **Databases** and then click on **SQL Database** as shown in the screenshot below.
+    In the Azure Portal, click on **+ Create a resource**, **Databases** and then click on **SQL Database** as shown in the screenshot below.
 
     ![alt tag](./images/A-01.PNG)
     
@@ -148,7 +148,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
 
 4.  Format and mount a separate file system for docker storage.
 
-    Docker engine stores container instances (writeable layers), images and container logs in `/var/lib/docker` directory.  As container images are built and instances are spawned, this directory tends to fill up pretty quickly.  To avoid running out of space on the OS file system, we will format a new partition on an empty data disk (created during VM provisioning), write a file system in the new partition and then mount the file system onto the docker storage directory.
+    Docker engine stores container instances (writeable layers), images, build caches and container logs in `/var/lib/docker` directory.  As container images are built and instances are spawned, this directory tends to fill up pretty quickly.  To avoid running out of space on the OS file system, we will format a new partition on an empty data disk (created during VM provisioning), write a file system in the new partition and then mount the file system onto the docker storage directory.
     ```bash
     #
     # Partition the disk with fdisk
