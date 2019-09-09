@@ -120,9 +120,12 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
 5.  Copy the Azure SQL Server database (ClaimsDB) connection string.
 
-    In the **ClaimsDB** tab, click on **Connection strings** in the left navigational panel (blade).  Copy the SQL Server database connection string under the **ADO.NET** tab and save the value in a file.  We will need this connection string in the next sections to configure the SQL Server database for the Claims API microservice.  See screenshot below.
+    In the **ClaimsDB** tab, click on **Connection strings** in the left navigational panel (blade).  See screenshot below.
 
     ![alt tag](./images/A-06.PNG)
+
+    Copy the SQL Server database connection string under the **ADO.NET** tab.  In the connection string, remove the listener port address including the 'comma' (**,1433**) before saving this string in a file.  If the **comma** and the port number are present in the connection string then application deployments will **fail**.
+    We will need the SQL Server db connection string in the next sections to configure the SQL Server database for the Claims API microservice.
 
 ### B. Provision a Linux CentOS VM on Azure
 **Approx. time to complete this section: 45 Minutes**
@@ -760,7 +763,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     #     correct values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD.
     #     eg., --set sqldb.connectionString="Server=tcp:#{SQL_SRV_PREFIX}#.database.windows.net;Initial Catalog=ClaimsDB;Persist Security Info=False;User ID=#{SQL_USER_ID}#;Password=#{SQL_USER_PWD}#;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     # 
-    $ helm upgrade aks-aspnetcore-lab ./claims-api --install --namespace development --set image.repository=<your-acr-repo>.azurecr.io/claims-api --set sqldb.connectionString="Server=tcp:#{SQL_SRV_PREFIX}#.database.windows.net,1433;Initial Catalog=ClaimsDB;Persist Security Info=False;User ID=#{SQL_USER_ID}#;Password=#{SQL_USER_PWD}#;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    $ helm upgrade aks-aspnetcore-lab ./claims-api --install --namespace development --set image.repository=<your-acr-repo>.azurecr.io/claims-api --set sqldb.connectionString="Server=tcp:#{SQL_SRV_PREFIX}#.database.windows.net;Initial Catalog=ClaimsDB;Persist Security Info=False;User ID=#{SQL_USER_ID}#;Password=#{SQL_USER_PWD}#;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     #
     # List the Kubernetes namespaces.  Verify that the 'development' namespace got created.
     $ kubectl get namespaces
