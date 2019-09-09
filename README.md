@@ -80,7 +80,7 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
     ![alt tag](./images/A-02.PNG)
 
-    Fill in the details in the **New Server** web page.  The **Server name** value should be unique as the SQL database server FQDN will be constructed with this name eg., <SQL_server_name>.database.windows.net. Use a pattern such as **<Your_Initial>sqldb** for the server name (Replace *Your_Initial* with your initials).  For the **location** field, use the same location which you specified for the resource group.  Check the box besides field **Allow Azure services to access server**.  See screenshot below.
+    Fill in the details in the **New Server** web page.  The **Server name** value should be unique as the SQL database server FQDN will be constructed with this name eg., <SQL_server_name>.database.windows.net. Use a pattern such as **<Your_Initial>sqldb** for the server name (Replace *Your_Initial* with your initials).  For the **Location** field, use the same location which you specified for the resource group.  Check the box besides field **Allow Azure services to access server**.  See screenshot below.
 
     ![alt tag](./images/A-07.PNG)
 
@@ -96,13 +96,13 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
     Click **Apply**.
 
-    In the **Basics** tab, click on **Review + create**.  Review and make sure all options you have selected are correct.  Click **Create**.  See screenshots below.
+    In the **Basics** tab, click on **Review + create**.  Review and make sure all options you have selected are correct.  See screenshots below.
 
     ![alt tag](./images/A-03.PNG)
 
     ![alt tag](./images/A-11.PNG)
 
-    It will take approx. 10 minutes for the SQL Server instance and database to get created.
+    Click **Create**.  It will take approx. 10 minutes for the SQL Server instance and database to get created.
 
 4.  Configure a firewall for Azure SQL Server.
 
