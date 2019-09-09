@@ -76,13 +76,31 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
     ![alt tag](./images/A-01.PNG)
     
-    In the **SQL Database** tab, provide a name for the database (`ClaimsDB`), select the resource group which you created in the previous step and leave the default value (Blank database) for **Select source** field as-is.  Click on **Server** and fill in the details in the **New Server** tab.  The **Server name** value should be unique as the SQL database server FQDN will be constructed with this name eg., <SQL_server_name>.database.windows.net. Use a pattern such as **<Your_Initial>sqldb** for the server name (Replace *Your_Initial* with your initials).  For the **location** field, use the same location which you specified for the resource group.  Click **Select** in the **New Server** tab.  See screenshot below.
+    In the **Create SQL Database** window **Basics** tab, select the resource group which you created in the previous step and provide a name for the database (`ClaimsDB`).  Then click on **Create new** besides field **Server**.
 
     ![alt tag](./images/A-02.PNG)
 
-    In the **SQL Database** tab, select a **Pricing tier**, leave the **Collation** field as-is and then click on **Create**.
+    Fill in the details in the **New Server** web page.  The **Server name** value should be unique as the SQL database server FQDN will be constructed with this name eg., <SQL_server_name>.database.windows.net. Use a pattern such as **<Your_Initial>sqldb** for the server name (Replace *Your_Initial* with your initials).  For the **location** field, use the same location which you specified for the resource group.  Check the box besides field **Allow Azure services to access server**.  See screenshot below.
+
+    ![alt tag](./images/A-07.PNG)
+
+    Click on **Ok**.
+
+    In the **Basics** tab, click on **Configure database** and select the **basic** SKU.  See screenshots below.
+
+    ![alt tag](./images/A-08.PNG)
+
+    ![alt tag](./images/A-09.PNG)
+
+    ![alt tag](./images/A-10.PNG)
+
+    Click **Apply**.
+
+    In the **Basics** tab, click on **Review + create**.  Review and make sure all options you have selected are correct.  Click **Create**.  See screenshots below.
 
     ![alt tag](./images/A-03.PNG)
+
+    ![alt tag](./images/A-11.PNG)
 
     It will take approx. 10 minutes for the SQL Server instance and database to get created.
 
@@ -387,6 +405,10 @@ Before proceeding, login into the Linux VM using SSH.
     # List the docker images on this VM.  You should see two container images ('2.2-sdk' and '2.2-aspnetcore-runtime') in the 'microsoft/dotnet' repository.
     # Compare the sizes of the two dotnet container images and you will notice the size of the runtime image is pretty small ~ 260MB when compared to the 'build' container image (~ 1.74GB).
     $ docker images
+    #
+    # (Optional : Best Practice) Delete the intermediate .NET Core build container as it will consume unnecessary 
+    # space on your build system (VM).
+    $ docker rmi $(docker images -f dangling=true -q)
     #
     # Run the application container
     $ docker run -it --rm -p 5000:80 --name test-claims-api claims-api
