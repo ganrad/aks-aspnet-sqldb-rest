@@ -227,7 +227,28 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     #
     ```
 
-6.  Install Azure CLI and login into your Azure account.
+6.  Install a command-line JSON processor.
+
+    Download [jq command line processor](https://stedolan.github.io/jq/) and install it on the VM.
+    ```bash
+    # Make sure you are in the home directory
+    $ cd
+    #
+    # Create a directory called 'jq'
+    $ mkdir jq
+    #
+    # Switch to the 'jq' directory
+    $ cd jq
+    #
+    # Download the 'jq' binary and save it in this directory
+    $ wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+    #
+    # Switch back to the home directory
+    $ cd
+    #
+    ```
+
+7.  Install Azure CLI and login into your Azure account.
     ```bash
     # Install Azure CLI on this VM.
     #
@@ -248,7 +269,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     #
     ```
 
-7.  Install Kubernetes CLI, Helm CLI and .NET Core SDK on this VM.
+8.  Install Kubernetes CLI, Helm CLI and .NET Core SDK on this VM.
     ```bash
     # Make sure you are in the home directory
     $ cd
@@ -282,14 +303,15 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Check .NET Core version (Should print 2.2.100)
     $ dotnet --version
     #
-    # Finally, update '.bashrc' file and set the path to Helm and Kubectl binaries
+    # Finally, update '.bashrc' file and set the path to jq, Helm and Kubectl binaries
+    $ JQ=/home/labuser/jq
     $ KUBECLI=/home/labuser/aztools
     $ HELM=/home/labuser/helm/linux-amd64
-    $ echo "export PATH=$KUBECLI:$HELM:${PATH}" >> ~/.bashrc
+    $ echo "export PATH=$JQ:$KUBECLI:$HELM:${PATH}" >> ~/.bashrc
     #
     ```
 
-8.  Install **docker-ce** container runtime.
+9.  Install **docker-ce** container runtime.
 
     Refer to the commands below.  You can also refer to the [Docker CE install docs for CentOS](https://docs.docker.com/install/linux/docker-ce/centos/).
     ```bash
