@@ -1,0 +1,102 @@
+{
+    "claimStatus": "02",
+    "claimType": "ProfClaim",
+    "senderID": "DocGroup-01",
+    "receiverID": "Payer-01",
+    "originatorID": "ORGNCSVTEST1",
+    "destinationID": "DESMEDSTEST1",
+    "claimInputMethod": "E",
+    "subscriberInfo": [
+        {
+            "subscriberRelationship": "18",
+            "subscriberPolicyNumber": "12345",
+            "insuredGroupName": "MD000004",
+            "subscriberLastName": "Doe",
+            "subscriberFirstName": "John",
+            "subscriberMiddleName": "",
+            "subscriberIdentifierSSN": "489-88-7001",
+            "subscriberAddressLine1": "5589 Hawthorne Way",
+            "subscriberAddressLine2": "",
+            "subscriberCity": "Sacramento",
+            "subscriberState": "CA",
+            "subscriberPostalCode": "95835",
+            "subscriberCountry": "US",
+            "subDateOfBirth": "12-19-1984",
+            "subscriberGender": "Male",
+            "payerName": "Premera",
+            "patientLastName": "",
+            "patientFirstName": "",
+            "patientSSN": "489-88-7001",
+            "patientMemberID": "12345",
+            "patientDOB": "12-19-1984",
+            "patientGender": "Male",
+            "catgOfService": "Consultation",
+            "claimItemId": 0
+        }
+    ],
+    "claimNumber": "1234121235",
+    "totalClaimCharge": 1234.5,
+    "patientStatus": "01",
+    "patientAmountDue": 0,
+    "serviceDate": "0001-01-01T00:00:00",
+    "policyNumber": "898435",
+    "claimPaidDate": "2018-12-17T15:55:43.9182889",
+    "planPayment": [
+        {
+            "primaryPayerID": "MEDICAID",
+            "cobServicePaidAmount": 15000,
+            "serviceCode": "ABC",
+            "paymentDate": "2018-12-17T00:00:00",
+            "claimAdjGroupCode": "HIPAA",
+            "claimAdjReasonCode": "CO",
+            "claimAdjAmount": 500,
+            "claimAdjQuantity": "3",
+            "claimItemId": 0
+        },
+        {
+            "primaryPayerID": "MEDICARE",
+            "cobServicePaidAmount": 900,
+            "serviceCode": "CBA",
+            "paymentDate": "2018-12-17T00:00:00",
+            "claimAdjGroupCode": "HIPAA",
+            "claimAdjReasonCode": "CI",
+            "claimAdjAmount": 250,
+            "claimAdjQuantity": "3",
+            "claimItemId": 0
+        }
+    ],
+    "serviceLineDetails": [
+        {
+            "statementDate": "2018-10-31T08:30:00",
+            "lineCounter": 1,
+            "serviceCodeDescription": "INPT",
+            "lineChargeAmount": 15000,
+            "drugCode": "UN",
+            "drugUnitQuantity": 23,
+            "pharmacyPrescriptionNumber": "123897",
+            "serviceType": "Consultation",
+            "providerCode": "72",
+            "providerLastName": "Longhorn",
+            "providerFirstName": "Dr. James",
+            "providerIdentification": "20120904-20120907",
+            "inNetworkIndicator": true,
+            "claimItemId": 0
+        },
+        {
+            "statementDate": "2018-10-31T08:30:00",
+            "lineCounter": 1,
+            "serviceCodeDescription": "INPT",
+            "lineChargeAmount": 5000,
+            "drugCode": "UN",
+            "drugUnitQuantity": 24,
+            "pharmacyPrescriptionNumber": "123897",
+            "serviceType": "Consultation",
+            "providerCode": "72",
+            "providerLastName": "Longhorn",
+            "providerFirstName": "Dr. James",
+            "providerIdentification": "20120904-20120907",
+            "inNetworkIndicator": true,
+            "claimItemId": 0
+        }
+    ]
+}
