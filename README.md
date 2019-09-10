@@ -568,7 +568,7 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
     ![alt tag](./images/F-01.PNG)
 
-    Ensure the following *Preview* features are **disabled**.
+    Ensure the following *Preview* features are **disabled (Off)**.
     - Analytics Views (Optional)
     - Experimental Themes
     - Multi-stage pipelines
@@ -701,6 +701,12 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     ```bash
     # Create a 2 Node AKS cluster v1.14.5.  This is not the latest patch release.
     # We will upgrade to the latest patch release in a subsequent lab/Section. 
+    # The 'az aks' command below will provision an AKS cluster with the following settings -
+    # - Kubernetes version ~ 1.14.5
+    # - No. of application/worker nodes ~ 2
+    # - RBAC ~ Disabled
+    # - Location ~ US West 2
+    # - DNS Name prefix for API Server ~ akslab
     $ az aks create --resource-group myResourceGroup --name akscluster --location westus2 --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.14.5"
     #
     # Verify state of AKS cluster
@@ -794,7 +800,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
 ### Invoking the Claims API Microservice REST API 
 
-When the *Claims API* (`claims-api`) microservice end-point is invoked the first time, one medical claim record will be automatically inserted into the backend (Azure SQL Server) database.  The inserted claim record will have a primary key (ID) value of 100.  The microservice REST API supports all CRUD operations (list, search by *ID* and *Claim Number*, create, update and delete) on claims.
+When the *Claims API* (`claims-api`) microservice end-point is invoked the first time, one medical claim record will be automatically inserted into the backend (Azure SQL Server) database.  The inserted claim record will have a primary key (ID) value of 100.  The microservice REST API supports all CRUD operations (list, search by *ID* and *Claim Number*, create, update and delete) on *Claims* resources.
 
 In a Kubernetes cluster, applications deployed within pods communicate with each other via *Services*.  A Service is responsible for forwarding all incoming requests to the backend application *Pods*.  A service can also expose an *External IP Address* so that applications that are external to the AKS cluster can access services deployed within the cluster.
 
@@ -823,7 +829,7 @@ api/v1/claims/{id} | DELETE | Delete a claim record in the backend database.
 
 You can access the Claims REST API (end-points) using a Web browser or by using a REST client such as *Postman*.
 
-Claims API URL's examples:
+Example Claims API URL's:
 - http://<Azure_load_balancer_ip>/api/v1/claims
 - http://<Azure_load_balancer_ip>/api/v1/claims/100
 
