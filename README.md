@@ -484,7 +484,7 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
 
 1.  Pull the Azure DevOps (VSTS) build agent container from docker hub.
 
-    It will take approx. 20+ minutes to download the image (Size ~ 0.5 GB).  Take a coffee break or treat yourself to a cookie!
+    It will take approx. 20+ minutes to download the image (Size ~ 10.5GB).  Take a coffee break or treat yourself to a cookie!
     ```bash
     # This command will take approx. 20 mins to download the Azure DevOps Pipeline (VSTS) build agent container image
     $ docker pull mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-16.04-docker-17.12.0-ce-standard
