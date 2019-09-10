@@ -489,6 +489,7 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
     # This command will take approx. 20 mins to download the Azure DevOps Pipeline (VSTS) build agent container image
     $ docker pull mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-16.04-docker-17.12.0-ce-standard
     #
+    # List the images on the system/VM
     $ docker images
     #
     ```
