@@ -3,6 +3,11 @@ svcIpAddress=$2
 dataDir=$3
 counter=1
 
+echo "***** Starting Functional Test *****"
+wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+echo "***** Installed jq JSON parser *****"
+echo
+
 echo "Claims resources - INSERT - RETRIEVE - UPDATE - RETRIEVE - DELETE"
 echo "***** Executing functional tests with institutional and professional claims *****"
 echo "***** Attempting total no. of test runs = [$1] *****"
