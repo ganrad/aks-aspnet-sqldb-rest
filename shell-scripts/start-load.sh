@@ -24,7 +24,7 @@ do
     echo "Encountered http status code = $hcode, on getAllClaims Operation. Exiting ...."
     exit 1;
   else
-    cat tmp.out
+    cat tmp.out | ./jq-linux64 '.'
   fi
   echo
 
@@ -32,7 +32,7 @@ do
 
   ## Add a claim for institutional provider -----------------------------
   echo -e "***** Inserting claim for institutional provider *****"
-  clmid=`curl -X POST -H "Content-Type: application/json" -d "@$dataDir/claim01.json" http://$svcIpAddress/api/v1/claims/ | ~/jq/jq-linux64 '.claimItemId'`
+  clmid=`curl -X POST -H "Content-Type: application/json" -d "@$dataDir/claim01.json" http://$svcIpAddress/api/v1/claims/ | ./jq-linux64 '.claimItemId'`
 
   if [ -z "$clmid" ]
   then
@@ -77,7 +77,7 @@ do
     echo "Encountered http status code = $hcode, on deleteClaim Operation. Exiting ...."
     exit 1;
   else
-    cat tmp.out
+    cat tmp.out | ./jq-linux64 '.'
   fi
   echo
   echo
@@ -90,7 +90,7 @@ do
 
   ## Add a claim for professional provider -----------------------------
   echo -e "***** Inserting claim for professional provider *****"
-  clmid=`curl -X POST -H "Content-Type: application/json" -d "@$dataDir/claim02.json" http://$svcIpAddress/api/v1/claims/ | ~/jq/jq-linux64 '.claimItemId'`
+  clmid=`curl -X POST -H "Content-Type: application/json" -d "@$dataDir/claim02.json" http://$svcIpAddress/api/v1/claims/ | ./jq-linux64 '.claimItemId'`
 
   if [ -z "$clmid" ]
   then
@@ -135,7 +135,7 @@ do
     echo "Encountered http status code = $hcode, on deleteClaim Operation. Exiting ...."
     exit 1;
   else
-    cat tmp.out
+    cat tmp.out | ./jq-linux64 '.'
   fi
   echo
   echo
