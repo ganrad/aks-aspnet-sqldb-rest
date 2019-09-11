@@ -484,10 +484,10 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
 
 1.  Pull the Azure DevOps (VSTS) build agent container from docker hub.
 
-    It will take approx. 20+ minutes to download the image (Size ~ 10.5GB).  Take a coffee break or treat yourself to a cookie!
+    It will take approx. 20+ minutes to download the image (Size ~ 10.6 GB).  Take a coffee break or treat yourself to a cookie!
     ```bash
     # This command will take approx. 20 mins to download the Azure DevOps Pipeline (VSTS) build agent container image
-    $ docker pull mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-16.04-docker-17.12.0-ce-standard
+    $ docker pull mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-16.04-docker-18.06.1-ce-standard
     #
     # List the images on the system/VM
     $ docker images
@@ -528,7 +528,7 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
     ```bash
     # Substitute the correct values for VSTS_ACCOUNT, VSTS_POOL and VSTS_TOKEN before running this command
     #
-    $ docker run -e VSTS_ACCOUNT=<Org. Name> -e VSTS_TOKEN=<PAT Token> -e VSTS_POOL=Default -v /var/run/docker.sock:/var/run/docker.sock --name vstsagent --rm -it mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-16.04-docker-17.12.0-ce-standard
+    $ docker run -e VSTS_ACCOUNT=<Org. Name> -e VSTS_TOKEN=<PAT Token> -e VSTS_POOL=Default -v /var/run/docker.sock:/var/run/docker.sock --name vstsagent --rm -it mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-16.04-docker-18.06.1-ce-standard
     #
     ```
 
