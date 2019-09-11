@@ -4,7 +4,9 @@ dataDir=$3
 counter=1
 
 echo "***** Starting Functional Test *****"
+
 wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+chmod 700 ./jq-linux64
 echo "***** Installed jq JSON parser *****"
 echo
 
