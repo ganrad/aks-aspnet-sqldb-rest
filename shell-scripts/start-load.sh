@@ -1,6 +1,6 @@
 #! /bin/bash
-svcIpAddress=$1
-dataDir=$2
+svcIpAddress=$2
+dataDir=$3
 counter=1
 
 echo "Claims resources - INSERT - RETRIEVE - UPDATE - RETRIEVE - DELETE"
