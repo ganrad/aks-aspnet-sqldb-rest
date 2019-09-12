@@ -14,7 +14,7 @@ Table of Contents
   * [G. Deploy an Azure Kubernetes Service (AKS) cluster](#g-create-an-azure-kubernetes-service-cluster-and-deploy-claims-api-microservice)
     * [Invoking the Claims API Microservice REST API](#invoking-the-claims-api-microservice-rest-api)
   * [H. Define and execute a Release Pipeline in Azure DevOps Services](#h-define-and-execute-claims-api-release-pipeline-in-azure-devops-services)
-    * [Exercise: Execute functional tests and deploy to Production](#exercise-execute-functional-tests-and-deploy-to-production-stage)
+    * [Exercise: Execute functional tests and deploy to Production](#exercise)
   * [I. Deploy a Delivery Pipeline in Azure DevOps Services](#i-define-and-execute-claims-api-delivery-pipeline-in-azure-devops-services)
   * [J. Explore out of box AKS features](#j-explore-out-of-box-aks-features)
 <!--te-->
@@ -1045,7 +1045,9 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
       ![alt tag](./images/H-22.PNG)
 
-### Exercise. Execute functional tests and deploy Claims API microservice to *Production* stage
+### Exercise:
+**Execute functional tests and deploy Claims API microservice to *Production* stage**
+
 This exercise is included to validate and solidify your understanding of *Azure DevOps Pipeline* feature and how it can be easily used to build and deploy containerized applications to different namespaces (regions) on a Kubernetes (AKS) cluster.
 
 **Challenge:**
@@ -1060,11 +1062,13 @@ You will need to update the build and release pipelines to complete this challen
 2.  Update the Release pipeline
     - Edit the release/deployment pipeline and add a stage for production eg., *Prod-Env*.  This stage should deploy the microservice artifacts to **production** namespace on your AKS cluster.  Refer to [Section H](#h-define-and-execute-claims-api-release-pipeline-in-azure-devops-services).
     - In the *QA-Env* stage, add a *Deploy to Kubernetes* task.  Use this task to retrieve the external/public IP address assigned to the **aks-aspnetcore-lab-qa-claims-api** service in the **qa-test** namespace. Refer to the Kubernetes CLI command in the snippet below.
+
     ```bash
     # Retrieve the Public/External IP address assigned to the microservice in 'qa-test` namespace
     $ kubectl get svc aks-aspnetcore-lab-qa-claims-api --template "{{range .status.loadBalancer.ingress}} {{.ip}} {{end}}" -n qa-test
     #
     ```
+
     The Public/External IP address assigned to the API service end-point should be used to configure the functional test shell script in the next step.
     - Add a *Bash* (bash shell) task. This task should be configured to execute a functional test shell script `./shell-scripts/start-load.sh`.  Open/Edit the shell script in this repository and go thru the logic before proceeding.  The script invokes the Claims API service end-point and executes get, insert, update and delete operations on *Claim* resources.  You will need to configure 3 input parameters for the shell script - No. of test runs, Public IP address of the service end-point (retrieved in previous step) & directory location containing test data (`./test-data`).
     - Execute the release/deployment pipeline.
