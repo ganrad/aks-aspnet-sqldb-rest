@@ -1056,7 +1056,7 @@ Run automated functional tests in the QA region (**QA-Env**) and upon successful
 You will need to update the build and release pipelines to complete this challenge.
 
 1.  Update the Build pipeline
-    - Copy the `./shell-scripts` and `./test-data` directories to the `staging` location on the build agent.  Refer to the *Copy* task in [Section F](#f-define-and-execute-claims-api-build-pipeline-in-azure-devops-services).
+    - Copy the `./shell-scripts` and `./test-data` directories to the `staging` location on the build agent.  Refer to [Section F](#f-define-and-execute-claims-api-build-pipeline-in-azure-devops-services).
     - Execute the build pipeline.
 
 2.  Update the Release pipeline
@@ -1070,7 +1070,7 @@ You will need to update the build and release pipelines to complete this challen
       ```
 
       The Public/External IP address assigned to the API service end-point should be used to configure the functional test shell script in the next step.
-    - Add a *Bash* (bash shell) task. This task should be configured to execute a functional test shell script `./shell-scripts/start-load.sh`.  Open/Edit the shell script in this repository and go thru the logic before proceeding.  The script invokes the Claims API service end-point and executes get, insert, update and delete operations on *Claim* resources.  You will need to configure 3 input parameters for the shell script - No. of test runs, Public IP address of the service end-point (retrieved in previous step) & directory location containing test data (`./test-data`).
+    - Add a *Bash* (bash shell) task. This task should be configured to execute a functional test shell script `./shell-scripts/start-load.sh`.  Open/Edit the shell script in this repository and go thru the logic before proceeding.  The script invokes the Claims API microservice end-point and executes get, insert, update and delete operations on *Claim* resources.  You will need to configure 3 input parameters for the shell script - No. of test runs, Public IP address of the service end-point (retrieved in previous step) & directory location containing test data (`./test-data`).
     - Execute the release/deployment pipeline.
 
 Congrats!!  You have successfully built the *Claims API* microservice, packaged this application within a container image, pushed the container image into an ACR instance and finally deployed the containerized application in both **development** and **test-qa** namespaces (regions) on AKS.  Cool!!
