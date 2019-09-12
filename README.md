@@ -818,7 +818,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
 7.  (Optional) Inspect the Azure Load Balancer configuration.
 
-    As part of deploying the *claims-api* Kubernetes *Service* object, an Azure cloud load balancer gets auto-provisioned and configured. The load balancer accepts HTTP requests for our microservice and re-directes all calls to the service endpoint (port 8080).  Using the Azure Portal, take a look at the Azure load balancer.
+    As part of deploying the *claims-api* Kubernetes *Service* object, an Azure cloud load balancer gets auto-provisioned and configured. The load balancer accepts HTTP requests for our microservice and re-directes all calls to the service end-point (port 8080).  Using the Azure Portal, take a look at the Azure load balancer.
 
      ![alt tag](./images/G-01.PNG)
 
@@ -840,7 +840,7 @@ The above command will list the **IP Address** (both internal and external) for 
 
 Use the *External-IP* address in the API end-point URL when invoking the Claims API. Substitute the *External-IP* address in place of **Azure_load_balancer_ip**.
 
-The REST API exposed by this microservice can be accessed by using the _context-path_ (or Base Path) `api/v1/claims/`.  The REST API endpoint's exposed are as follows.
+The REST API exposed by this microservice can be accessed by using the _context-path_ (or Base Path) `api/v1/claims/`.  The REST API end-point's exposed are as follows.
 
 URI Template | HTTP VERB | DESCRIPTION
 ------------ | --------- | -----------
@@ -1047,24 +1047,29 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
 ### Exercise: Execute functional tests and deploy Claims API microservice to *Production* stage
 This exercise is included to validate and solidify your understanding of *Azure DevOps Pipeline* feature and how it can be easily used to build and deploy containerized applications to different namespaces (regions) on a Kubernetes (AKS) cluster.
-Essentially, there are two tasks/challenges which you will need to complete in this exercise -
 
-1.  **Update the Build pipeline**
-    - Copy the `./shell-scripts` and `./test-data` directories to the `staging` location on the build agent.  Refer to the **Copy** task in [Section F](#f-define-and-execute-claims-api-build-pipeline-in-azure-devops-services).
+**Challenge:**
+Run automated functional tests in the QA region (**QA-Env**) and upon successful execution of tests, deploy the Claims API microservice to Production region (**Prod-Env**).
+
+You will need to update the build and release pipelines to complete this challenge.
+
+1.  Update the Build pipeline
+    - Copy the `./shell-scripts` and `./test-data` directories to the `staging` location on the build agent.  Refer to the *Copy* task in [Section F](#f-define-and-execute-claims-api-build-pipeline-in-azure-devops-services).
     - Execute the build pipeline.
 
-2.  **Update the Release pipeline**
-    - Edit the release/deployment pipeline and add a stage for production eg., **Prod-Env**.  This stage should deploy the microservice artifacts to **production** namespace on your AKS cluster.  Refer to [Section H](#h-define-and-execute-claims-api-release-pipeline-in-azure-devops-services) as needed.
-    - In the **QA-Env** stage, add a **Deploy to Kubernetes** task.  Use the `kubectl get` command to retrieve the external/public IP address assigned to the **aks-aspnetcore-lab-qa-claims-api** service in the **qa-test** namespace. Refer to the command snippet below.
+2.  Update the Release pipeline
+    - Edit the release/deployment pipeline and add a stage for production eg., *Prod-Env*.  This stage should deploy the microservice artifacts to **production** namespace on your AKS cluster.  Refer to [Section H](#h-define-and-execute-claims-api-release-pipeline-in-azure-devops-services).
+    - In the *QA-Env* stage, add a *Deploy to Kubernetes* task.  Use this task to retrieve the external/public IP address assigned to the **aks-aspnetcore-lab-qa-claims-api** service in the **qa-test** namespace. Refer to the Kubernetes CLI command in the snippet below.
     ```bash
     # Retrieve the Public/External IP address assigned to the microservice in 'qa-test` namespace
     $ kubectl get svc aks-aspnetcore-lab-qa-claims-api --template "{{range .status.loadBalancer.ingress}} {{.ip}} {{end}}" -n qa-test
     #
     ```
-    - Add a **Bash** (bash shell) task. This task should be configured to execute a shell script `./shell-scripts/start-load.sh`.  Open/Edit the shell script in this repository and go thru the logic efore proceeding.  The script invokes the Claims API service end-point and executes get, insert, update and delete operations on *Claim* resources.  You will need to configure 3 input parameters for the shell script - No. of test runs, Public IP address for the service (retrieved in previous step) & directory location containing test data.
+    The Public/External IP address assigned to the API service end-point should be used to configure the functional test shell script in the next step.
+    - Add a *Bash* (bash shell) task. This task should be configured to execute a functional test shell script `./shell-scripts/start-load.sh`.  Open/Edit the shell script in this repository and go thru the logic before proceeding.  The script invokes the Claims API service end-point and executes get, insert, update and delete operations on *Claim* resources.  You will need to configure 3 input parameters for the shell script - No. of test runs, Public IP address of the service end-point (retrieved in previous step) & directory location containing test data (`./test-data`).
     - Execute the release/deployment pipeline.
 
-Congrats!!  At this point, you have successfully built the *Claims API* microservice, packaged this application within a container image, pushed the container image into an ACR instance and finally deployed the containerized application in both **development** and **test-qa** namespaces (regions) on AKS.  Cool!!
+Congrats!!  You have successfully built the *Claims API* microservice, packaged this application within a container image, pushed the container image into an ACR instance and finally deployed the containerized application in both **development** and **test-qa** namespaces (regions) on AKS.  Cool!!
 
 ### I. Define and execute Claims API Delivery Pipeline in Azure DevOps Services
 **Approx. time to complete this section: 1 Hour**
