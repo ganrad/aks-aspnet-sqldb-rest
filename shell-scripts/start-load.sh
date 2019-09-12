@@ -10,26 +10,29 @@ chmod 700 ./jq-linux64
 echo "***** Installed jq JSON parser *****"
 echo
 
-echo "Claims resources - INSERT - RETRIEVE - UPDATE - RETRIEVE - DELETE"
+## Get all claims
+echo -e "***** Retrieving all claims *****"
+# curl -i -k https://grclaimsapi.azurewebsites.net/api/claims/
+hcode=$(curl --write-out \\n%{http_code}\\n --silent --output tmp.out http://$svcIpAddress/api/v1/claims/ | awk '{if(NR==2) print $0}')
+if [[ $hcode -ne 200 ]];
+then
+  echo "Encountered http status code = $hcode, on getAllClaims Operation. Exiting ...."
+  exit 1;
+else
+  cat tmp.out | ./jq-linux64 '.'
+fi
+echo
+
+echo "Claims resources - INSERT - RETRIEVE - UPDATE - DELETE"
+echo
 echo "***** Executing functional tests with institutional and professional claims *****"
 echo "***** Attempting total no. of test runs = [$1] *****"
 echo
-
 while [ $counter -le $1 ]
 do
-  ## Get all claims
-  echo -e "***** Retrieving all claims, run # = [$counter] *****"
-  # curl -i -k https://grclaimsapi.azurewebsites.net/api/claims/
-  hcode=$(curl --write-out \\n%{http_code}\\n --silent --output tmp.out http://$svcIpAddress/api/v1/claims/ | awk '{if(NR==2) print $0}')
-  if [[ $hcode -ne 200 ]];
-  then
-    echo "Encountered http status code = $hcode, on getAllClaims Operation. Exiting ...."
-    exit 1;
-  else
-    cat tmp.out | ./jq-linux64 '.'
-  fi
-  echo
-
+  echo "================================================================"
+  echo "************* Executing [run # = $counter] ***************
+  echo "================================================================"
   sleep 1
 
   ## Add a claim for institutional provider -----------------------------
@@ -53,7 +56,7 @@ do
 
   echo
   echo -e "***** Institutional claim for provider after changing value of field totalClaimCharge *****"
-  echo -e $record
+  echo $record | ./jq-linux64 '.claimItemId'
   echo 
 
   # Update the claim
@@ -111,7 +114,7 @@ do
 
   echo
   echo -e "***** Professional claim for provider after changing value of field totalClaimCharge *****"
-  echo -e $record
+  echo -e $record | ./jq-linux64 '.claimItemId'
   echo 
 
   # Update the claim
