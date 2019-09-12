@@ -56,7 +56,7 @@ do
 
   echo
   echo -e "***** Institutional claim for provider after changing value of field totalClaimCharge *****"
-  echo $record | ./jq-linux64 '.claimItemId'
+  echo $record | ./jq-linux64 '.'
   echo 
 
   # Update the claim
@@ -114,7 +114,7 @@ do
 
   echo
   echo -e "***** Professional claim for provider after changing value of field totalClaimCharge *****"
-  echo -e $record | ./jq-linux64 '.claimItemId'
+  echo -e $record | ./jq-linux64 '.'
   echo 
 
   # Update the claim
