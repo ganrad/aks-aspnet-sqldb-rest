@@ -14,7 +14,7 @@ Table of Contents
   * [G. Deploy an Azure Kubernetes Service (AKS) cluster](#g-create-an-azure-kubernetes-service-cluster-and-deploy-claims-api-microservice)
     * [Invoking the Claims API Microservice REST API](#invoking-the-claims-api-microservice-rest-api)
   * [H. Define and execute a Release Pipeline in Azure DevOps Services](#h-define-and-execute-claims-api-release-pipeline-in-azure-devops-services)
-    * [Exercise : Execute functional tests and deploy to Production](#exercise-:-execute-functional-tests-and-deploy-to-production-stage)
+    * [Exercise: Execute functional tests and deploy to Production](#exercise-execute-functional-tests-and-deploy-to-production-stage)
   * [I. Deploy a Delivery Pipeline in Azure DevOps Services](#i-define-and-execute-claims-api-delivery-pipeline-in-azure-devops-services)
   * [J. Explore out of box AKS features](#j-explore-out-of-box-aks-features)
 <!--te-->
