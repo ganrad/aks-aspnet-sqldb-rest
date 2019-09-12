@@ -1045,7 +1045,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
       ![alt tag](./images/H-22.PNG)
 
-### Exercise: Execute functional tests and deploy Claims API microservice to *Production* stage
+### Exercise. Execute functional tests and deploy Claims API microservice to *Production* stage
 This exercise is included to validate and solidify your understanding of *Azure DevOps Pipeline* feature and how it can be easily used to build and deploy containerized applications to different namespaces (regions) on a Kubernetes (AKS) cluster.
 
 **Challenge:**
