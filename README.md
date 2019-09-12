@@ -929,7 +929,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
     - AKS namespace = `development`
     - Command = `upgrade`
     - Chart Type = `File Path`
-    - Chart Path = `$(System.DefaultWorkingDirectory/_claims-api-lab-CI/drop/claims-api`
+    - Chart Path = `$(System.DefaultWorkingDirectory)/_claims-api-lab-CI/drop/claims-api`
     - Release name = `aks-aspnetcore-lab`
     - Arguments = `--set image.repository=<your-acr-repo>.azurecr.io/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)"`
 
