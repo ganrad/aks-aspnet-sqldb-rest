@@ -749,16 +749,43 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     $ kubectl get namespaces
     #
     # Initialize Helm.  This will install 'Tiller' on AKS.  Wait for this command to complete!
-    $ helm init
+    $ helm init --upgrade
     #
     # Check if Helm client is able to connect to Tiller on AKS.
     # This command should list both client and server versions.
     $ helm version
-    Client: &version.Version{SemVer:"v2.11.0", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
-    Server: &version.Version{SemVer:"v2.11.0", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
+    Client: &version.Version{SemVer:"v2.14.3", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
+    Server: &version.Version{SemVer:"v2.14.3", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
     ```
 
-5.  Configure AKS to pull application container images from ACR.
+5.  Deploy Traefik Kubernetes Ingress Controller.
+
+    An ingress controller acts as a reverse proxy and intercepts HTTP traffic destined to applications deployed on the AKS cluster.  It's considered a best practice (security reasons) to direct all inbound HTTP traffic into the cluster thru an Ingress Controller.
+
+    For this project, we will deploy [Traefik Ingress Controller](https://github.com/helm/charts/tree/master/stable/traefik).  For AKS production deployments either [NGINX Ingress Controller](https://github.com/nginxinc/kubernetes-ingress) or [Azure Application Gateway Controller](https://azure.github.io/application-gateway-kubernetes-ingress/) is recommended.
+    ```bash
+    # Deploy Traefik Ingress controller on AKS
+    $ helm install stable/traefik --name ingress-traefik --namespace kube-system --set dashboard.enabled=true,dashboard.domain=db-traefik.akslab.com
+    #
+    # Retrieve the Public IP Address of Traefik load balancer service.
+    $ kubectl get svc -n kube-system 
+    # From the command output, record the IP address (External IP) for service 'ingress-traefik'.  You will need the IP address in the next step.
+    #
+    ```
+    Update the `/etc/hosts` file on the Linux VM (Bastion host).  On Linux systems, this file is used to lookup and resolve host name IP addresses.  Use *vi* or *nano* editor to add an hostname entry to this file. Refer to the snippet below.
+    ```
+    # This entry resolves hostnames to the Traefik load balancer IP.  Substitute the correct value for 'Traefik
+    # External IP Address>, obtained in previous step. 
+    <Traefik External IP Address> db-traefik.akslab.com claims-api-prod.akslab.com claims-api-stage.akslab.com
+    ```
+
+    As part of deploying the *ingress-traefik* Kubernetes *Service* object, an Azure cloud load balancer gets auto-provisioned and configured. This load balancer accepts HTTP requests on a Public IP address and re-directes them to the respective microservice end-points on the AKS cluster.  Take a look at the Azure load balancer on the Azure Portal.
+
+     ![alt tag](./images/G-01.PNG)
+    
+    Open a browser window/tab and access the Traefik Dashboard [URL](http://db-traefik.akslab.com/).  Keep this window/tab open.
+
+6.  Configure AKS to pull application container images from ACR.
 
     When AKS cluster is created, Azure also creates a 'Service Principal' (SP) to support cluster operability with other Azure resources.  This auto-generated service principal can be used to authenticate against the ACR.  To do so, we need to create an Azure AD role assignment that grants the cluster's SP access to the Azure Container Registry.
 
@@ -782,7 +809,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     #
     ```
 
-6.  Use Helm to deploy the Claims API microservice container on AKS.
+7.  Use Helm to deploy the Claims API microservice container on AKS.
 
     A kubernetes *Namespace* is a container object used to group applications and their associated resources.  We will be deploying the Claims API microservice container within the **development** namespace.
     
@@ -816,11 +843,6 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     #
     ```
 
-7.  (Optional) Inspect the Azure Load Balancer configuration.
-
-    As part of deploying the *claims-api* Kubernetes *Service* object, an Azure cloud load balancer gets auto-provisioned and configured. The load balancer accepts HTTP requests for our microservice and re-directes all calls to the service end-point (port 8080).  Using the Azure Portal, take a look at the Azure load balancer.
-
-     ![alt tag](./images/G-01.PNG)
 
 ### Invoking the Claims API Microservice REST API 
 
