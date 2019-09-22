@@ -2,10 +2,19 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+productionSlot: blue
+blue:
+  enabled: true
+green:
+  enabled: false
+
 replicaCount: 1
 
+app:
+  name: claims-api
+
 image:
-  repository: mtcslabtest.azurecr.io/claims-api
+  repository: labtest.azurecr.io/claims-api
   tag: latest
   pullPolicy: Always
 
@@ -14,16 +23,17 @@ service:
   port: 80
 
 checks:
-  livenessInitialDelay: 5
-  livenessProbeDelay: 3600
-  readinessProbeDelay: 5
+  initialDelay: 10
+  periodSeconds: 30
 
 ingress:
   enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  annotations:
+    kubernetes.io/ingress.class: traefik
   path: /
+  host:
+    epProd: claims-api-prod.akslab.com
+    epStage: claims-api-stage.akslab.com
   hosts:
     - chart-example.local
   tls: []

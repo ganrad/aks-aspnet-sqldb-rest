@@ -749,7 +749,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     $ kubectl get namespaces
     #
     # Initialize Helm.  This will install 'Tiller' on AKS.  Wait for this command to complete!
-    $ helm init --upgrade
+    $ helm init --wait --upgrade
     #
     # Check if Helm client is able to connect to Tiller on AKS.
     # This command should list both client and server versions.
@@ -784,7 +784,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
      ![alt tag](./images/G-01.PNG)
     
     **IMPORTANT NOTES:**
-    - The Traefik Ingress Controller will not be used to load balance HTTP traffic to the *Claims API* microservice in the **development** and **qa-test** regions.  The Ingress Controller will be used for directing HTTP traffic in the *Production* region only.  You will work on this configuration in a later exercise.
+    - The Traefik Ingress Controller will not be used to load balance HTTP traffic to the *Claims API* microservice in the **development** and **qa-test** regions.  The Ingress Controller will be used for directing HTTP traffic in the **Production** region only.  You will work on this configuration in a later exercise.
     - Open a browser window/tab and access the Traefik Dashboard [URL](http://db-traefik.akslab.com/).  Keep this window/tab open.
 
 6.  Configure AKS to pull application container images from ACR.
@@ -844,7 +844,6 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     $ kubectl get svc -n development
     #
     ```
-
 
 ### Invoking the Claims API Microservice REST API 
 
