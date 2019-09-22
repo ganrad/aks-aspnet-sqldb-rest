@@ -14,7 +14,8 @@ Table of Contents
   * [G. Deploy an Azure Kubernetes Service (AKS) cluster](#g-create-an-azure-kubernetes-service-cluster-and-deploy-claims-api-microservice)
     * [Invoking the Claims API Microservice REST API](#invoking-the-claims-api-microservice-rest-api)
   * [H. Define and execute a Release Pipeline in Azure DevOps Services](#h-define-and-execute-claims-api-release-pipeline-in-azure-devops-services)
-    * [Exercise: Execute functional tests and deploy to Production](#exercise)
+    * [Exercise 1: Execute functional tests and deploy to Production](#exercise-1)
+    * [Exercise 2: Implement Blue-Green deployments in Production region](#exercise-2)
   * [I. Deploy a Delivery Pipeline in Azure DevOps Services](#i-define-and-execute-claims-api-delivery-pipeline-in-azure-devops-services)
   * [J. Explore out of box AKS features](#j-explore-out-of-box-aks-features)
 <!--te-->
@@ -1068,10 +1069,10 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
       ![alt tag](./images/H-22.PNG)
 
-### Exercise:
+### Exercise 1:
 **Execute functional tests in *QA* region and deploy Claims API microservice to *Production* region**
 
-This exercise is included to validate and solidify your understanding of *Azure DevOps Pipeline* feature and how it can be easily used to build and deploy containerized applications to different namespaces (regions) on a Kubernetes (AKS) cluster.
+This exercise will help validate and solidify your understanding of *Azure DevOps Pipeline* feature and how it can be easily used to build and deploy containerized applications to different namespaces (regions) on a Kubernetes (AKS) cluster.
 
 **Challenge:**
 Run automated functional tests in the QA region (**QA-Env**) and upon successful execution of tests, deploy the Claims API microservice to Production region (**Prod-Env**).
@@ -1096,7 +1097,24 @@ You will need to update the build and release pipelines to complete this challen
     - Add a *Bash* (bash shell) task. This task should be configured to execute a functional test shell script `./shell-scripts/start-load.sh`.  Open/Edit the shell script in this repository and go thru the logic before proceeding.  The script invokes the Claims API microservice end-point and executes get, insert, update and delete operations on *Claim* resources.  You will need to configure 3 input parameters for the shell script - No. of test runs, Public IP address of the service end-point (retrieved in previous step) & directory location containing test data (`./test-data`).
     - Execute the release/deployment pipeline.
 
-Congrats!!  You have successfully built the *Claims API* microservice, packaged this application within a container image, pushed the container image into an ACR instance and finally deployed the containerized application in both **development** and **test-qa** namespaces (regions) on AKS.  Cool!!
+### Exercise 2:
+**Implement Blue-Green deployments in Production region**
+
+In this exercise you will learn how to use the *Blue-Green* deployment technique in order to deploy and/or rollback containerized applications in production region.
+
+Blue-Green deployment is a technique that minimizes downtime and risk by running two identical production application environments called *Blue* and *Green*.  At any time, only one of the environments is live, with the live environment serving all API traffic.  With this configuration, it is also possible to quickly rollback to the current (most recent) application release with little to no downtime to the application.
+
+To learn more about blue-green deployments, refer to the following online resources.
+- [Blue-Green deployments](https://martinfowler.com/bliki/BlueGreenDeployment.html), Martin Fowler's Blog
+- [Blue/Green deployments using Helm Charts](https://medium.com/@saraswatpuneet/blue-green-deployments-using-helm-charts-93ec479c0282)
+
+**Challenge:** Update the release/deployment pipeline to allow Blue-Green deployments in the Production region (Stage: Prod-Env).
+
+1. Update the Release pipeline
+
+   - Edit the release/deployment pipeline and update the production deployment stage *Prod-Env*.
+
+Congrats!!  You have successfully built the *Claims API* microservice, packaged this application within a container image, pushed the container image into an ACR instance. Finally, you deployed the containerized application in **development**, **test-qa** & **production** namespaces (regions) on AKS.  Cool!!
 
 ### I. Define and execute Claims API Delivery Pipeline in Azure DevOps Services
 **Approx. time to complete this section: 1 Hour**
