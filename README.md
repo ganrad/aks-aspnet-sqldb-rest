@@ -760,22 +760,22 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
 5.  Deploy Traefik Kubernetes Ingress Controller.
 
-    An ingress controller acts as a reverse proxy and intercepts HTTP traffic destined to applications deployed on the AKS cluster.  It's considered a best practice (security reasons) to direct all inbound HTTP traffic into the cluster thru an Ingress Controller.
+    An ingress controller acts as a load balancer cum reverse proxy and intercepts HTTP traffic destined to applications deployed on the AKS cluster.  For production AKS deployments, it's usually a best practice (security reasons) to direct all inbound HTTP traffic into the cluster thru an Ingress Controller.  The ingress controller provides a single point of entry into the AKS cluster and is responsible for directing all HTTP traffic to respective service endpoints exposed on the cluster.
 
-    For this project, we will deploy [Traefik Ingress Controller](https://github.com/helm/charts/tree/master/stable/traefik).  For AKS production deployments either [NGINX Ingress Controller](https://github.com/nginxinc/kubernetes-ingress) or [Azure Application Gateway Controller](https://azure.github.io/application-gateway-kubernetes-ingress/) is recommended.
+    For this project, we will deploy [Traefik Ingress Controller](https://github.com/helm/charts/tree/master/stable/traefik).  For AKS production deployments, either [NGINX Ingress Controller](https://github.com/nginxinc/kubernetes-ingress) or [Azure Application Gateway Controller](https://azure.github.io/application-gateway-kubernetes-ingress/) is recommended.
     ```bash
     # Deploy Traefik Ingress controller on AKS
     $ helm install stable/traefik --name ingress-traefik --namespace kube-system --set dashboard.enabled=true,dashboard.domain=db-traefik.akslab.com
     #
     # Retrieve the Public IP Address of Traefik load balancer service.
     $ kubectl get svc -n kube-system 
-    # From the command output, record the IP address (External IP) for service 'ingress-traefik'.  You will need the IP address in the next step.
+    # From the command output, record the Public IP address (External IP) for service 'ingress-traefik'.  You will need the IP address in the next step.
     #
     ```
     Update the `/etc/hosts` file on the Linux VM (Bastion host).  On Linux systems, this file is used to lookup and resolve host name IP addresses.  Use *vi* or *nano* editor to add an hostname entry to this file. Refer to the snippet below.
     ```
     # This entry resolves hostnames to the Traefik load balancer IP.  Substitute the correct value for 'Traefik
-    # External IP Address>, obtained in previous step. 
+    # External IP Address>', obtained in previous step. 
     <Traefik External IP Address> db-traefik.akslab.com claims-api-prod.akslab.com claims-api-stage.akslab.com
     ```
 
@@ -783,7 +783,9 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
      ![alt tag](./images/G-01.PNG)
     
-    Open a browser window/tab and access the Traefik Dashboard [URL](http://db-traefik.akslab.com/).  Keep this window/tab open.
+    **IMPORTANT NOTES:**
+    - The Traefik Ingress Controller will not be used to load balance HTTP traffic to the *Claims API* microservice in the **development** and **qa-test** regions.  The Ingress Controller will be used for directing HTTP traffic in the *Production* region only.  You will work on this configuration in a later exercise.
+    - Open a browser window/tab and access the Traefik Dashboard [URL](http://db-traefik.akslab.com/).  Keep this window/tab open.
 
 6.  Configure AKS to pull application container images from ACR.
 
