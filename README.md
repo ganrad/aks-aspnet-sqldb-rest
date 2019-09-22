@@ -1114,7 +1114,7 @@ To learn more about blue-green deployments, refer to the following online resour
 
    - Edit the release/deployment pipeline and update the production deployment stage *Prod-Env*.
 
-Congrats!!  You have successfully built the *Claims API* microservice, packaged this application within a container image, pushed the container image into an ACR instance. Finally, you deployed the containerized application in **development**, **test-qa** & **production** namespaces (regions) on AKS.  Cool!!
+Congrats!!  You have successfully built the *Claims API* microservice, packaged this application within a container image and pushed the container image into an ACR instance. Finally, you deployed the containerized application in **development**, **qa-test** & **production** namespaces (Development, QA and Production regions) on AKS.  Cool!!
 
 ### I. Define and execute Claims API Delivery Pipeline in Azure DevOps Services
 **Approx. time to complete this section: 1 Hour**
