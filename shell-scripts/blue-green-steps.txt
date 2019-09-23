@@ -1,0 +1,76 @@
+Define two variables
+--------------------
+resourceGroup
+aksCluster
+
+0. Do helm init (client & server versions should match!)
+
+1. Azure cli
+az aks get-credentials -g $(resourceGroup) -n $(aksName)
+
+currentSlot=`(helm get values --all aks-aspnetcore-lab-prod | grep -Po 'productionSlot: \K.*')`
+echo "CurrentSlot = $currentSlot"
+
+if [ "$currentSlot" == "blue" ]; then
+    newSlot="green"
+else
+    newSlot="blue"
+fi
+
+echo "##vso[task.setvariable variable=currentSlot]$currentSlot"
+echo "##vso[task.setvariable variable=newSlot]$newSlot"
+
+2. Bash script - Print slot values
+# Write your commands here
+
+echo "---------------------------------------"
+echo "currentSlot = $(currentSlot)"
+echo "newSlot = $(newSlot)"
+echo "****************************"
+
+3. helm upgrade - deploy both blue and green
+--set image.repository=csulabtest.azurecr.io/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)" --set service.type=ClusterIP --set ingress.enabled=true  --set "$(newSlot)".enabled=true --reuse-values
+
+Use a 'manual intervention' task to confirm - new deployment or rollback
+------------------------------------------------------------------------
+
+Swap slots (On resume - success)
+----------
+1. Azure cli
+az aks get-credentials -g $(resourceGroup) -n $(aksName)
+
+currentSlot=`(helm get values --all aks-aspnetcore-lab-prod | grep -Po 'productionSlot: \K.*')`
+echo "CurrentSlot = $currentSlot"
+
+if [ "$currentSlot" == "blue" ]; then
+    newSlot="green"
+else
+    newSlot="blue"
+fi
+
+echo "##vso[task.setvariable variable=currentSlot]$currentSlot"
+echo "##vso[task.setvariable variable=newSlot]$newSlot"
+
+2. Bash script - same
+
+3. helm deploy - Set productionSlot to newSlot
+--set productionSlot="$(newSlot)","$(currentSlot)".enabled=false --reuse-values
+
+Rollback to current release (On reject - failure)
+---------------------------
+1. Azure cli
+az aks get-credentials -g $(resourceGroup) -n $(aksName)
+
+currentSlot=`(helm get values --all aks-aspnetcore-lab-prod | grep -Po 'productionSlot: \K.*')`
+echo "CurrentSlot = $currentSlot"
+
+if [ "$currentSlot" == "blue" ]; then
+    newSlot="green"
+else
+    newSlot="blue"
+fi
+echo "##vso[task.setvariable variable=currentSlot]$currentSlot"
+echo "##vso[task.setvariable variable=newSlot]$newSlot"
+
+2. helm deploy - rollback to current slot, delete staging infra
+--set "$(newSlot)".enabled=false --reuse-values

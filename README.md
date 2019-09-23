@@ -1075,7 +1075,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 This exercise will help validate and solidify your understanding of *Azure DevOps Pipeline* feature and how it can be easily used to build and deploy containerized applications to different namespaces (regions) on a Kubernetes (AKS) cluster.
 
 **Challenge:**
-Run automated functional tests in the QA region (**QA-Env**) and upon successful execution of tests, deploy the Claims API microservice to Production region (**Prod-Env**).
+Run automated functional tests in the QA region (**qa-test**) and upon successful execution of tests, deploy the Claims API microservice to Production region (**production**).
 
 You will need to update the build and release pipelines to complete this challenge.
 
@@ -1089,7 +1089,7 @@ You will need to update the build and release pipelines to complete this challen
 
       ```bash
       # Retrieve the Public/External IP address assigned to the microservice in 'qa-test` namespace
-      $ kubectl get svc aks-aspnetcore-lab-qa-claims-api --template "{{range .status.loadBalancer.ingress}} {{.ip}} {{end}}" -n qa-test
+      $ kubectl get svc claims-api-svc --template "{{range .status.loadBalancer.ingress}} {{.ip}} {{end}}" -n qa-test
       #
       ```
 
@@ -1108,11 +1108,15 @@ To learn more about blue-green deployments, refer to the following online resour
 - [Blue-Green deployments](https://martinfowler.com/bliki/BlueGreenDeployment.html), Martin Fowler's Blog
 - [Blue/Green deployments using Helm Charts](https://medium.com/@saraswatpuneet/blue-green-deployments-using-helm-charts-93ec479c0282)
 
-**Challenge:** Update the release/deployment pipeline to allow Blue-Green deployments in the Production region (Stage: Prod-Env).
+**Challenge:** Update the release/deployment pipeline to allow Blue-Green deployments in the Production region (**production**).
 
-1. Update the Release pipeline
+1. Update the Release/Deployment pipeline
 
-   - Edit the release/deployment pipeline and update the production deployment stage *Prod-Env*.
+   - Edit the pipeline and update the production deployment stage *Prod-Env*.  Review the default parameter values in the helm chart `./claims-api/values.yaml` file.  In the **helm upgrade** task, specify correct values for the following parameters as shown in the table below.
+     Parameter | Value
+     ----------|-------
+     service.type | ClusterIP
+     ingress.enabled | true
 
 Congrats!!  You have successfully built the *Claims API* microservice, packaged this application within a container image and pushed the container image into an ACR instance. Finally, you deployed the containerized application in **development**, **qa-test** & **production** namespaces (Development, QA and Production regions) on AKS.  Cool!!
 
