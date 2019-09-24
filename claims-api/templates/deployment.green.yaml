@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag0 }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: ConnectionStrings__SqlServerDb

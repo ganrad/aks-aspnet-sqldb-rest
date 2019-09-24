@@ -3,6 +3,7 @@
 # Declare variables to be passed into your templates.
 
 productionSlot: blue
+productionTag: latest
 blue:
   enabled: false
 green:
@@ -16,6 +17,7 @@ app:
 image:
   repository: labtest.azurecr.io/claims-api
   tag: latest
+  tag0: latest
   pullPolicy: Always
 
 service:
