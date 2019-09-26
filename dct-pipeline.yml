@@ -1,0 +1,105 @@
+#
+# Microservice : Claims API Microservice
+# Language : ASP.NET Core 2.2
+# Date: 09-26-2019
+# Author: Ganesh Radhakrishnan (ganrad01@gmail.com)
+# 
+# Description:
+# Pipeline script (yaml) for building and deploying the 'claims-api' .NET Core microservice on AKS.
+# The container image will be built, digitally signed and then pushed to an ACR.  Finally, an application container based on the signed image will be deployed on AKS
+# 
+# IMPORTANT:
+# This pipeline requires the following variables to be set.
+#   - 'imageRepository' : Name of the image repository in ACR.  This repository should have been intialized (initiated) with a root key (docker trust signer add ...)
+#   - 'DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE' : Passphrase used while generating delegation key pair (Should be a secret)
+#   - 'containerRegistryServiceConnection' :  Create a 'Service Connection' for ACR in Azure DevOps Services (Project settings) and then specify the service connection name.
+#   - 'azureSubscriptionEndpoint' : Azure DevOps ARM Connection name
+#   - 'azureContainerRegistry' : Azure Container Registry name
+#   - 'azureResourceGroup' : Azure Resource Group name
+#   - 'kubernetesCluster' : Azure Kubernetes Service cluster name
+#     'sqlDbConnectionString' : Azure SQL DB Connection String value.  Refer to 'appsettings.json' file.
+# 
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+pool:
+  vmImage: 'Ubuntu 16.04'
+
+variables:
+  system.debug: false
+  containerRegistryServiceConnection: <Specify ACR service connection>
+  imageRepository: claims-api
+  DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: <Passphrase for DCT delegation key pair> 
+  azureSubscriptionEndpoint: <Specify Azure RM connection>
+  azureContainerRegistry: <Azure Container Registry name - name.azurecr.io>
+  azureResourceGroup: <Azure Resource Group - name>
+  kubernetesCluster: <Azure Kubernetes Service - name>
+  sqlDbConnectionString: <Azure SQL DB Connection String>
+
+steps:
+- task: Docker@2
+  inputs:
+    command: login
+    containerRegistry: $(containerRegistryServiceConnection)
+
+- task: DownloadSecureFile@1
+  name: privateKey
+  inputs:
+    secureFile: 0e1e9707a9a8756cc366eb7c708a57da21a175be957249e75daa4dd0213d5bfd.key
+- script: |
+    mkdir -p $(DOCKER_CONFIG)/trust/private
+    cp $(privateKey.secureFilePath) $(DOCKER_CONFIG)/trust/private
+
+- task: Docker@2
+  inputs:
+    command: build
+    Dockerfile: '**/dockerfile'
+    containerRegistry: $(containerRegistryServiceConnection)
+    repository: $(imageRepository)
+    tags: |
+      $(Build.BuildId)
+
+- task: Docker@2
+  inputs: 
+    command: push
+    containerRegistry: $(containerRegistryServiceConnection)
+    repository: $(imageRepository)
+    tags: |
+      $(Build.BuildId)
+    arguments: '--disable-content-trust=false'
+  env:
+    DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: $(DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE)
+
+- task: HelmDeploy@0
+  displayName: Helm init
+  name: helm_init
+  inputs:
+    connectionType: Azure Resource Manager
+    azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+    azureResourceGroup: $(azureResourceGroup)
+    kubernetesCluster: $(kubernetesCluster)
+    command: init
+    upgradetiller: false
+    waitForExecution: true
+    arguments: --client-only
+
+- task: HelmDeploy@0
+  displayName: Helm upgrade
+  name: helm_deploy
+  inputs:
+    connectionType: Azure Resource Manager
+    azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+    azureResourceGroup: $(azureResourceGroup)
+    kubernetesCluster: $(kubernetesCluster)
+    command: upgrade
+    arguments: --namespace dev-dct --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)"
+    chartType: filepath
+    chartPath: $(System.DefaultWorkingDirectory)/claims-api
+    releaseName: aks-aspnetcore-dct
+    # overrideValues: image.repository=csulabtest.azurecr.io/claims-api,image.tag=$(Build.BuildId)
+    install: true
+    waitForExecution: true
+
+- script: "echo 'Finished Helm Deploy...'"
+  displayName: Helm deploy end
+  name: echo_helm_end
