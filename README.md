@@ -829,6 +829,9 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     #   - Azure SQL Server DB Connection string in parameter 'sqldb.connectionString'.  Remember to substitute the
     #     correct values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD.
     #     eg., --set sqldb.connectionString="Server=tcp:#{SQL_SRV_PREFIX}#.database.windows.net;Initial Catalog=ClaimsDB;Persist Security Info=False;User ID=#{SQL_USER_ID}#;Password=#{SQL_USER_PWD}#;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    #
+    #   - Enable/Set deployment type to 'blue'
+    #     eg., --set blue.enabled=true
     # 
     $ helm upgrade aks-aspnetcore-lab ./claims-api --install --namespace development --set blue.enabled=true --set image.repository=<your-acr-repo>.azurecr.io/claims-api --set sqldb.connectionString="Server=tcp:#{SQL_SRV_PREFIX}#.database.windows.net;Initial Catalog=ClaimsDB;Persist Security Info=False;User ID=#{SQL_USER_ID}#;Password=#{SQL_USER_PWD}#;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     #
@@ -1065,7 +1068,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
       URL - `http://<Azure_load_balancer_ip>/swagger/index.html`
 
-      You should be able to view the Swagger UI as shown the screenshot below.
+      You should be able to view the Swagger UI as shown in the screenshot below.
 
       ![alt tag](./images/H-22.PNG)
 
