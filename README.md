@@ -1110,37 +1110,40 @@ Blue-Green deployment is a technique that minimizes downtime and risk by running
 To learn more about blue-green deployments, refer to the following online resources.
 - [Blue-Green deployments](https://martinfowler.com/bliki/BlueGreenDeployment.html), Martin Fowler's Blog
 
-**Challenge:** Update the release/deployment pipeline to allow Blue-Green deployments in the Production region (**production**).
+**Challenge:** Update the release/deployment pipeline to allow Blue-Green deployments in the Production region (**production** namespace) on AKS.
 
 1. Go thru [Blue/Green deployments using Helm Charts](https://medium.com/@saraswatpuneet/blue-green-deployments-using-helm-charts-93ec479c0282)
 
-2. Update the Release/Deployment pipeline
+2. Update the Release/Deployment pipeline in Azure DevOps Services
 
-   - Edit the pipeline and update the production deployment stage *Prod-Env*.  Review the default parameter values in the helm chart `./claims-api/values.yaml` file.
-   - Review the steps described in `./shell-scripts/blue-green-steps.txt` file and update the deployment pipeline.
+   - Review the default parameter values in the helm chart `./claims-api/values.yaml` file.
+   - Review the steps described in `./shell-scripts/blue-green-steps.txt` file.  Edit the pipeline and update the *Prod-Env* stage in the deployment pipeline.
 
 3. Update *Claims API* microservice
 
-   Login to the Linux VM via terminal session and switch to the directory containing the GitHub repository for Claims API (`~/git-repos/aks-aspnet-sqldb-rest`).
-
-   Update *Claims API* controller logic to disable OpenAPI end-points.  Alternatively, update the controller logic to return a computed value (eg., totalClaimCharge, claimAdjAmount).   
+   - Login to the Linux VM via terminal session and switch to the directory containing the GitHub repository for Claims API (`~/git-repos/aks-aspnet-sqldb-rest`). Use a text editor (Vi or Nano) to update microservice controller logic. Alternatively, you can also update the controller logic in your forked GitHub repository using a web browser (not recommended).  
+   - Update the controller logic to disable OpenAPI end-points.  Or alternatively, update the controller logic to return a computed value (eg., totalClaimCharge, claimAdjAmount).   
 
 4. Run Build and Release pipelines and deploy to Production region
 
-   Use Git CLI to commit your updates to the local Claims API repository on the Linux VM.  Alternatively, if you made changes to the source code via the browser, commit the changes in your forked GitHub repository.
+   - Use Git CLI to commit your updates to the local Claims API repository on the Linux VM.  Then push the updates to your forked repository on GitHub.  Alternatively, if you made changes to the source code via the browser, commit the changes in your forked GitHub repository.
 
-   The Git commit should trigger a new build for the Claims API microservice in Azure DevOps Services.  A successful build should in turn trigger the release pipeline and deploy the microservice in all 3 regions (namespaces) - development, qa-test and production on AKS.  
+   - The Git commit should trigger a new build for the Claims API microservice in Azure DevOps Services.  A successful build should in turn trigger the release pipeline and deploy the microservice in all 3 namespaces (regions) - development, qa-test and production on AKS.  
 
-   If you followed the steps for Blue-Green deployment and configured the release pipeline tasks correctly for *Prod-ENV* stage, then the microservice should be deployed into both **prod** and **stage** slots in the **production** namespace on AKS.
+   - If you followed the steps for Blue-Green deployment and configured the release pipeline tasks correctly for *Prod-ENV* stage, then the microservice should be deployed into both **prod** and **stage** slots in the **production** namespace on AKS.
 
-   In Azure DevOps, the release pipeline in *Prod-Env* region should have paused at the *Manual Intervention* step.  The Claims API microservice should be accessible via the following two URL's.
+   - In Azure DevOps, the release pipeline in *Prod-Env* region should have paused at the *Manual Intervention* step.  The Claims API microservice should be accessible via the following two URL's.
    
-   - Stage (new deployment) : http://claims-api-stage.akslab.com/api/v1/claims
-   - Production (current deployment in production) : http://claims-api-prod.akslab.com/api/v1/claims
+     ```
+     # Access the microservice in 'Stage' slot (new deployment)
+     $ curl -v http://claims-api-stage.akslab.com/api/v1/claims
+     # Access the microservice in 'Prod' slot (existing deployment in production)
+     $ curl -v http://claims-api-prod.akslab.com/api/v1/claims
+     ```
 
-   After you have verified the Claims API output/responses in both the prod and stage slots, you can either **Resume** or **Reject** the *new* (updated) application deployment.  Try both scenarios.
+     After you have verified the Claims API output/responses in both the prod and stage slots, you can either **Resume** or **Reject** the *new* (updated) application deployment.  Try both scenarios.
 
-   You can also verify the Blue and Green deployments using the [Traefik Ingress Controller UI/Dashboard](http://db-traefik.akslab.com).  The screenshot below shows the **prod** slot deployment in **production** (namespace) region on AKS.
+     You can also verify the Blue and Green deployments using the [Traefik Ingress Controller UI/Dashboard](http://db-traefik.akslab.com).  The screenshot below shows the **prod** slot deployment in **production** (namespace) region on AKS.
 
     ![alt tag](./images/H-33.PNG)
 
