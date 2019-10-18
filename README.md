@@ -1132,20 +1132,19 @@ To learn more about blue-green deployments, refer to the following online resour
 
    - If you followed the steps for Blue-Green deployment and configured the release pipeline tasks correctly for *Prod-ENV* stage, then the microservice should be deployed into both **prod** and **stage** slots in the **production** namespace on AKS.
 
-   - In Azure DevOps, the release pipeline in *Prod-Env* region should have paused at the *Manual Intervention* step.  The Claims API microservice should be accessible via the following two URL's.
+   - In Azure DevOps, the release pipeline in *Prod-Env* region should have paused at the *Manual Intervention* step.  The Claims API microservice in **prod** and **stage** slots should be accessible via the URL's listed below.
    
-     ```
-     # Access the microservice in 'Stage' slot (new deployment)
-     $ curl -v http://claims-api-stage.akslab.com/api/v1/claims
-     # Access the microservice in 'Prod' slot (existing deployment in production)
-     $ curl -v http://claims-api-prod.akslab.com/api/v1/claims
-     ```
+     Access the microservice in 'Stage' slot (new deployment)
+     URL - http://claims-api-stage.akslab.com/api/v1/claims
+
+     Access the microservice in 'Prod' slot (existing deployment in production)
+     URL - http://claims-api-prod.akslab.com/api/v1/claims
 
      After you have verified the Claims API output/responses in both the prod and stage slots, you can either **Resume** or **Reject** the *new* (updated) application deployment.  Try both scenarios.
 
-     You can also verify the Blue and Green deployments using the [Traefik Ingress Controller UI/Dashboard](http://db-traefik.akslab.com).  The screenshot below shows the **prod** slot deployment in **production** (namespace) region on AKS.
+   - Verify the Blue and Green deployments using the [Traefik Ingress Controller UI/Dashboard](http://db-traefik.akslab.com).  The screenshot below shows the **prod** slot deployment in **production** namespace (region) on AKS.
 
-    ![alt tag](./images/H-33.PNG)
+     ![alt tag](./images/H-33.PNG)
 
 Congrats!!  You have successfully built the *Claims API* microservice, packaged this application within a container image and pushed the container image into an ACR instance. Finally, you deployed the containerized application in **development**, **qa-test** & **production** namespaces (Development, QA and Production regions) on AKS.  Cool!!
 
