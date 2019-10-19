@@ -20,7 +20,7 @@ Table of Contents
   * [J. Explore out of box AKS features](#j-explore-out-of-box-aks-features)
 <!--te-->
 
-This project provides step by step instructions to use **Azure DevOps Services** to build the application binaries, package the binaries within a container and deploy the container on Azure Kubernetes Service (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for accessing (retrieving / storing) medical claims records from a relational data store.  The microservice persists all claims records in a Azure SQL Server Database.
+This project provides step by step instructions to use **Azure DevOps Services** to build the application binaries, package the binaries within a container and deploy the container on **Azure Kubernetes Service** (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for accessing (retrieving / storing) medical claims records from a relational data store.  The microservice persists all claims records in a Azure SQL Server Database.
 
 **Prerequisites:**
 1.  An active **Microsoft Azure Subscription**.  You can obtain a free Azure subscription by accessing the [Microsoft Azure](https://azure.microsoft.com/en-us/?v=18.12) website.  In order to execute all the sections in this project, either your *Azure subscription* or the *Resource Group* **must** have **Owner** Role assigned to it.
@@ -1073,14 +1073,14 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
       ![alt tag](./images/H-22.PNG)
 
 ### Exercise 1:
-**Execute functional tests in *QA* region and deploy Claims API microservice to *Production* region**
+**Execute functional tests in *QA* region and deploy Claims API microservice in *Production* region**
 
 This exercise will help validate and solidify your understanding of *Azure DevOps Pipeline* feature and how it can be easily used to build and deploy containerized applications to different namespaces (regions) on a Kubernetes (AKS) cluster.
 
 **Challenge:**
 Run automated functional tests in the QA region (**qa-test**) and upon successful execution of tests, deploy the Claims API microservice to Production region (**production**).
 
-You will need to update the build and release pipelines to complete this challenge.
+To complete this challenge, you will update the build and release pipelines in Azure DevOps Services.
 
 1.  Update the Build pipeline
     - Copy the `./shell-scripts` and `./test-data` directories to the `staging` location on the build agent.  Refer to [Section F](#f-define-and-execute-claims-api-build-pipeline-in-azure-devops-services).
@@ -1101,7 +1101,7 @@ You will need to update the build and release pipelines to complete this challen
     - Execute the release/deployment pipeline.
 
 ### Exercise 2:
-**Implement Blue-Green deployments in Production region**
+**Implement *Blue-Green* deployments in *Production* region**
 
 In this exercise you will learn how to use the *Blue-Green* deployment technique in order to deploy and/or rollback containerized applications in production region.
 
@@ -1110,7 +1110,9 @@ Blue-Green deployment is a technique that minimizes downtime and risk by running
 To learn more about blue-green deployments, refer to the following online resources.
 - [Blue-Green deployments](https://martinfowler.com/bliki/BlueGreenDeployment.html), Martin Fowler's Blog
 
-**Challenge:** Update the release/deployment pipeline to allow Blue-Green deployments in the Production region (**production** namespace) on AKS.
+**Challenge:** Implement **Blue-Green** slot deployments in the Production region (**production** namespace) on AKS.
+
+To complete this challenge, you will modify the Claims API microservice and update the release pipeline in Azure DevOps Services.
 
 1. Go thru [Blue/Green deployments using Helm Charts](https://medium.com/@saraswatpuneet/blue-green-deployments-using-helm-charts-93ec479c0282)
 
@@ -1121,30 +1123,30 @@ To learn more about blue-green deployments, refer to the following online resour
 
 3. Update *Claims API* microservice
 
-   - Login to the Linux VM via terminal session and switch to the directory containing the GitHub repository for Claims API (`~/git-repos/aks-aspnet-sqldb-rest`). Use a text editor (Vi or Nano) to update microservice controller logic. Alternatively, you can also update the controller logic in your forked GitHub repository using a web browser (not recommended).  
-   - Update the controller logic to disable OpenAPI end-points.  Or alternatively, update the controller logic to return a computed value (eg., totalClaimCharge, claimAdjAmount).   
+   - Login to the Linux VM via terminal session and switch to the directory containing the GitHub repository for Claims API (`~/git-repos/aks-aspnet-sqldb-rest`).
+   - Use a text editor (Vi or Nano) to modify the business logic of one of the microservice's API method's. You can also update this method in your forked GitHub repository using a web browser.
+     Hint: Update the Claims API Controller `aks-aspnet-sqldb-rest/Controllers/ClaimsController.cs` method `checkHealth` to return an additional attribute in the JSON response.  
 
 4. Run Build and Release pipelines and deploy to Production region
 
    - Use Git CLI to commit your updates to the local Claims API repository on the Linux VM.  Then push the updates to your forked repository on GitHub.  Alternatively, if you made changes to the source code via the browser, commit the changes in your forked GitHub repository.
 
-   - The Git commit should trigger a new build for the Claims API microservice in Azure DevOps Services.  A successful build should in turn trigger the release pipeline and deploy the microservice in all 3 namespaces (regions) - development, qa-test and production on AKS.  
+   - The Git commit should trigger a new build for the Claims API microservice in Azure DevOps Services.  A successful build should in turn trigger the release pipeline and deploy the microservice in all 3 namespaces (regions) on AKS - development, qa-test and production.  
 
    - If you followed the steps for Blue-Green deployment and configured the release pipeline tasks correctly for *Prod-ENV* stage, then the microservice should be deployed into both **prod** and **stage** slots in the **production** namespace on AKS.
 
-   - In Azure DevOps, the release pipeline in *Prod-Env* region should have paused at the *Manual Intervention* step.  The Claims API microservice in **prod** and **stage** slots should be accessible via the URL's listed below.
+   - In Azure DevOps Services, the release pipeline should have paused at the *Manual Intervention* step in the *Prod-Env* stage.  Confirm the Claims API microservice deployed in **prod** and **stage** slots are accessible via the URL's listed below.
    
-     Access the microservice in 'Stage' slot (new deployment)
-     URL - http://claims-api-stage.akslab.com/api/v1/claims
-
-     Access the microservice in 'Prod' slot (existing deployment in production)
-     URL - http://claims-api-prod.akslab.com/api/v1/claims
+     **Stage** slot (new deployment) URL - http://claims-api-stage.akslab.com/api/v1/claims
+     **Prod** slot (existing deployment in production) URL - http://claims-api-prod.akslab.com/api/v1/claims
 
      After you have verified the Claims API output/responses in both the prod and stage slots, you can either **Resume** or **Reject** the *new* (updated) application deployment.  Try both scenarios.
 
-   - Verify the Blue and Green deployments using the [Traefik Ingress Controller UI/Dashboard](http://db-traefik.akslab.com).  The screenshot below shows the **prod** slot deployment in **production** namespace (region) on AKS.
+5. Verify the status of Blue and Green deployments using [Traefik Ingress Controller UI/Dashboard](http://db-traefik.akslab.com).
 
-     ![alt tag](./images/H-33.PNG)
+   The screenshot below shows the **prod** slot deployment in **production** namespace (region) on AKS.
+
+   ![alt tag](./images/H-33.PNG)
 
 Congrats!!  You have successfully built the *Claims API* microservice, packaged this application within a container image and pushed the container image into an ACR instance. Finally, you deployed the containerized application in **development**, **qa-test** & **production** namespaces (Development, QA and Production regions) on AKS.  Cool!!
 
