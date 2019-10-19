@@ -1138,6 +1138,7 @@ To complete this challenge, you will modify the Claims API microservice and upda
    - In Azure DevOps Services, the release pipeline should have paused at the *Manual Intervention* step in the *Prod-Env* stage.  Confirm the Claims API microservice deployed in **prod** and **stage** slots are accessible via the URL's listed below.
    
      **Stage** slot (new deployment) URL - http://claims-api-stage.akslab.com/api/v1/claims
+
      **Prod** slot (existing deployment in production) URL - http://claims-api-prod.akslab.com/api/v1/claims
 
      After you have verified the Claims API output/responses in both the prod and stage slots, you can either **Resume** or **Reject** the *new* (updated) application deployment.  Try both scenarios.
