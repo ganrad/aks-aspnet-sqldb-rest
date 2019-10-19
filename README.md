@@ -1078,7 +1078,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 This exercise will help validate and solidify your understanding of *Azure DevOps Pipeline* feature and how it can be easily used to build and deploy containerized applications to different namespaces (regions) on a Kubernetes (AKS) cluster.
 
 **Challenge:**
-Run automated functional tests in the QA region (**qa-test**) and upon successful execution of tests, deploy the Claims API microservice to Production region (**production**).
+Run automated functional tests in the QA region (**qa-test**) and upon successful execution of tests, deploy the Claims API microservice to Production region (**production** namespace on AKS).
 
 To complete this challenge, you will update the build and release pipelines in Azure DevOps Services.
 
@@ -1110,7 +1110,7 @@ Blue-Green deployment is a technique that minimizes downtime and risk by running
 To learn more about blue-green deployments, refer to the following online resources.
 - [Blue-Green deployments](https://martinfowler.com/bliki/BlueGreenDeployment.html), Martin Fowler's Blog
 
-**Challenge:** Implement **Blue-Green** slot deployments in the Production region (**production** namespace) on AKS.
+**Challenge:** Implement **Blue-Green** slot deployments in the Production region (**production** namespace on AKS).
 
 To complete this challenge, you will modify the Claims API microservice and update the release pipeline in Azure DevOps Services.
 
@@ -1118,7 +1118,7 @@ To complete this challenge, you will modify the Claims API microservice and upda
 
 2. Update the Release/Deployment pipeline in Azure DevOps Services
 
-   - Review the default parameter values in the helm chart `./claims-api/values.yaml` file.
+   - Review the default parameter values defined in the helm chart `./claims-api/values.yaml` file.
    - Review the steps described in `./shell-scripts/blue-green-steps.txt` file.  Edit the pipeline and update the *Prod-Env* stage in the deployment pipeline.
 
 3. Update *Claims API* microservice
