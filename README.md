@@ -1130,7 +1130,8 @@ To complete this challenge, you will modify the Claims API microservice and upda
 
    - Login to the Linux VM via a terminal session and switch to the directory containing the GitHub repository for Claims API (`~/git-repos/aks-aspnet-sqldb-rest`).
    - Use a text editor (*Vi or Nano*) to modify the business logic of one of the microservice's API method's. You can also update this method in your forked GitHub repository using a web browser.
-     Hint: Update the Claims API Controller `aks-aspnet-sqldb-rest/Controllers/ClaimsController.cs` method `checkHealth` to return an additional attribute in the JSON response.  
+
+     **Hint:** Update the Claims API Controller `aks-aspnet-sqldb-rest/Controllers/ClaimsController.cs` method `checkHealth` to return an additional attribute in the JSON response.  
 
 4. Trigger/Run *Build* and *Release* pipelines in Azure DevOps Services
 
@@ -1287,8 +1288,6 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
 
 ### Exercise 3:
 **Scan container images and digitally sign them using Docker Content Trust**
-
-In this exercise you will learn how to use the *Blue-Green* deployment technique in order to deploy or rollback containerized applications in Production region.
 
 In this exercise, you will learn how to
  - Scan container images for known vulnerabilities using the Open Source container image scanning engine from **Aqua**
