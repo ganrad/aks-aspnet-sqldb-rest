@@ -17,8 +17,8 @@ Table of Contents
     * [Exercise 1: Execute functional tests in QA region and then deploy Claims API microservice in Production region](#exercise-1)
     * [Exercise 2: Implement Blue-Green deployments in Production region](#exercise-2)
   * [I. Deploy a Delivery Pipeline in Azure DevOps Services](#i-define-and-execute-claims-api-delivery-pipeline-in-azure-devops-services)
-  * [J. Explore out of box AKS features](#j-explore-out-of-box-aks-features)
     * [Exercise 3: Scan container images and digitally sign them using Docker Content Trust](#exercise-3)
+  * [J. Explore out of box AKS features](#j-explore-out-of-box-aks-features)
 <!--te-->
 
 This project provides step by step instructions to use **Azure DevOps Services** to build the application binaries, package the binaries within a container and deploy the container on **Azure Kubernetes Service** (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for accessing (retrieving / storing) medical claims records from a relational data store.  The microservice persists all claims records in a Azure SQL Server Database.
