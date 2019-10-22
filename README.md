@@ -14,10 +14,11 @@ Table of Contents
   * [G. Deploy an Azure Kubernetes Service (AKS) cluster](#g-create-an-azure-kubernetes-service-cluster-and-deploy-claims-api-microservice)
     * [Invoking the Claims API Microservice REST API](#invoking-the-claims-api-microservice-rest-api)
   * [H. Define and execute a Release Pipeline in Azure DevOps Services](#h-define-and-execute-claims-api-release-pipeline-in-azure-devops-services)
-    * [Exercise 1: Execute functional tests and deploy to Production](#exercise-1)
+    * [Exercise 1: Execute functional tests in QA region and then deploy Claims API microservice in Production region](#exercise-1)
     * [Exercise 2: Implement Blue-Green deployments in Production region](#exercise-2)
   * [I. Deploy a Delivery Pipeline in Azure DevOps Services](#i-define-and-execute-claims-api-delivery-pipeline-in-azure-devops-services)
   * [J. Explore out of box AKS features](#j-explore-out-of-box-aks-features)
+    * [Exercise 3: Scan container images and digitally sign them using Docker Content Trust](#exercise-3)
 <!--te-->
 
 This project provides step by step instructions to use **Azure DevOps Services** to build the application binaries, package the binaries within a container and deploy the container on **Azure Kubernetes Service** (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for accessing (retrieving / storing) medical claims records from a relational data store.  The microservice persists all claims records in a Azure SQL Server Database.
@@ -27,7 +28,7 @@ This project provides step by step instructions to use **Azure DevOps Services**
 2.  A **GitHub** Account to fork and clone this GitHub repository.
 3.  A **Azure DevOps Services** (formerly Visual Studio Team Services) Account.  You can get a free Azure DevOps account by accessing the [Azure DevOps Services](https://azure.microsoft.com/en-us/services/devops/) web page.
 4.  Review [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview).  **Azure Cloud Shell** is an interactive, browser accessible shell for managing Azure resources.  You will be using the Cloud Shell to create the Bastion Host (Linux VM).
-5.  This project assumes readers/attendees are familiar with Linux Containers (*docker engine*), Kubernetes, DevOps (*Continuous Integration/Continuous Deployment*) concepts and developing/deploying Microservices in one or more programming languages.  If you are new to Linux Containers please first go thru the tutorials [here](https://docs.microsoft.com/en-us/dotnet/core/docker/intro-net-docker).
+5.  This project assumes readers/attendees are familiar with Linux Containers (*docker engine*), Kubernetes, DevOps (*Continuous Integration/Continuous Deployment*) concepts and developing/deploying Microservices in one or more programming languages.  If you are new to Linux Containers please first go thru the tutorials [here](https://docs.microsoft.com/en-us/dotnet/core/docker/intro-net-docker).  If you are new to Kubernetes, please go thru the resources [here](https://kubernetes.io/docs/tutorials/kubernetes-basics/) and become familiar with the basic concepts, fundamentals and tooling.
 6.  A **terminal emulator** is required to login (SSH) into the Linux VM (Bastion) host.  Download and install [Putty](https://putty.org/), [Git bash](https://gitforwindows.org/) or [Windows Sub-System for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 7.  (Optional) Download and install [Microsoft SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-2017) to manage SQL Server database artifacts.
 8.  (Optional) Download and install [Postman App](https://www.getpostman.com/apps), a REST API Client used for testing the Web API's.
@@ -1073,12 +1074,12 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
       ![alt tag](./images/H-22.PNG)
 
 ### Exercise 1:
-**Execute functional tests in *QA* region and deploy Claims API microservice in *Production* region**
+**Execute functional tests in *QA* region and then deploy Claims API microservice in *Production* region**
 
 This exercise will help validate and solidify your understanding of *Azure DevOps Pipeline* feature and how it can be easily used to build and deploy containerized applications to different namespaces (regions) on a Kubernetes (AKS) cluster.
 
 **Challenge:**
-Run automated functional tests in the QA region (**qa-test**) and upon successful execution of tests, deploy the Claims API microservice to Production region (**production** namespace on AKS).
+Run automated functional tests in the QA region (**qa-test** namespace on AKS) and upon successful execution of tests, deploy the Claims API microservice to Production region (**production** namespace on AKS).
 
 To complete this challenge, you will update the build and release pipelines in Azure DevOps Services.
 
@@ -1088,7 +1089,7 @@ To complete this challenge, you will update the build and release pipelines in A
 
 2.  Update the Release pipeline
     - Edit the release/deployment pipeline and add a stage for production eg., *Prod-Env*.  This stage should deploy the microservice artifacts to **production** namespace on your AKS cluster.  Refer to [Section H](#h-define-and-execute-claims-api-release-pipeline-in-azure-devops-services).
-    - In the *QA-Env* stage, add a *Deploy to Kubernetes* task.  Use this task to retrieve the external/public IP address assigned to the **aks-aspnetcore-lab-qa-claims-api** service in the **qa-test** namespace. Refer to the Kubernetes CLI command in the snippet below.
+    - In the *QA-Env* stage, add a *Deploy to Kubernetes* Task.  Use this *Task* to retrieve the external/public IP address assigned to the **aks-aspnetcore-lab-qa-claims-api** service in the **qa-test** namespace. Refer to the Kubernetes CLI command snippet below.
 
       ```bash
       # Retrieve the Public/External IP address assigned to the microservice in 'qa-test` namespace
@@ -1097,37 +1098,41 @@ To complete this challenge, you will update the build and release pipelines in A
       ```
 
       The Public/External IP address assigned to the API service end-point should be used to configure the functional test shell script in the next step.
-    - Add a *Bash* (bash shell) task. This task should be configured to execute a functional test shell script `./shell-scripts/start-load.sh`.  Open/Edit the shell script in this repository and go thru the logic before proceeding.  The script invokes the Claims API microservice end-point and executes get, insert, update and delete operations on *Claim* resources.  You will need to configure 3 input parameters for the shell script - No. of test runs, Public IP address of the service end-point (retrieved in previous step) & directory location containing test data (`./test-data`).
+    - Add a *Bash* (bash shell) Task. This *Task* should be configured to execute a functional test shell script `./shell-scripts/start-load.sh`.  Open/Edit the shell script in this repository and go thru the logic before proceeding.  The script invokes the Claims API microservice end-point and executes get, insert, update and delete (CRUD) operations on *Claim* resources.  You will need to configure 3 input parameters for the shell script - No. of test runs, Public IP address of the service end-point (retrieved in previous step) & directory location containing test data (`./test-data`).
     - Execute the release/deployment pipeline.
 
 ### Exercise 2:
 **Implement *Blue-Green* deployments in *Production* region**
 
-In this exercise you will learn how to use the *Blue-Green* deployment technique in order to deploy and/or rollback containerized applications in production region.
+In this exercise you will learn how to use the *Blue-Green* deployment technique in order to deploy or rollback containerized applications in Production region.
 
 Blue-Green deployment is a technique that minimizes downtime and risk by running two identical production application environments called *Blue* and *Green*.  At any time, only one of the environments is live, with the live environment serving all API traffic.  With this configuration, it is also possible to quickly rollback to the current (most recent) application release with little to no downtime to the application.
 
 To learn more about blue-green deployments, refer to the following online resources.
 - [Blue-Green deployments](https://martinfowler.com/bliki/BlueGreenDeployment.html), Martin Fowler's Blog
 
-**Challenge:** Implement **Blue-Green** slot deployments in the Production region (**production** namespace on AKS).
+**Challenge:** Implement **Blue-Green** deployment slots in the Production region (**production** namespace on AKS).
 
-To complete this challenge, you will modify the Claims API microservice and update the release pipeline in Azure DevOps Services.
+To complete this challenge, you will modify the Claims API microservice and update *Prod-Env* stage in the release pipeline in Azure DevOps Services.
 
-1. Go thru [Blue/Green deployments using Helm Charts](https://medium.com/@saraswatpuneet/blue-green-deployments-using-helm-charts-93ec479c0282)
+1. Learn how Blue-Green deployments can be implemented in Kubernetes
+
+   - For a quick overview, refer to this article - [Blue/Green deployments using Helm Charts](https://medium.com/@saraswatpuneet/blue-green-deployments-using-helm-charts-93ec479c0282)
+
+   - Before proceeding, open a browser tab and go to [Helm Documentation](https://docs.helm.sh/) website.  If you are new to Helm, it is recommended to go thru [Helm User Guide](https://helm.sh/docs/using_helm/#using-helm) and familiarize yourself with basic concepts. Keep this tab open so you can quickly refer to Helm CLI commands. 
 
 2. Update the Release/Deployment pipeline in Azure DevOps Services
 
    - Review the default parameter values defined in the helm chart `./claims-api/values.yaml` file.
-   - Review the steps described in `./shell-scripts/blue-green-steps.txt` file.  Edit the pipeline and update the *Prod-Env* stage in the deployment pipeline.
+   - Review the steps described in `./shell-scripts/blue-green-steps.txt` file.  Edit the pipeline and update the *Prod-Env* stage in the deployment pipeline accordingly.
 
 3. Update *Claims API* microservice
 
-   - Login to the Linux VM via terminal session and switch to the directory containing the GitHub repository for Claims API (`~/git-repos/aks-aspnet-sqldb-rest`).
-   - Use a text editor (Vi or Nano) to modify the business logic of one of the microservice's API method's. You can also update this method in your forked GitHub repository using a web browser.
+   - Login to the Linux VM via a terminal session and switch to the directory containing the GitHub repository for Claims API (`~/git-repos/aks-aspnet-sqldb-rest`).
+   - Use a text editor (*Vi or Nano*) to modify the business logic of one of the microservice's API method's. You can also update this method in your forked GitHub repository using a web browser.
      Hint: Update the Claims API Controller `aks-aspnet-sqldb-rest/Controllers/ClaimsController.cs` method `checkHealth` to return an additional attribute in the JSON response.  
 
-4. Run Build and Release pipelines and deploy to Production region
+4. Trigger/Run *Build* and *Release* pipelines in Azure DevOps Services
 
    - Use Git CLI to commit your updates to the local Claims API repository on the Linux VM.  Then push the updates to your forked repository on GitHub.  Alternatively, if you made changes to the source code via the browser, commit the changes in your forked GitHub repository.
 
@@ -1135,19 +1140,33 @@ To complete this challenge, you will modify the Claims API microservice and upda
 
    - If you followed the steps for Blue-Green deployment and configured the release pipeline tasks correctly for *Prod-ENV* stage, then the microservice should be deployed into both **prod** and **stage** slots in the **production** namespace on AKS.
 
-   - In Azure DevOps Services, the release pipeline should have paused at the *Manual Intervention* step in the *Prod-Env* stage.  Confirm the Claims API microservice deployed in **prod** and **stage** slots are accessible via the URL's listed below.
+   - In Azure DevOps Services, the release pipeline should have paused at the *Manual Intervention* step in the *Prod-Env* stage.  See screenshot below.
+
+     ![alt tag](./images/H-34.PNG)
+
+     Confirm the Claims API microservice deployed in **prod** and **stage** slots are accessible via the URL's listed below.
    
      **Stage** slot (new deployment) URL - http://claims-api-stage.akslab.com/api/v1/claims
 
      **Prod** slot (existing deployment in production) URL - http://claims-api-prod.akslab.com/api/v1/claims
 
-     After you have verified the Claims API output/responses in both the prod and stage slots, you can either **Resume** or **Reject** the *new* (updated) application deployment.  Try both scenarios.
+     After you have verified the Claims API output (HTTP response) in both the prod and stage slots, you can either **Resume** (proceed with) or **Reject** (rollback) the *new* (updated) application deployment.
 
-5. Verify the status of Blue and Green deployments using [Traefik Ingress Controller UI/Dashboard](http://db-traefik.akslab.com).
+     ![alt tag](./images/H-35.PNG)
 
-   The screenshot below shows the **prod** slot deployment in **production** namespace (region) on AKS.
+     Try both *Resume* and *Reject* scenarios.
+
+5. Examine the status of Blue and Green slot deployments
+
+   Use the [Traefik Ingress Controller UI/Dashboard](http://db-traefik.akslab.com) to view the **stage** and **prod** slot deployments in **production** namespace (region) on AKS.  The screenshot below shows the **prod** slot deployment in **production** namespace (region) on AKS.
 
    ![alt tag](./images/H-33.PNG)
+
+6. Examine the status of Azure DevOps Pipelines
+
+   Review the status of build and release pipelines.  A completed release pipeline is shown in the screenshot below.
+
+   ![alt tag](./images/H-36.PNG)
 
 Congrats!!  You have successfully built the *Claims API* microservice, packaged this application within a container image and pushed the container image into an ACR instance. Finally, you deployed the containerized application in **development**, **qa-test** & **production** namespaces (Development, QA and Production regions) on AKS.  Cool!!
 
@@ -1265,7 +1284,18 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
     - Verify a new revision for the Claims API microservice application (**aks-aspnetcore-lab**) was deployed successfully on AKS.  Check the update date and time of the release revision.
     - Verify the container image in the Pod manifest matches the container image (tag and Digest) pushed into ACR.
     - Use the Azure Portal and access the *Application Insights* instance.  Generate some API traffic and review the application map, live stream metrics, dashboards, server response times, backend (Azure SQL DB) calls and response times.
+
+### Exercise 3:
+**Scan container images and digitally sign them using Docker Content Trust**
+
+In this exercise you will learn how to use the *Blue-Green* deployment technique in order to deploy or rollback containerized applications in Production region.
+
+In this exercise, you will learn how to
+ - Scan container images for known vulnerabilities using the Open Source container image scanning engine from **Aqua**
+ - Digitally sign container images using *Docker Content Trust* (DCT) before pushing these images into ACR
     
+**Challenge:** Implement container image **scanning** and **signing** container images using DCT
+
 ## J. Explore out of box AKS features
 
 In this section, we will explore value add features for administering & managing the AKS cluster.
