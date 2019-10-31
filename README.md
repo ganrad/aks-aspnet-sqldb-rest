@@ -272,7 +272,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     #
     ```
 
-8.  Install Kubernetes CLI, Helm CLI and .NET Core SDK on this VM.
+8.  Install Kubernetes CLI, Helm CLI, Istio CLI and .NET Core SDK on this VM.
     ```bash
     # Make sure you are in the home directory
     $ cd
@@ -294,6 +294,10 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Install kubectl binary in the new directory
     $ az aks install-cli --install-location=./aztools/kubectl
     #
+    # Install Istio Service Mesh CLI v1.3.2
+    $ ISTIO_VERSION=1.3.2
+    $ curl -sL "https://github.com/istio/istio/releases/download/$ISTIO_VERSION/istio-$ISTIO_VERSION-linux.tar.gz" | tar xz --directory=$HOME/aztools
+    # 
     # Register the Microsoft key, product repository and required dependencies.
     $ sudo rpm -Uvh https://packages.microsoft.com/config/rhel/7/packages-microsoft-prod.rpm
     #
@@ -310,7 +314,8 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     $ JQ=/home/labuser/jq
     $ KUBECLI=/home/labuser/aztools
     $ HELM=/home/labuser/helm/linux-amd64
-    $ echo "export PATH=$JQ:$KUBECLI:$HELM:${PATH}" >> ~/.bashrc
+    $ ISTIO=/home/labuser/aztools/istio-$ISTIO_VERSION/bin
+    $ echo "export PATH=$JQ:$KUBECLI:$HELM:$ISTIO:${PATH}" >> ~/.bashrc
     #
     ```
 
