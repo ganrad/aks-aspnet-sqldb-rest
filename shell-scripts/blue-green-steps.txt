@@ -5,7 +5,7 @@
 A] Define two pipeline variables
 
 resourceGroup=<Should point to the resource group where AKS is deployed>
-aksCluster=<Name of the AKS cluster>
+aksName=<Name of the AKS cluster>
 
 B] Update 'Agent job'
 # Define/Update the following tasks

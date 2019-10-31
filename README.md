@@ -8,7 +8,7 @@ Table of Contents
   * [A. Deploy an Azure SQL Server Database](#a-deploy-an-azure-sql-server-and-database)
   * [B. Provision a Linux VM (Bastion Host/Jump Box) on Azure and install pre-requisite software](#b-provision-a-linux-centos-vm-on-azure)
   * [C. Build and run the Claims API microservice locally on the Bastion Host](#c-build-and-run-the-claims-api-microservice-locally-on-the-linux-vm)
-  * [D. Deploy a Azure DevOps Services build agent on the Bastion Host](#d-deploy-the-azure-devops-services-build-agent)
+  * [D. Deploy an Azure DevOps Services build agent on the Bastion Host](#d-deploy-the-azure-devops-services-build-agent)
   * [E. Deploy an Azure Container Registry (ACR)](#e-deploy-azure-container-registry)
   * [F. Define and execute a Build Pipeline in Azure DevOps Services](#f-define-and-execute-claims-api-build-pipeline-in-azure-devops-services)
   * [G. Deploy an Azure Kubernetes Service (AKS) cluster](#g-create-an-azure-kubernetes-service-cluster-and-deploy-claims-api-microservice)
@@ -21,7 +21,7 @@ Table of Contents
   * [J. Explore out of box AKS features](#j-explore-out-of-box-aks-features)
 <!--te-->
 
-This project provides step by step instructions to use **Azure DevOps Services** to build the application binaries, package the binaries within a container and deploy the container on **Azure Kubernetes Service** (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for accessing (retrieving / storing) medical claims records from a relational data store.  The microservice persists all claims records in a Azure SQL Server Database.
+This project provides step by step instructions to use **Azure DevOps Services** to build the application binaries, package the binaries within a container and deploy the container on **Azure Kubernetes Service** (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for accessing (retrieving / storing) medical claims records from a relational data store.  The microservice persists all claims records in an Azure SQL Server Database.
 
 **Prerequisites:**
 1.  An active **Microsoft Azure Subscription**.  You can obtain a free Azure subscription by accessing the [Microsoft Azure](https://azure.microsoft.com/en-us/?v=18.12) website.  In order to execute all the sections in this project, either your *Azure subscription* or the *Resource Group* **must** have **Owner** Role assigned to it.
@@ -73,7 +73,7 @@ In this section, we will create an Azure SQL Server instance and create a databa
     ```
     **NOTE:** Keep in mind, if you specify a different name for the resource group (other than **myResourceGroup**), you will need to substitute the same value in multiple CLI commands in the remainder of this project!  If you are new to Azure Cloud, it's best to use the suggested name.
 
-3.  Create a Azure SQL Server (managed instance) and database.
+3.  Create an Azure SQL Server (managed instance) and database.
 
     In the Azure Portal, click on **+ Create a resource**, **Databases** and then click on **SQL Database** as shown in the screenshot below.
 
@@ -497,7 +497,7 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
     #
     ```
 
-2.  Generate a Azure DevOps (VSTS) personal access token (PAT).
+2.  Generate an Azure DevOps (VSTS) personal access token (PAT).
 
     The PAT token will be used to connect the Azure DevOps build agent to your Azure DevOps account.
 
@@ -564,7 +564,7 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
     2018-12-23 05:26:39Z: Listening for Jobs
     ```
 
-    Minimize this terminal window for now as you will only be using it to view the results of a Azure DevOps build.  Before proceeding, open another terminal (WSL Ubuntu/Putty) window and login (SSH) into the Linux VM.
+    Minimize this terminal window for now as you will only be using it to view the results of an Azure DevOps build.  Before proceeding, open another terminal (WSL Ubuntu/Putty) window and login (SSH) into the Linux VM.
 
 In subsequent sections, we will configure *Azure DevOps Services* to use the build container as a *self-hosted* agent to perform application and container builds.
 
@@ -1258,7 +1258,7 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
 
     Click on **Commit**.
 
-5.  Create a Azure DevOps Delivery Pipeline and execute it
+5.  Create an Azure DevOps Delivery Pipeline and execute it
 
     Click on *Pipelines* menu on the left navigational panel.  Click on *Builds* and then click on *+ New* drop down menu.  Select *New build pipeline* menu item.  See screenshot below.    
 
