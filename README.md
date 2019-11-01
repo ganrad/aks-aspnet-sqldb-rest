@@ -1386,6 +1386,13 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     # 'MINPODS', 'MAXPODS' and no. of 'REPLICAS'.  The 'current' replicas should be 1.
     $ kubectl get hpa claims-api-hpa -n development
     #
+    # There is another way to check CPU and Memory consumption for a pod (see below). 'm' stands for 'millicore'.
+    # In the command output below, the memory consumption is 1m meaning .001 % of 1 vCPU (~ 1000 millicores) which
+    # is 1% vCPU utilization!
+    $ kubectl top pods -n development
+    NAME                                     CPU(cores)   MEMORY(bytes)   
+    claims-api-deploy-blue-c8755bbcc-zms9p   1m           132Mi
+    #
     ```
 
     If a Pod is not actively serving any requests then it's CPU utilization is minimal (0 - 2%) as noted above!   This is one of the value-add **advantages** for running applications within containers as opposed to running them within Virtual Machines.  By increasing the density of containers on Virtual or Physical machines, you can maximize resource utilization (CPU + Memory) and thereby drive down IT infrastructure costs.
@@ -1400,11 +1407,15 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     # Update 'execute' permissions on the shell script 'start-load.sh'
     $ chmod 700 ./shell-scripts/start-load.sh 
     #
-    # Run the 'start-load.sh' script for a few minutes.
-    $ ./shell-scripts/start-load.sh
+    # Run the 'start-load.sh' script.  Provide the following parameter values when invoking the script.
+    #   counter - No. of test runs.  Set this to a value between 20 - 50.
+    #   svcIpAddress - External IP Address (Azure LB) for the Claims API microservice in 'development' namespace
+    #   dataDir - Directory where sample claims data (json files) are stored - ./test-data
+    $ ./shell-scripts/start-load.sh <counter> <svcIpAddress> <dataDir>
     #
-    # Wait for a few minutes for the 'metrics-server' to receive the latest compute metrics
-    # from 'heapster'.
+    # Wait for a few minutes for HPA resource to receive the latest compute metrics from the 'metrics-server'.
+    # The metrics-server receives the metrics data for pods by invoking the summary API exposed by kubelet. 
+    # The kubelet in turn receives metrics data from the cAdvisor libraries running within the Linux kernel.
     #
     # Login to another terminal window via SSH. Check the no. of 'auto' scaled instances.
     # The underlying 'replica set' should have auto scaled the no. of instances to > 1 < 10 
@@ -1412,6 +1423,10 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     $ kubectl get hpa claims-api-hpa -n development
     NAME             REFERENCE                                  TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
     claims-api-hpa   Deployment/aks-aspnetcore-lab-claims-api   52%/50%   1         10        2          17m
+    #
+    # Check the average pod resource consumption.  Average CPU utilization should be above 50% in order for scaling
+    # to occur.
+    $ kubectl top pod -n development
     #
     ```
 
