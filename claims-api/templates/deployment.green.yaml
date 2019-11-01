@@ -31,7 +31,7 @@ spec:
           value: "{{ .Values.sqldb.connectionString }}"
         ports:
           - name: http
-            containerPort: {{ .Values.service.port }}
+            containerPort: 80
             protocol: TCP
         readinessProbe:
           httpGet:
