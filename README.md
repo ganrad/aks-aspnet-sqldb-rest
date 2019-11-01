@@ -1078,6 +1078,11 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
       ![alt tag](./images/H-22.PNG)
 
+**IMPORTANT NOTES:**
+- Login to the Azure Portal using a browser window/tab.
+- Access the blade of your ACR instance. Note down the value of the latest **Tag** (Build ID) of the Claims API container image which was built and pushed by the Azure DevOps Build pipeline.
+- You will need the latest image **Tag** value to implement *Canary* application deployments in a subsequent exercise.
+
 ### Exercise 1:
 **Execute functional tests in *QA* region and then deploy Claims API microservice in *Production* region**
 
@@ -1299,6 +1304,11 @@ In this exercise, you will learn how to
  - Digitally sign container images using *Docker Content Trust* (DCT) before pushing these images into ACR
     
 **Challenge:** Implement container image **scanning** and **signing** container images using DCT
+
+**IMPORTANT NOTES:**
+- Login to the Azure Portal using a browser window/tab.
+- Access the blade of your ACR instance. Note down the value of the latest **Tag** (Build ID) of the Claims API container image which you built and pushed into the ACR using the Azure DevOps Delivery pipeline.
+- You will need this latest image **Tag** value to implement *Canary* application deployments in a subsequent exercise.
 
 ## J. Explore out of box AKS features
 
