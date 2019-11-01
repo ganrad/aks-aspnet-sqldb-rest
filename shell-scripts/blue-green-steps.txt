@@ -55,7 +55,7 @@ echo "---------------------------------------"
 
 3. Task: Helm Upgrade
 # Deploy both blue and green slots
---set image.repository=csulabtest.azurecr.io/claims-api --set "$(tagBlue)" --set "$(tagGreen)" --set sqldb.connectionString="$(sqlDbConnectionString)" --set service.type=ClusterIP --set ingress.enabled=true  --set "$(newSlot)".enabled=true --reuse-values
+--set image.repository=csulabtest.azurecr.io/claims-api --set "$(tagBlue)" --set "$(tagGreen)" --set sqldb.connectionString="$(sqlDbConnectionString)" --set service.type=ClusterIP --set service.port=8080 --set ingress.enabled=true  --set "$(newSlot)".enabled=true --reuse-values
 
 C] Add an 'Agentless job'
 1. Task: Manual Intervention
