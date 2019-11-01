@@ -1080,8 +1080,8 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
 **IMPORTANT NOTES:**
 - Login to the Azure Portal using a browser window/tab.
-- Access the blade of your ACR instance. Note down the value of the latest **Tag** (Build ID) of the Claims API container image which was built and pushed by the Azure DevOps Build pipeline.
-- You will need the latest image **Tag** value to implement *Canary* application deployments in a subsequent exercise.
+- Access the *Repositories* blade of your ACR instance. Note down the value of the latest **Tag** (Build ID number) of the Claims API container image which was built and pushed by the Azure DevOps Build pipeline.
+- You will need this image **Tag** value to implement *Canary* application deployments in a subsequent exercise.
 
 ### Exercise 1:
 **Execute functional tests in *QA* region and then deploy Claims API microservice in *Production* region**
@@ -1307,8 +1307,8 @@ In this exercise, you will learn how to
 
 **IMPORTANT NOTES:**
 - Login to the Azure Portal using a browser window/tab.
-- Access the blade of your ACR instance. Note down the value of the latest **Tag** (Build ID) of the Claims API container image which you built and pushed into the ACR using the Azure DevOps Delivery pipeline.
-- You will need this latest image **Tag** value to implement *Canary* application deployments in a subsequent exercise.
+- Access the *Repositories* blade of your ACR instance. Note down the value of the latest **Tag** (Build ID number) of the Claims API container image which you built and pushed into the ACR using the Azure DevOps Delivery pipeline.
+- You will need this image **Tag** value to implement *Canary* application deployments in a subsequent exercise.
 
 ## J. Explore out of box AKS features
 
