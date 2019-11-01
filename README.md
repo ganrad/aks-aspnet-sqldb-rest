@@ -1424,7 +1424,7 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     NAME             REFERENCE                                  TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
     claims-api-hpa   Deployment/aks-aspnetcore-lab-claims-api   52%/50%   1         10        2          17m
     #
-    # Check the average pod resource consumption.  Average CPU utilization should be above 50% in order for scaling
+    # Check the pod resource consumption.  Average CPU utilization should be above 50% in order for scaling
     # to occur.
     $ kubectl top pod -n development
     #
