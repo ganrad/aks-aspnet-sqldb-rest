@@ -6,7 +6,11 @@
 # 
 # Description:
 # Pipeline script (yaml) for building and deploying the 'claims-api' .NET Core microservice on AKS.
-# The container image will be built, digitally signed and then pushed to an ACR.  Finally, an application container based on the signed image will be deployed on AKS
+# The container image will be built and scanned for known OS vulnerabilities using Aqua Trivy container scanner.
+# Next, the container image will be digitally signed using DCT and then pushed into an ACR. Note: ACR Premium
+# SKU is required for pushing DCT enabled images!
+# Finally, Helm will be used to deploy the Claims API microservice on AKS.  This application deployment will use
+# the signed container image.
 # 
 # IMPORTANT:
 # This pipeline requires the following variables to be set.
