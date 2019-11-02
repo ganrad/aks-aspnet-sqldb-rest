@@ -36,6 +36,7 @@ pool:
 ####
 
 variables:
+    acrSvcConnection: <ACR Service Connection>
     azureSubscriptionEndpoint: <Specify Azure RM Connection>
     azureContainerRegistry: <Azure Container Registry name - name.azurecr.io>
     azureResourceGroup: <Azure Resource Group - name>
@@ -103,7 +104,7 @@ steps:
     azureResourceGroup: $(azureResourceGroup)
     kubernetesCluster: $(kubernetesCluster)
     command: upgrade
-    arguments: --namespace development --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)"
+    arguments: --namespace development --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)" --set blue.enabled=true
     chartType: filepath
     chartPath: $(System.DefaultWorkingDirectory)/claims-api
     releaseName: aks-aspnetcore-lab

@@ -582,7 +582,10 @@ In this step, we will deploy an instance of Azure Container Registry (ACR) to st
 
     ![alt tag](./images/E-01.PNG)
 
-2.  Click on **Add** to create a new ACR instance.  Give a meaningful name to your registry and make a note of it.  Select an Azure **Subscription**, select the **Resource group** which you created in [Section A](#a-deploy-an-azure-sql-server-and-database) and leave the **Location** field as-is.  The location should default to the location assigned to the resource group.  Select the **Basic** pricing tier.  Click **Create** when you are done.
+2.  Click on **Add** to create a new ACR instance.  Give a meaningful name to your registry and make a note of it.  Select an Azure **Subscription**, select the **Resource group** which you created in [Section A](#a-deploy-an-azure-sql-server-and-database) and leave the **Location** field as-is.  The location should default to the location assigned to the resource group.  Select the **Basic** pricing tier (SKU).  Click **Create** when you are done.
+
+    **IMPORTANT NOTES:**
+    - Keep in mind, you will need an **Premium** SKU ACR instance in order to work on *Exercise 4*.  Hence select the **Premium** SKU if you intend to work on this challenge later.
 
     ![alt tag](./images/E-02.PNG)
 
