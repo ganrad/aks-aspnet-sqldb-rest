@@ -13,6 +13,10 @@
 # the signed container image.
 # 
 # IMPORTANT:
+# This pipeline requires a custom self-hosted pipeline agent for running all tasks.  Instructions for deploying
+# a self-hosted Azure DevOps Services agent on AKS can be found here:
+# https://github.com/ganrad/Az-DevOps-Agent-On-AKS
+#
 # This pipeline requires the following variables to be set.
 #   - 'imageRepository' : Name of the image repository in ACR.  This repository should have been intialized (initiated) with a root key (docker trust signer add ...)
 #   - 'DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE' : Passphrase used while generating delegation key pair (Should be a secret)
@@ -26,8 +30,11 @@
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
+# pool:
+#  vmImage: 'Ubuntu 16.04'
+
 pool:
-  vmImage: 'Ubuntu 16.04'
+  name: <Name of AKS Agent Pool in Azure DevOps Services eg., AKS-Agent-Pool>
 
 variables:
   system.debug: false
