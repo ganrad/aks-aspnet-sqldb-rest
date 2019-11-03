@@ -104,7 +104,7 @@ steps:
     azureResourceGroup: $(azureResourceGroup)
     kubernetesCluster: $(kubernetesCluster)
     command: upgrade
-    arguments: --namespace dev-dct --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)" --set blue.enabled=true
+    arguments: --namespace dev-dp --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)" --set blue.enabled=true
     chartType: filepath
     chartPath: $(System.DefaultWorkingDirectory)/claims-api
     releaseName: aks-aspnetcore-lab-nodct

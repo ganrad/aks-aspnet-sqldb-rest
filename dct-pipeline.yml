@@ -48,29 +48,43 @@ variables:
   sqlDbConnectionString: <Azure SQL DB Connection String>
 
 steps:
+- task: DownloadSecureFile@1
+  displayName: Download secure file
+  name: privateKey
+  inputs:
+    secureFile: <DCT Delegation Private key>
+
 - task: Docker@2
+  displayName: Build container image
+  inputs:
+    command: build
+    containerRegistry: $(containerRegistryServiceConnection)
+    Dockerfile: '**/dockerfile'
+    repository: $(imageRepository)
+    tags: |
+      $(Build.BuildId)
+
+- task: Bash@3
+  displayName: Scan container image with Aqua Trivy
+  name: aqua_trivy
+  inputs:
+    targetType: inline
+    script: |
+      trivy --exit-code 0 --clear-cache --ignore-unfixed --vuln-type os --severity MEDIUM,HIGH,CRITICAL $(azureContainerRegistry)/$(imageRepository):$(Build.BuildId)
+# trivy --exit-code 1 --ignore-unfixed --vuln-type os --severity CRITICAL $(imageRepository):$(Build.BuildId)
+
+- task: Docker@2
+  displayName: Docker login to ACR
   inputs:
     command: login
     containerRegistry: $(containerRegistryServiceConnection)
 
-- task: DownloadSecureFile@1
-  name: privateKey
-  inputs:
-    secureFile: 0e1e9707a9a8756cc366eb7c708a57da21a175be957249e75daa4dd0213d5bfd.key
 - script: |
     mkdir -p $(DOCKER_CONFIG)/trust/private
     cp $(privateKey.secureFilePath) $(DOCKER_CONFIG)/trust/private
 
 - task: Docker@2
-  inputs:
-    command: build
-    Dockerfile: '**/dockerfile'
-    containerRegistry: $(containerRegistryServiceConnection)
-    repository: $(imageRepository)
-    tags: |
-      $(Build.BuildId)
-
-- task: Docker@2
+  displayName: Sign and push container image to ACR
   inputs: 
     command: push
     containerRegistry: $(containerRegistryServiceConnection)
@@ -80,6 +94,9 @@ steps:
     arguments: '--disable-content-trust=false'
   env:
     DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: $(DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE)
+
+- script: |
+    docker trust inspect --pretty $(azureContainerRegistry)/$(imageRepository):$(Build.BuildId)
 
 - task: HelmDeploy@0
   displayName: Helm init
@@ -95,7 +112,7 @@ steps:
     arguments: --client-only
 
 - task: HelmDeploy@0
-  displayName: Helm upgrade
+  displayName: Helm upgrade on AKS - $(azureResourceGroup):$(kubernetesCluster)
   name: helm_deploy
   inputs:
     connectionType: Azure Resource Manager
@@ -103,10 +120,10 @@ steps:
     azureResourceGroup: $(azureResourceGroup)
     kubernetesCluster: $(kubernetesCluster)
     command: upgrade
-    arguments: --namespace dev-dct --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)" --set blue.enabled=true
+    arguments: --namespace dev-dct --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)"
     chartType: filepath
     chartPath: $(System.DefaultWorkingDirectory)/claims-api
-    releaseName: aks-aspnetcore-lab-dct
+    releaseName: aks-aspnetcore-dct
     # overrideValues: image.repository=csulabtest.azurecr.io/claims-api,image.tag=$(Build.BuildId)
     install: true
     waitForExecution: true
