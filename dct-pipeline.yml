@@ -123,7 +123,7 @@ steps:
     arguments: --namespace dev-dct --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)"
     chartType: filepath
     chartPath: $(System.DefaultWorkingDirectory)/claims-api
-    releaseName: aks-aspnetcore-dct
+    releaseName: aks-aspnetcore-lab-dct
     # overrideValues: image.repository=csulabtest.azurecr.io/claims-api,image.tag=$(Build.BuildId)
     install: true
     waitForExecution: true
