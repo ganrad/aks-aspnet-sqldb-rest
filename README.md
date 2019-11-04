@@ -1126,7 +1126,7 @@ To learn more about blue-green deployments, refer to the following online resour
 
 **Challenge:** Implement **Blue-Green** deployment slots in the Production region (**production** namespace on AKS).
 
-To complete this challenge, you will modify the Claims API microservice and update *Prod-Env* stage in the release pipeline in Azure DevOps Services.
+To complete this challenge, you will modify the Claims API microservice and update *Prod-Env* stage in the release pipeline in Azure DevOps Services.  The high level steps are detailed below.
 
 1. Learn how Blue-Green deployments can be implemented in Kubernetes
 
@@ -1303,10 +1303,60 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
 **Scan container images and digitally sign them using Docker Content Trust**
 
 In this exercise, you will learn how to
- - Scan container images for known vulnerabilities using the Open Source container image scanning engine from **Aqua**
- - Digitally sign container images using *Docker Content Trust* (DCT) before pushing these images into ACR
+- Scan container images for known vulnerabilities using the Open Source container image scanning engine from **Aqua**
+- Digitally sign container images using *Docker Content Trust* (DCT) before pushing these images into ACR
     
-**Challenge:** Implement container image **scanning** and **signing** container images using DCT
+To learn more about digitally signing container images using *Docker Content Trust*, refer to the following resources.
+
+- [Content trust in Docker](https://docs.docker.com/engine/security/trust/content_trust/)
+- [Content trust in Azure Container Registry](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-content-trust)
+- [Use DCT to sign images in Azure Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/containers/content-trust?view=azure-devops)
+  
+**Challenge:** **Scan** Claims API container image using *Aqua Trivy* and **sign** the image using *DCT*
+
+To complete this challenge, you will create a YAML *delivery* pipeline in Azure DevOps. The high level steps are
+detailed below.
+
+1. Configure ACR repository
+
+   - Make sure your ACR instance is using the 'Premium' SKU.  You can check this in the 'Overview' blade/page of your ACR instance in Azure portal.
+   - In Azure Portal, confirm docker content trust (DCT) is enabled for your ACR instance.
+
+2. Generate the DCT delegation key pair and initiate the 'claims-api' repository in ACR
+
+   - To generate the delegation key pair, refer to [DCT docs](https://docs.docker.com/engine/security/trust/content_trust/).
+   - Create a new *Service Principal* via Azure Portal or using Azure CLI (preferred). Use the service principal to login to ACR. Assign specific roles to the service pricipal so that it can be used to sign and push container images into ACR.
+   - Use the service principal credentials to [log into ACR](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-service-principal)
+   - [Initiate the 'claims-api' repository in ACR](https://docs.docker.com/engine/security/trust/content_trust/#signing-images-with-docker-content-trust).
+
+3. Copy the delegation private key file to Azure DevOps Services
+   
+   You will need to copy the delegation *private key* from the Linux VM (Bastion host) to Azure DevOps Services.
+ 
+   - In Azure DevOps Pipelines, select *Library* and import the private key as a secure file.
+
+4. Create a new *ACR connection* in Azure DevOps Services
+
+   - In your Azure DevOps project, click on *Project settings*.
+   - Use the same Service Principal credentials (appId and password) which you created in Step [2] to create an ACR connection in Azure DevOps Services.
+
+5. Update the YAML delivery pipeline file `dct-pipeline.yml` in Azure DevOps Services *Repository*
+
+   In Azure DevOps Services Repository, review the tasks defined in this YAML pipeline file. Edit this file and make the following changes.
+
+   - variables: Go thru the description of each pipeline variable and assign the correct value.
+
+   Save and commit the pipeline yaml file.
+
+6. Create a new *Continuous Delivery* pipeline in Azure DevOps Pipelines and run it
+
+   - After updating the `dct-pipeline.yml` pipeline file Azure DevOps Repos, create a new *Delivery pipeline* (actually Build pipeline) in Azure DevOps Pipelines. Select *Azure Repos Git* for source code, *aks-aspnet-sqldb-rest* for repository, *Existing Azure Pipelines YAML file* for pipeline & select `dct-pipeline.yml`, review the pipeline code and **Run** it.
+   - Keep in mind, Aqua Trivy will take approx. 15-20 mins to run the first time.  During the initial run Aqua will download OS vulnerability/fixes info. (CVE's etc) from multiple vendor advisory databases and cache it locally.  Vulnerability info. from this cached database will be used for subsequent image scans. Once the database is cached, the scanner should finish much faster within a few seconds.
+   - After the pipeline completes OK, inspect the delivery pipeline execution logs.
+
+7. Verify the signed image in ACR
+
+   Use Azure portal or Azure CLI to confirm a signed container image for Claims API microservice was pushed into ACR.
 
 **IMPORTANT NOTES:**
 - Login to the Azure Portal using a browser window/tab.
