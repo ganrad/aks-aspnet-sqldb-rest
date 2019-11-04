@@ -1319,8 +1319,8 @@ To complete this challenge, you will update and run a YAML *delivery* pipeline i
 1. Configure *ACR repository* and deploy a self-hosted Azure DevOps *build agent* on AKS
 
    - Make sure your ACR instance is using the 'Premium' SKU.  You can check this in the 'Overview' blade/page of your ACR instance in Azure portal.
-   - If you haven't already, you will need to deploy a custom Azure DevOps build agent locally on the Linux VM (Bastion host) or on your AKS cluster.  Instructions for deploying a self-hosted Azure DevOps Services build agent can be found on this [GitHub repository](https://github.com/ganrad/Az-DevOps-Agent-On-AKS).
    - In Azure Portal, confirm docker content trust (DCT) is enabled for your ACR instance.
+   - If you haven't already, you will need to deploy a custom Azure DevOps build agent locally on the Linux VM (Bastion host) or on your AKS cluster.  Instructions for deploying a self-hosted Azure DevOps Services build agent can be found on this [GitHub repository](https://github.com/ganrad/Az-DevOps-Agent-On-AKS).
 
 2. Generate the *DCT delegation key pair* and initiate the *claims-api* repository in ACR
 
@@ -1336,7 +1336,7 @@ To complete this challenge, you will update and run a YAML *delivery* pipeline i
    - Copy the private key file from the Linux VM to your local machine.  You can use **scp** for copying the file.
    - In Azure DevOps Pipelines, select *Library* and import the private key as a secure file.
 
-4. Create a new *ACR connection* in Azure DevOps Services
+4. Create a new *ACR connection* in Azure DevOps Services for your ACR instance
 
    - In your Azure DevOps project, click on *Project settings*.
    - Use the same Service Principal credentials (appId and password) which you created in Step [2] to create an ACR connection in Azure DevOps Services.
@@ -1347,13 +1347,13 @@ To complete this challenge, you will update and run a YAML *delivery* pipeline i
 
    - variables: Go thru the description of each pipeline variable and assign the correct value.
 
-   Save and commit the pipeline yaml file.
+   Save and commit the pipeline yaml file in your local Git repository on Azure DevOps Repos.
 
 6. Create a new *Continuous Delivery* pipeline in Azure DevOps Pipelines and run it
 
-   - After updating the `dct-pipeline.yml` pipeline file Azure DevOps Repos, create a new *Delivery pipeline* (actually Build pipeline) in Azure DevOps Pipelines. Select *Azure Repos Git* for source code, *aks-aspnet-sqldb-rest* for repository, *Existing Azure Pipelines YAML file* for pipeline & select `dct-pipeline.yml`, review the pipeline code and **Run** it.
-   - Keep in mind, Aqua Trivy will take approx. 15-20 mins to run the first time.  During the initial run Aqua will download OS vulnerability/fixes info. (CVE's etc) from multiple vendor advisory databases and cache it locally.  Vulnerability info. from this cached database will be used for subsequent image scans. Once the database is cached, the scanner should finish much faster within a few seconds.
-   - After the pipeline completes OK, inspect the delivery pipeline execution logs.
+   - After updating the `dct-pipeline.yml` pipeline file in Azure DevOps Repos, create a new *Delivery pipeline* (actually *Build* pipeline) in Azure DevOps Pipelines. Select *Azure Repos Git* for source code, *aks-aspnet-sqldb-rest* for repository, *Existing Azure Pipelines YAML file* for pipeline & select `dct-pipeline.yml`, review the pipeline code and **Run** it.
+   - Keep in mind, Aqua Trivy will take approx. 15-20 mins to run the first time.  During the initial run Aqua will download OS vulnerability/fixes info. (CVE's etc) from multiple vendor advisory databases, cache it locally and then scan the image.  Vulnerability info. from the cached database will be used for subsequent image scans. As a result, the scan task should not take more than a few seconds to complete in subsequent pipeline runs.
+   - After the pipeline completes OK, inspect the delivery pipeline task execution logs.
 
 7. Verify the signed image in ACR
 
