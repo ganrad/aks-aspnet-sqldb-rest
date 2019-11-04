@@ -67,10 +67,11 @@ D] Create a new ACR connection in Azure DevOps Services.
 #   - Password : <SP 'password'>
 # - Click OK to create the ACR connection in Azure DevOps.
 
-E] Update 'dct-pipeline.yml' in Azure DevOps Services Repository
+E] Update the YAML delivery pipeline file 'dct-pipeline.yml' in Azure DevOps Services Repository
+# Edit this file and make the following changes.
 # - variables: Go thru the description of each pipeline variable and assign the correct value.
 # - task 'DownloadSecureFile@1' : Specify the correct name for the private key secure file.
-# - Save and commit the pipeline yaml file.
+# Save and commit the pipeline yaml file.
 
 F] Create a new 'Continuous Delivery' pipeline in Azure DevOps Services and run it.
 # - Select 'dct-pipeline.yml' pipeline file from Azure DevOps Services Repo 'aks-aspnet-sqldb-rest'.
