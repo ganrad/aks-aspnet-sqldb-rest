@@ -1,0 +1,103 @@
+# Useful resources:
+# - https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/containers/content-trust?view=azure-devops
+
+A] Configure ACR repository
+# - Before proceeding, make sure your ACR instance is using the 'Premium' SKU.  You can check this in the 
+#   'Overview' blade/page of your ACR instance in the Azure portal.
+#
+# - Update the ACR instance using Azure Portal. Click on the 'Content trust' blade under 'Policies'.
+#   Check to make sure docker content trust (DCT) is enabled. 
+
+B] Generate the DCT delegation key pair and initiate the 'claims-api' repository in ACR
+# Refer to the DCT docs => https://docs.docker.com/engine/security/trust/content_trust/
+#
+# The command below should generate a public and private key pair in the local docker trust repository.  By default
+# 'private' key is stored in '~/.docker/trust' on the local machine.  The 'public' key is stored in the directory
+# where the command is issued.
+# IMPORTANT:
+# - Save the 'passphrase' in a file.  You will need to configure the private key pass phrase in the 
+#   Azure DevOps Services delivery pipeline later.
+# - You will need to copy the 'private' key file from the local docker trust repository to Azure DevOps Services.
+#   Save this file as a 'secure' file on Azure DevOps Services as you will need this private key to push the
+#   signed image to ACR.
+# Parameters:
+# - Signer name: Name of the signer (or company) eg., garadha
+#
+$ docker trust key generate <Signer name>
+
+# Use a service principal to login to ACR. Refer to the commands in the Appendix section to create a SP and
+# assign it the 'AcrImageSigner', 'AcrPush' and 'Owner' roles.
+#
+# Then use the command below to login to ACR using the SP appID and password. Substitute the value of your ACR 
+# registry.
+$ ac acr login --name <acrname> -u <SP appID> -p <SP password>
+
+# Initiate the 'claims-api' repository in ACR.  Specify appropriate values for the parameters.
+# Save the root key & repository key passphrase in a secure location.  There will be no way to recover the root
+# key and the passphrase!!
+# Parameters:
+# - Public key: Public key of delegation key pair generated in previous step eg., garadha.pub
+# - Signer name: Name of the signer eg., garadha
+# - FQDN of ACR/Repository ID: FQDN of the ACR instance/Repository name eg., xxxx.azurecr.io/claims-api
+#
+$ docker trust signer add --key <Public key> <Signer name> <FQDN of ACR>/<Repository ID>
+#
+# IMPORTANT:
+# - You may get 401 unauthorized exception when using your Azure login credentials to initiate the repository.
+#   This is a known issue.
+# - If you are unable to initiate the repository with your own Azure account credentials, create a 
+#   'Service Principal', assign the roles as explained above and then try the above command).
+# - Refer to the Appendix section for CLI commands to create a 'Service Principal'.
+
+C] Copy the delegation private key file to Azure DevOps Services project.
+# - Create a secure file in Azure DevOps Services (Library => Secure files)
+# - Import the private key file as a secure file (+ Secure file)
+
+D] Create a new ACR connection in Azure DevOps Services.
+# Use the same Service Principal credentials (appId and password) which you created in Step [B] earlier.
+#
+# Follow the steps below to create the ACR connection in Azure DevOp Services.
+# - Go to 'Project' settings in Azure DevOps Services. Click on 'New service connection' and select 
+#   'Docker Registry'
+# - Specify correct values for following parameters in order to configure ACR connection authentication
+#   - Registry type : Others
+#   - Connection name : <ACR name> (Use any meaningful name or the name of your ACR instance)
+#   - Docker Registry : https://<ACR name>.azurecr.io (Substitute the value of your ACR name)
+#   - Docker ID : <SP 'appId'>
+#   - Password : <SP 'password'>
+# - Click OK to create the ACR connection in Azure DevOps.
+
+E] Update 'dct-pipeline.yml' in Azure DevOps Services Repository
+# - variables: Go thru the description of each pipeline variable and assign the correct value.
+# - task 'DownloadSecureFile@1' : Specify the correct name for the private key secure file.
+# - Save and commit the pipeline yaml file.
+
+F] Create a new 'Continuous Delivery' pipeline in Azure DevOps Services and run it.
+# - Select 'dct-pipeline.yml' pipeline file from Azure DevOps Services Repo 'aks-aspnet-sqldb-rest'.
+# - Click on 'Run' to run the pipeline.
+# - Keep in mind, Aqua Trivy will take approx. 15-20 mins to run the first time.  During the initial run Aqua will
+#   download the vulnerability database (from vendor advisories) and cache it.  Subsequent container image scans
+#   will run much faster and complete within a few seconds.
+# - After the pipeline completes OK, inspect the delivery pipeline execution logs.
+
+G] Verify the signed image in ACR
+# Use Azure portal or Azure CLI to confirm a signed container image for Claims API microservice was pushed into ACR.
+
+APPENDIX:
+A] Create a service principal (SP).
+# Use a meaningful name for SP eg., sp-akslab-<Your Initials>.
+# IMPORTANT: Save the output to a file. You will need the 'appId' and 'password' values when configuring the
+# ACR connection in Azure DevOps Services!!
+$ az ad sp create-for-rbac --name sp-akslab-gr
+
+# Retrieve the resource ID of your ACR instance
+$ az acr show --name <ACR Name> --query id -o tsv
+
+# Assign the service principal to the ACR (role assignment) and give it 'AcrImageSigner' role permissions. 
+$ az role assignment create --scope <ACR resource ID> --role AcrImageSigner --assignee <SP App ID>
+
+# Give SP 'AcrPush' permissions
+$ az role assignment create --scope <ACR resource ID> --role AcrPush --assignee <SP App ID>
+
+# Give SP 'Owner' permissions
+$ az role assignment create --scope <ACR resource ID> --role Owner --assignee <SP App ID>

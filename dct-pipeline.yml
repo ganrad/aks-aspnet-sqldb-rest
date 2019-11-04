@@ -18,9 +18,10 @@
 # https://github.com/ganrad/Az-DevOps-Agent-On-AKS
 #
 # This pipeline requires the following variables to be set.
+#   - 'containerRegistryServiceConnection' :  Create a 'Service Connection' for ACR in Azure DevOps Services (Project settings) and then specify the service connection name.
 #   - 'imageRepository' : Name of the image repository in ACR.  This repository should have been intialized (initiated) with a root key (docker trust signer add ...)
 #   - 'DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE' : Passphrase used while generating delegation key pair (Should be a secret)
-#   - 'containerRegistryServiceConnection' :  Create a 'Service Connection' for ACR in Azure DevOps Services (Project settings) and then specify the service connection name.
+#   - 'privateKeyFilename' : Name of the secure file containing the delegation private key
 #   - 'azureSubscriptionEndpoint' : Azure DevOps ARM Connection name
 #   - 'azureContainerRegistry' : Azure Container Registry name
 #   - 'azureResourceGroup' : Azure Resource Group name
@@ -41,6 +42,7 @@ variables:
   containerRegistryServiceConnection: <Specify ACR service connection>
   imageRepository: claims-api
   DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: <Passphrase for DCT delegation key pair> 
+  privateKeyFilename: <Name of the secure file containing the private key>
   azureSubscriptionEndpoint: <Specify Azure RM connection>
   azureContainerRegistry: <Azure Container Registry name - name.azurecr.io>
   azureResourceGroup: <Azure Resource Group - name>
@@ -52,7 +54,7 @@ steps:
   displayName: Download secure file
   name: privateKey
   inputs:
-    secureFile: <DCT Delegation Private key>
+    secureFile: $(privateKeyFilename)
 
 - task: Docker@2
   displayName: Build container image
@@ -120,7 +122,7 @@ steps:
     azureResourceGroup: $(azureResourceGroup)
     kubernetesCluster: $(kubernetesCluster)
     command: upgrade
-    arguments: --namespace dev-dct --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)"
+    arguments: --namespace dev-dct --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)" --set blue.enabled=true
     chartType: filepath
     chartPath: $(System.DefaultWorkingDirectory)/claims-api
     releaseName: aks-aspnetcore-lab-dct
