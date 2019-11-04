@@ -1306,7 +1306,7 @@ In this exercise, you will learn how to
 - Scan container images for known vulnerabilities using the Open Source container image scanning engine from **Aqua**
 - Digitally sign container images using *Docker Content Trust* (DCT) before pushing these images into ACR
     
-To learn more about digitally signing container images using *Docker Content Trust*, refer to the following resources.
+To learn more about digitally signing container images using *Docker Content Trust*, refer to the following online resources.
 
 - [Content trust in Docker](https://docs.docker.com/engine/security/trust/content_trust/)
 - [Content trust in Azure Container Registry](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-content-trust)
@@ -1314,25 +1314,26 @@ To learn more about digitally signing container images using *Docker Content Tru
   
 **Challenge:** **Scan** Claims API container image using *Aqua Trivy* and **sign** the image using *DCT*
 
-To complete this challenge, you will create a YAML *delivery* pipeline in Azure DevOps. The high level steps are
-detailed below.
+To complete this challenge, you will update and run a YAML *delivery* pipeline in Azure DevOps Pipelines. The high level steps are detailed below.
 
-1. Configure ACR repository
+1. Configure *ACR repository* and deploy a self-hosted Azure DevOps *build agent* on AKS
 
    - Make sure your ACR instance is using the 'Premium' SKU.  You can check this in the 'Overview' blade/page of your ACR instance in Azure portal.
+   - If you haven't already, you will need to deploy a custom Azure DevOps build agent locally on the Linux VM (Bastion host) or on your AKS cluster.  Instructions for deploying a self-hosted Azure DevOps Services build agent can be found on this [GitHub repository](https://github.com/ganrad/Az-DevOps-Agent-On-AKS).
    - In Azure Portal, confirm docker content trust (DCT) is enabled for your ACR instance.
 
-2. Generate the DCT delegation key pair and initiate the 'claims-api' repository in ACR
+2. Generate the *DCT delegation key pair* and initiate the *claims-api* repository in ACR
 
    - To generate the delegation key pair, refer to [DCT docs](https://docs.docker.com/engine/security/trust/content_trust/).
    - Create a new *Service Principal* via Azure Portal or using Azure CLI (preferred). Use the service principal to login to ACR. Assign specific roles to the service pricipal so that it can be used to sign and push container images into ACR.
    - Use the service principal credentials to [log into ACR](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-service-principal)
    - [Initiate the 'claims-api' repository in ACR](https://docs.docker.com/engine/security/trust/content_trust/#signing-images-with-docker-content-trust).
 
-3. Copy the delegation private key file to Azure DevOps Services
+3. Copy the delegation private key file to Azure DevOps Pipelines *Library*
    
    You will need to copy the delegation *private key* from the Linux VM (Bastion host) to Azure DevOps Services.
  
+   - Copy the private key file from the Linux VM to your local machine.  You can use **scp** for copying the file.
    - In Azure DevOps Pipelines, select *Library* and import the private key as a secure file.
 
 4. Create a new *ACR connection* in Azure DevOps Services
