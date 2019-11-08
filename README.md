@@ -334,6 +334,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
 10.  Install **docker-ce** container runtime.
 
     Refer to the commands below.  You can also refer to the [Docker CE install docs for CentOS](https://docs.docker.com/install/linux/docker-ce/centos/).
+
     ```bash
     #
     $ sudo yum install -y yum-utils device-mapper-persistent-data lvm2
