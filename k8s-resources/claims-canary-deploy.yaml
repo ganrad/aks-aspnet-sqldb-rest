@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: claims-api-1-0
+  labels:
+    app: claims-api-1-0
+    mesh: istio
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: claims-api
+      version: "1.0"
+  template:
+    metadata:
+      labels:
+        app: claims-api
+        version: "1.0"
+    spec:
+      containers:
+      - name: claims-api
+        image: "<ACR Name>.azurecr.io/claims-api:<Image Tag>"
+        imagePullPolicy: Always
+        env:
+        - name: ConnectionStrings__SqlServerDb
+          value: "<Azure SQL Server Connection String>"
+        ports:
+          - name: http
+            containerPort: 80
+            protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /api/v1/claims/healthz
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        livenessProbe:
+          httpGet:
+            path: /api/v1/claims/healthz
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: claims-api-1-1
+  labels:
+    app: claims-api-1-1
+    mesh: istio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: claims-api
+      version: "1.1"
+  template:
+    metadata:
+      labels:
+        app: claims-api
+        version: "1.1"
+    spec:
+      containers:
+      - name: claims-api
+        image: "<ACR Name>.azurecr.io/claims-api:<Image Tag>"
+        imagePullPolicy: Always
+        env:
+        - name: ConnectionStrings__SqlServerDb
+          value: "<Azure SQL Server Connection String>"
+        ports:
+          - name: http
+            containerPort: 80
+            protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /api/v1/claims/healthz
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        livenessProbe:
+          httpGet:
+            path: /api/v1/claims/healthz
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: claims-api
+  labels:
+    app: claims-api
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: claims-api

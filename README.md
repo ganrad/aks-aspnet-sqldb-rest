@@ -140,6 +140,7 @@ The following tools (binaries) will be installed on the Linux VM (~ Bastion Host
 - .NET Core SDK.  This SDK will be used to build and test the microservice application locally. 
 - Kubernetes CLI (`kubectl`).  This CLI will be used for managing and introspecting the current state of resources deployed on the Kubernetes (AKS) cluster.
 - Helm CLI (`helm`).  Helm is a package manager for Kubernetes and will be used to manage and monitor the lifecyle of application deployments on AKS.
+- Istio CLI (`istioctl`).  [Istio](https://istio.io/docs/concepts/what-is-istio/) reduces complexity of managing microservice deployments by providing a uniform way to secure, connect, control and manage microservices.
 - Docker engine and client.  Docker engine will be used to run the Azure DevOps build agent. It will also be used to build and run the Claims API microservice container locally. 
 
 Follow the steps below to create the Bastion host (Linux VM) and install pre-requisite software on this VM.
@@ -319,7 +320,18 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     #
     ```
 
-9.  Install **docker-ce** container runtime.
+9.  (Optional) Install Kubernetes utilities.
+
+    Install [power tools](https://github.com/ahmetb/kubectx) for `kubectl`.
+    ```bash
+    #
+    # Install 'kubectx' and 'kubens' in ~/git-repos/kubectx
+    $ git clone https://github.com/ahmetb/kubectx ~/git-repos/kubectx
+    $ sudo ln -s $HOME/git-repos/kubectx/kubectx /usr/local/bin/kubectx
+    $ sudo ln -s $HOME/git-repos/kubectx/kubectx /usr/local/bin/kubens
+    #
+    ```
+10.  Install **docker-ce** container runtime.
 
     Refer to the commands below.  You can also refer to the [Docker CE install docs for CentOS](https://docs.docker.com/install/linux/docker-ce/centos/).
     ```bash
@@ -1303,7 +1315,7 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
 **Scan container images and digitally sign them using Docker Content Trust**
 
 In this exercise, you will learn how to
-- Scan container images for known vulnerabilities using the Open Source container image scanning engine from **Aqua**
+- Scan container images for known vulnerabilities using the Open Source container image scanning engine from [Aqua](https://github.com/aquasecurity/microscanner)
 - Digitally sign container images using *Docker Content Trust* (DCT) before pushing these images into ACR
     
 To learn more about digitally signing container images using *Docker Content Trust*, refer to the following online resources.
@@ -1435,7 +1447,41 @@ In this section, we will explore a few advanced features provided by Kubernetes 
 
     Use a browser to invoke a Claims API end-point and verify the microservice is available and returns a valid response.
 
-2.  Auto-scale application containers (*Pods*)
+2.  Canary deployments
+    
+    Canary release is a technique to reduce the risk of introducing a new software version in production by slowly rolling out the change to a small subset of servers (or users) before rolling it out to the entire infrastructure and making it available to everyone.  Canary deployments help alleviate the side effects of failed or problematic deployments.
+
+    With [Canary Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#canary-deployment), multiple application deployments are created, one for each release of the API/Application following the canary pattern.  Initially, only a small percentage of API/User traffic is directed to the new/canary release.  Once the canary release is tested and it's behavior is fully verified, all traffic is then directed to the new release.  Alternatively, if the performance of the canary release is found to be sub-optimal and/or the canary doesn't manifest the desired behavior, the canary deployment is deleted.
+
+    To test *Canary* deployment of the Claims API microservice, refer to the command snippet below. Edit the file `./k8s-resources/claims-canary-deploy.yaml` and specify correct values for the following.
+
+    Token | Value
+    ----- | ----- 
+    ACR Name | Name of your ACR instance
+    Image Tag | Images tag values which you had noted down at the end of *Section H* and *Exercise 3*
+    
+    ```bash
+    # Create a new namespace to test Canary deployment of the Claims API microservice
+    $ kubectl create namespace canary-test
+    #
+    # Go thru and edit the `./k8s-resources/claims-canary-deploy.yaml` file.
+    # Substitute values for ACR Name and Image Tag - placeholders in the file (see above)
+    # Deploy version 1.0 and version 1.1 of the Claims API
+    $ kubectl apply -f ./k8s-resources/claims-canary-deploy.yaml -n canary-test
+    #
+    # Get the Public IP address of the deployed service
+    $ kubectl get svc -n canary-test
+    #
+    # Verify only 1 in 4 API calls are being served by the Canary release
+    ```
+
+    Use **curl** and invoke the Claims API end-point in a loop.  You will observe that version 1.1 of the Claims API will only be invoked once for every 3 invokations of version 1.0 of the API.
+
+    You can tweak the number of replicas in the v1.0 and v1.1 deployments to determine the ratio of each release which will receive live traffic.
+
+    **Challenge:** Direct all (100%) API traffic to the Canary release (v1.1) and make it the current stable release.  Additionally, scale down the old (v1.0) release.
+
+3.  Auto-scale application containers (*Pods*)
 
     An [Horizontal Pod Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) automatically scales the number of Pods in a replication controller, deployment or a replica set based on observed CPU utilization. 
 
@@ -1451,8 +1497,8 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     $ kubectl get hpa claims-api-hpa -n development
     #
     # There is another way to check CPU and Memory consumption for a pod (see below). 'm' stands for 'millicore'.
-    # In the command output below, the memory consumption is 1m meaning .001 % of 1 vCPU (~ 1000 millicores) which
-    # is 1% vCPU utilization!
+    # In the command output below, the memory consumption is 1m meaning .001 % of 1 vCPU (1 vCPU ~ 1000 millicores)
+    # which is 1% vCPU utilization!
     $ kubectl top pods -n development
     NAME                                     CPU(cores)   MEMORY(bytes)   
     claims-api-deploy-blue-c8755bbcc-zms9p   1m           132Mi
@@ -1494,7 +1540,7 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     #
     ```
 
-3.  Highly available application containers (*Pods*)
+4.  Highly available application containers (*Pods*)
     
     When Kubernetes auto scales application Pods, it schedules the pods to run on different cluster nodes thereby ensuring the pods are highly available.
 
@@ -1527,7 +1573,7 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     #
     ```
 
-4.  Automatic load balancing of container (*Pod*) instances
+5.  Automatic load balancing of container (*Pod*) instances
 
     The Claims API microservice is exposed over an Azure Load Balancer (ALB) Public IP.  This IP is bridged to the Kubernetes cluster network.  As a result, the incoming HTTP request is intercepted by the ALB and forwarded to the AKS agent-pool (Cluster nodes).  The Kubernetes services (cluster network) layer then receives the request and distributes the HTTP traffic evenly to the Pod instances in a round robin manner.  When there are multiple Pod instances for a given microservice, the incoming HTTP requests for this microservice are distributed evenly across the currently active Pod instances.
 
