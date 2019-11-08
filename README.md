@@ -1580,7 +1580,7 @@ In this section, we will explore a few advanced features provided by Kubernetes 
 
     The Claims API microservice is exposed over an Azure Load Balancer (ALB) Public IP.  This IP is bridged to the Kubernetes cluster network.  As a result, the incoming HTTP request is intercepted by the ALB and forwarded to the AKS agent-pool (Cluster nodes).  The Kubernetes services (cluster network) layer then receives the request and distributes the HTTP traffic evenly to the Pod instances in a round robin manner.  When there are multiple Pod instances for a given microservice, the incoming HTTP requests for this microservice are distributed evenly across the currently active Pod instances.
 
-    Re-run the shell script `start-load.sh` and look at the HTTP response header **X-Pod-IpAddr**.  This header contains the IP address of the Pod instance serving the HTTP request.  When two or more instances of the Claims API microservice are active, the HTTP requests should be served by the Pod instances in a round robin manner.
+    Edit and run the shell script `./shell-scripts/test-canary.sh`. The HTTP response header **X-Pod-IpAddr** contains the IP address of the Pod instance serving the HTTP request.  When two or more instances of the Claims API microservice are active, the HTTP requests should be served by the Pod instances in a round robin manner.
 
     Here is a sample output of the HTTP response headers.
     ```
@@ -1595,10 +1595,10 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     Verify the automatic load balancing behavior provided by Kubernetes *Services* layer by following the instructions in the code snippet below.
 
     ```bash
-    # Press Control-C and exit out of the shell script.  Then edit the `start-load.sh` using
+    # Press Control-C and exit out of the shell script.  Then edit the `test-canary.sh` using
     # 'vi' or 'nano' editor.  Uncomment the 'sleep 2' shell command line.  Save the shell
-    # script. Re-run the 'start-load.sh` script.
-    $ ./shell-scripts/start-load.sh
+    # script. Run the 'test-canary.sh` script.
+    $ ./shell-scripts/test-canary.sh
     #
     # Observe the value of the 'X-Pod-IpAddr' HTTP Response Header.  It should alternate
     # among the Pod IP addresses.
