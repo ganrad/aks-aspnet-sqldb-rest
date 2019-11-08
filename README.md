@@ -1461,6 +1461,7 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     ----- | ----- 
     ACR Name | Name of your ACR instance
     Image Tag | Images tag values which you had noted down at the end of *Section H* and *Exercise 3*
+    Azure SQL Server Connection String | SQL Server connection string
     
     ```bash
     # Create a new namespace to test Canary deployment of the Claims API microservice
