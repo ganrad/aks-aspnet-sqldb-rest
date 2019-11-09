@@ -474,14 +474,22 @@ Before proceeding, login into the Linux VM using SSH.
 
 6.  Invoke the Claims API HTTP end-point.
 
-    Switch to the other SSH terminal window and invoke the Claims API HTTP end-point again using **Curl** command.
+    Switch to the other SSH terminal window and this time invoke the Claims API HTTP end-points using the provided functional test shell script `./shell-scripts/start-load.sh`
     ```bash
-    # Use curl command to hit the claims api end-point.  
-    $ curl -i http://localhost:5000/api/v1/claims
+    # The shell script './shell-scripts/start-load.sh' calls the Claims API end-points and retrieves,
+    # inserts, updates and deletes (CRUD) both institutional and professional claims records from/to
+    # the Azure SQL Server database.
+    #
+    # Make sure you are in the project root directory (check => $ pwd)
+    #
+    $ chmod 700 ./shell-scripts/start-load.sh
+    #
+    # Substitute values for -
+    #  - No. of runs : eg., 1, 2, 3, 4 ....
+    #  - hostname and port : eg., localhost:5000
+    $ ./shell-scripts/start-load.sh <No. of runs> <hostname and port> ./test-data
     #
     ```
-
-    You should get the same HTTP response output as in the previous step.
 
     In the SSH terminal window where you started the application container (docker run), press Control-C to exit out of the program and return back to the terminal prompt.
 
