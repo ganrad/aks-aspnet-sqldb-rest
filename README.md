@@ -805,13 +805,13 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     #
     ```
     Update the DNS name resolver on your **local** workstation.  Select one of the options below for your PC/Workstation's Operating System.
-    - **Linux/MacOS** : Update the `/etc/hosts` file.  On Linux systems, this file is used to lookup and resolve host name IP addresses.  Use *vi* or *nano* editor to add an hostname entry to this file. Refer to the snippet below.
+    - **Linux/MacOS** : Update the `/etc/hosts` file.  On Linux systems, this file is used to lookup and resolve host name IP addresses.  Use *vi* or *nano* to edit this file.
     - **Windows** : Update the `C:\Windows\System32\Drivers\etc\hosts` file.
 
     Add an entry to the local DNS name resolver file as shown in the snippet below.
     ```
-    # This entry resolves hostnames to the Traefik load balancer IP.  Substitute the correct value for 'Traefik
-    # External IP Address>', obtained in previous step. 
+    # This entry resolves hostnames to the Traefik load balancer IP.  Substitute the correct value for
+    # '<Traefik External IP Address>', obtained in previous step. 
     <Traefik External IP Address> db-traefik.akslab.com claims-api-prod.akslab.com claims-api-stage.akslab.com
     ```
 
