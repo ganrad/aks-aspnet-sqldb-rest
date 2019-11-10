@@ -15,7 +15,7 @@ namespace ClaimsApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.0-rtm-35687")
+                .HasAnnotation("ProductVersion", "3.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("Relational:Sequence:.ClaimNumbers", "'ClaimNumbers', '', '100', '1', '', '', 'Int32', 'False'")
                 .HasAnnotation("Relational:Sequence:.PlanPayNumbers", "'PlanPayNumbers', '', '100', '1', '', '', 'Int32', 'False'")
@@ -28,47 +28,60 @@ namespace ClaimsApi.Migrations
                     b.Property<int>("ClaimItemId")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("claim_item_id")
+                        .HasColumnType("int")
                         .HasDefaultValueSql("NEXT VALUE FOR ClaimNumbers");
 
                     b.Property<string>("ClaimInputMethod")
-                        .HasColumnName("claim_inp_method");
+                        .HasColumnName("claim_inp_method")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClaimNumber")
-                        .HasColumnName("claim_no");
+                        .HasColumnName("claim_no")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ClaimPaidDate")
-                        .HasColumnName("claim_paid_date");
+                        .HasColumnName("claim_paid_date")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ClaimStatus")
-                        .HasColumnName("claim_status");
+                        .HasColumnName("claim_status")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClaimType")
-                        .HasColumnName("claim_type");
+                        .HasColumnName("claim_type")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DestinationID")
-                        .HasColumnName("destination_id");
+                        .HasColumnName("destination_id")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OriginatorID")
-                        .HasColumnName("originator_id");
+                        .HasColumnName("originator_id")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("PatientAmountDue")
                         .HasColumnName("patient_amt_due")
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("PatientStatus")
-                        .HasColumnName("patient_status");
+                        .HasColumnName("patient_status")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PolicyNumber")
-                        .HasColumnName("policy_no");
+                        .HasColumnName("policy_no")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReceiverID")
-                        .HasColumnName("receiver_id");
+                        .HasColumnName("receiver_id")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SenderID")
-                        .HasColumnName("sender_id");
+                        .HasColumnName("sender_id")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ServiceDate")
-                        .HasColumnName("service_date");
+                        .HasColumnName("service_date")
+                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("TotalClaimCharge")
                         .HasColumnName("total_claim_charge")
@@ -84,6 +97,7 @@ namespace ClaimsApi.Migrations
                     b.Property<int>("PlanPaymentId")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("plan_payment_id")
+                        .HasColumnType("int")
                         .HasDefaultValueSql("NEXT VALUE FOR PlanPayNumbers");
 
                     b.Property<decimal>("ClaimAdjAmount")
@@ -91,29 +105,36 @@ namespace ClaimsApi.Migrations
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("ClaimAdjGroupCode")
-                        .HasColumnName("claim_adj_grp_code");
+                        .HasColumnName("claim_adj_grp_code")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClaimAdjQuantity")
-                        .HasColumnName("claim_adj_qty");
+                        .HasColumnName("claim_adj_qty")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClaimAdjReasonCode")
-                        .HasColumnName("claim_adj_reason_code");
+                        .HasColumnName("claim_adj_reason_code")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ClaimItemId")
-                        .HasColumnName("claim_id");
+                        .HasColumnName("claim_id")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("CobServicePaidAmount")
                         .HasColumnName("cob_service_paid_amt")
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<DateTime>("PaymentDate")
-                        .HasColumnName("payment_date");
+                        .HasColumnName("payment_date")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PrimaryPayerID")
-                        .HasColumnName("primary_payer_id");
+                        .HasColumnName("primary_payer_id")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ServiceCode")
-                        .HasColumnName("service_code");
+                        .HasColumnName("service_code")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PlanPaymentId");
 
@@ -127,51 +148,65 @@ namespace ClaimsApi.Migrations
                     b.Property<int>("ServiceLineDetailsId")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("service_line_id")
+                        .HasColumnType("int")
                         .HasDefaultValueSql("NEXT VALUE FOR ServiceLineNumbers");
 
                     b.Property<int>("ClaimItemId")
-                        .HasColumnName("claim_id");
+                        .HasColumnName("claim_id")
+                        .HasColumnType("int");
 
                     b.Property<string>("DrugCode")
-                        .HasColumnName("drug_code");
+                        .HasColumnName("drug_code")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DrugUnitQuantity")
-                        .HasColumnName("drug_unit_qty");
+                        .HasColumnName("drug_unit_qty")
+                        .HasColumnType("int");
 
                     b.Property<bool>("InNetworkIndicator")
-                        .HasColumnName("in_network_id");
+                        .HasColumnName("in_network_id")
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("LineChargeAmount")
                         .HasColumnName("line_charge_amt")
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("LineCounter")
-                        .HasColumnName("line_counter");
+                        .HasColumnName("line_counter")
+                        .HasColumnType("int");
 
                     b.Property<string>("PharmacyPrescriptionNumber")
-                        .HasColumnName("pharmacy_pres_no");
+                        .HasColumnName("pharmacy_pres_no")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProviderCode")
-                        .HasColumnName("provider_code");
+                        .HasColumnName("provider_code")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProviderFirstName")
-                        .HasColumnName("provider_first_name");
+                        .HasColumnName("provider_first_name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProviderIdentification")
-                        .HasColumnName("provider_id");
+                        .HasColumnName("provider_id")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProviderLastName")
-                        .HasColumnName("provider_last_name");
+                        .HasColumnName("provider_last_name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ServiceCodeDescription")
-                        .HasColumnName("service_code_desc");
+                        .HasColumnName("service_code_desc")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ServiceType")
                         .IsRequired()
-                        .HasColumnName("service_type");
+                        .HasColumnName("service_type")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StatementDate")
-                        .HasColumnName("statement_date");
+                        .HasColumnName("statement_date")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("ServiceLineDetailsId");
 
@@ -185,83 +220,108 @@ namespace ClaimsApi.Migrations
                     b.Property<int>("SubscriberInfoId")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("subscriber_id")
+                        .HasColumnType("int")
                         .HasDefaultValueSql("NEXT VALUE FOR SubNumbers");
 
                     b.Property<string>("CatgOfService")
-                        .HasColumnName("category_of_service");
+                        .HasColumnName("category_of_service")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ClaimItemId")
-                        .HasColumnName("claim_id");
+                        .HasColumnName("claim_id")
+                        .HasColumnType("int");
 
                     b.Property<string>("InsuredGroupName")
-                        .HasColumnName("insured_group_name");
+                        .HasColumnName("insured_group_name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PatientDOB")
-                        .HasColumnName("patient_dob");
+                        .HasColumnName("patient_dob")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PatientFirstName")
-                        .HasColumnName("patient_first_name");
+                        .HasColumnName("patient_first_name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PatientGender")
-                        .HasColumnName("patient_gender");
+                        .HasColumnName("patient_gender")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PatientLastName")
-                        .HasColumnName("patient_last_name");
+                        .HasColumnName("patient_last_name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PatientMemberID")
-                        .HasColumnName("patient_member_id");
+                        .HasColumnName("patient_member_id")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PatientSSN")
-                        .HasColumnName("patient_ssn");
+                        .HasColumnName("patient_ssn")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PayerName")
                         .IsRequired()
-                        .HasColumnName("payer_name");
+                        .HasColumnName("payer_name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubDateOfBirth")
-                        .HasColumnName("subscriber_dob");
+                        .HasColumnName("subscriber_dob")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubscriberAddressLine1")
-                        .HasColumnName("subscriber_addr_1");
+                        .HasColumnName("subscriber_addr_1")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubscriberAddressLine2")
-                        .HasColumnName("subscriber_address_2");
+                        .HasColumnName("subscriber_address_2")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubscriberCity")
-                        .HasColumnName("subscriber_city");
+                        .HasColumnName("subscriber_city")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubscriberCountry")
-                        .HasColumnName("subscriber_country");
+                        .HasColumnName("subscriber_country")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubscriberFirstName")
                         .IsRequired()
-                        .HasColumnName("subscriber_first_name");
+                        .HasColumnName("subscriber_first_name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubscriberGender")
-                        .HasColumnName("subscriber_gender");
+                        .HasColumnName("subscriber_gender")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubscriberIdentifierSSN")
                         .IsRequired()
-                        .HasColumnName("subscriber_id_ssn");
+                        .HasColumnName("subscriber_id_ssn")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubscriberLastName")
                         .IsRequired()
-                        .HasColumnName("subscriber_last_name");
+                        .HasColumnName("subscriber_last_name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubscriberMiddleName")
-                        .HasColumnName("subscriber_middle_name");
+                        .HasColumnName("subscriber_middle_name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubscriberPolicyNumber")
-                        .HasColumnName("subscriber_policy_no");
+                        .HasColumnName("subscriber_policy_no")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubscriberPostalCode")
-                        .HasColumnName("subscriber_postal_code");
+                        .HasColumnName("subscriber_postal_code")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubscriberRelationship")
-                        .HasColumnName("subscriber_reln");
+                        .HasColumnName("subscriber_reln")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubscriberState")
-                        .HasColumnName("subscriber_state");
+                        .HasColumnName("subscriber_state")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SubscriberInfoId");
 
@@ -272,26 +332,29 @@ namespace ClaimsApi.Migrations
 
             modelBuilder.Entity("ClaimsApi.Models.PlanPayment", b =>
                 {
-                    b.HasOne("ClaimsApi.Models.ClaimItem")
+                    b.HasOne("ClaimsApi.Models.ClaimItem", null)
                         .WithMany("PlanPayment")
                         .HasForeignKey("ClaimItemId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ClaimsApi.Models.ServiceLineDetails", b =>
                 {
-                    b.HasOne("ClaimsApi.Models.ClaimItem")
+                    b.HasOne("ClaimsApi.Models.ClaimItem", null)
                         .WithMany("ServiceLineDetails")
                         .HasForeignKey("ClaimItemId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ClaimsApi.Models.SubscriberInfo", b =>
                 {
-                    b.HasOne("ClaimsApi.Models.ClaimItem")
+                    b.HasOne("ClaimsApi.Models.ClaimItem", null)
                         .WithMany("SubscriberInfo")
                         .HasForeignKey("ClaimItemId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

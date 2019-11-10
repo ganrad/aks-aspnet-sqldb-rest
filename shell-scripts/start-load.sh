@@ -5,9 +5,14 @@ counter=1
 
 echo "***** Starting Functional Test *****"
 
-wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
-chmod 700 ./jq-linux64
-echo "***** Installed jq JSON parser *****"
+if [ -f "$PWD/jq-linux64" ] 
+then
+  echo "***** jq is present in current directory, skipping installation *****"
+else
+  wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+  chmod 700 ./jq-linux64
+  echo "***** Installed jq JSON parser *****"
+fi
 echo
 
 ## Get all claims

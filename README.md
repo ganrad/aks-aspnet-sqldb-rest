@@ -1,4 +1,4 @@
-#  Build and deploy an ASP.NET Core 2.2 Web API on Azure Kubernetes Service
+#  Build and deploy an ASP.NET Core 3.0 Web API on Azure Kubernetes Service
 This project describes the steps for building and deploying a real world **Medical Claims Processing** microservice application (**Claims API**) on Azure Kubernetes Service.
 
 Table of Contents
@@ -39,7 +39,7 @@ This project provides step by step instructions to use **Azure DevOps Services**
 
 For easy and quick reference, readers can refer to the following on-line resources as needed.
 - [Install Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
-- [ASP.NET Core 2.2 Documentation](https://docs.microsoft.com/en-us/aspnet/core/?view=aspnetcore-2.2)
+- [ASP.NET Core 3.0 Documentation](https://docs.microsoft.com/en-us/aspnet/core/?view=aspnetcore-3.0)
 - [Docker Documentation](https://docs.docker.com/)
 - [Kubernetes Documentation](https://kubernetes.io/docs/home/?path=users&persona=app-developer&level=foundational)
 - [Helm Documentation](https://docs.helm.sh/)
@@ -300,23 +300,29 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     $ curl -sL "https://github.com/istio/istio/releases/download/$ISTIO_VERSION/istio-$ISTIO_VERSION-linux.tar.gz" | tar xz --directory=$HOME/aztools
     # 
     # Register the Microsoft key, product repository and required dependencies.
-    $ sudo rpm -Uvh https://packages.microsoft.com/config/rhel/7/packages-microsoft-prod.rpm
+    $ sudo rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
     #
     # Update the system libraries.  This command will take a few minutes (~10 mins) to complete.  Be patient!
     $ sudo yum update
     #
-    # Install .NET Core 2.2 binaries
-    $ sudo yum install -y dotnet-sdk-2.2
+    # Install .NET Core 3.0 binaries
+    $ sudo yum install -y dotnet-sdk-3.0
     #
-    # Check .NET Core version (Should print 2.2.100)
+    # Check .NET Core version (Should print 3.0.100)
     $ dotnet --version
+    #
+    # Install EF Core 3.0
+    # Above command installs dotnet-ef in ~/.dotnet/tools directory. so this directory has to be in
+    # the Path!!
+    $ dotnet tool install --global dotnet-ef
     #
     # Finally, update '.bashrc' file and set the path to jq, Helm and Kubectl binaries
     $ JQ=/home/labuser/jq
     $ KUBECLI=/home/labuser/aztools
     $ HELM=/home/labuser/helm/linux-amd64
     $ ISTIO=/home/labuser/aztools/istio-$ISTIO_VERSION/bin
-    $ echo "export PATH=$JQ:$KUBECLI:$HELM:$ISTIO:${PATH}" >> ~/.bashrc
+    $ DOTNET_TOOLS=$HOME/.dotnet/tools
+    $ echo "export PATH=$JQ:$KUBECLI:$HELM:$ISTIO:${DOTNET_TOOLS}:${PATH}" >> ~/.bashrc
     #
     ```
 
@@ -363,9 +369,9 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
 
 In this section, we will work on the following tasks
 - Configure the Azure SQL Server connection string in the Claims API microservice (source code)
-- Build the Claims API microservice using the .NET Core 2.2 SDK
+- Build the Claims API microservice using the .NET Core 3.0 SDK
 - Run the .NET Core *Entity Framework* migrations to create the relational database tables in Azure SQL Server provisioned in [Section A](#a-deploy-an-azure-sql-server-and-database).  These tables will be used to persist Claims records.
-- Run the Claims API microservice locally using the .NET Core 2.2 SDK
+- Run the Claims API microservice locally using the .NET Core 3.0 SDK
 - Build the microservice Docker container and run the container
 
 Before proceeding, login into the Linux VM using SSH.
@@ -407,10 +413,10 @@ Before proceeding, login into the Linux VM using SSH.
     This step will create the database tables for persisting *Claims* records in the Azure SQL Server database.  Refer to the command snippet below.
     ```bash
     # Run the .NET Core CLI command to create the database migration scripts
-    $ dotnet ef migrations add InitialCreate
+    $ dotnet-ef migrations add InitialCreate
     #
     # Run the ef (Entity Framework) migrations
-    $ dotnet ef database update
+    $ dotnet-ef database update
     #
     ```
 
@@ -456,8 +462,10 @@ Before proceeding, login into the Linux VM using SSH.
     # Run the docker build.  The build will take a few minutes to download both the .NET core build and run-time containers!
     $ docker build -t claims-api .
     #
-    # List the docker images on this VM.  You should see two container images ('2.2-sdk' and '2.2-aspnetcore-runtime') in the 'microsoft/dotnet' repository.
-    # Compare the sizes of the two dotnet container images and you will notice the size of the runtime image is pretty small ~ 260MB when compared to the 'build' container image (~ 1.74GB).
+    # List the docker images on this VM.  You should see two container images -
+    # - mcr.microsoft.com/dotnet/core/sdk
+    # - mcr.microsoft.com/dotnet/core/aspnet
+    # Compare the sizes of the two dotnet container images and you will notice the size of the runtime image is pretty small ~ 207MB when compared to the 'build' container image ~ 689MB.
     $ docker images
     #
     # (Optional : Best Practice) Delete the intermediate .NET Core build container as it will consume unnecessary 

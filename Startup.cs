@@ -1,4 +1,10 @@
-﻿using System;
+﻿/**
+ * Author : Ganesh Radhakrishnan (ganrad01@gmail.com)
+ *
+ * Notes:
+ * ID11092019: Upgraded application artifacts to use .Net Core 3.0
+ */
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -8,13 +14,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+// using Microsoft.AspNetCore.Mvc; ID11092019.o
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ClaimsApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.Extensions.Hosting; // ID11092019.n
 
 namespace ClaimsApi
 {
@@ -32,7 +39,8 @@ namespace ClaimsApi
         {
             // services.AddDbContext<ClaimsContext>(opt => opt.UseInMemoryDatabase("ClaimItems"));
             services.AddDbContext<ClaimsContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("SqlServerDb")));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllers();
+            // services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2); ID11092019.o
 
             /**
             // Register the Swagger generator, defining 1 or more Swagger documents
@@ -65,7 +73,8 @@ namespace ClaimsApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        // public void Configure(IApplicationBuilder app, IHostingEnvironment env) ID11092019.o
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) // ID11092019.n
         {
             if (env.IsDevelopment())
             {
@@ -88,7 +97,15 @@ namespace ClaimsApi
              
             // app.UseHttpsRedirection();
             // Add MVC middleware
-            app.UseMvc();
+            // app.UseMvc(); ID11092019.o
+ 
+            // ID11092019.sn
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+	    {
+		endpoints.MapControllers();
+	    });
+            // ID11092019.en
         }
     }
 }
