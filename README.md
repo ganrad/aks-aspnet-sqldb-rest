@@ -804,7 +804,11 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     # From the command output, record the Public IP address (External IP) for service 'ingress-traefik'.  You will need the IP address in the next step.
     #
     ```
-    Update the `/etc/hosts` file on the Linux VM (Bastion host).  On Linux systems, this file is used to lookup and resolve host name IP addresses.  Use *vi* or *nano* editor to add an hostname entry to this file. Refer to the snippet below.
+    Update the DNS name resolver on your **local** workstation.  Select one of the options below for your PC/Workstation's Operating System.
+    - Linux/MacOS : Update the `/etc/hosts` file.  On Linux systems, this file is used to lookup and resolve host name IP addresses.  Use *vi* or *nano* editor to add an hostname entry to this file. Refer to the snippet below.
+    - Windows : Update the `C:\Windows\System32\Drivers\etc\hosts` file.
+
+    Update the local DNS name resolver as shown in the snippet below.
     ```
     # This entry resolves hostnames to the Traefik load balancer IP.  Substitute the correct value for 'Traefik
     # External IP Address>', obtained in previous step. 
@@ -817,7 +821,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     
     **IMPORTANT NOTES:**
     - The Traefik Ingress Controller will not be used to load balance HTTP traffic to the *Claims API* microservice in the **development** and **qa-test** regions.  The Ingress Controller will be used for directing HTTP traffic in the **Production** region only.  You will work on this configuration in a later exercise.
-    - Open a browser window/tab and access the Traefik Dashboard [URL](http://db-traefik.akslab.com/).  Keep this window/tab open.
+    - Open a browser window/tab and make sure you are able to access the Traefik Dashboard [URL](http://db-traefik.akslab.com/).  Keep this window/tab open.
 
 6.  Configure AKS to pull application container images from ACR.
 
