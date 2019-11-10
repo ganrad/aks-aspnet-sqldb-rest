@@ -726,6 +726,10 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
 You have now successfully **built** the Claims API microservice container image and pushed it to the Azure Container Registry.
 
+**IMPORTANT NOTES:**
+- Access the *Repositories* blade of your ACR instance in Azure Portal. Note down the value of the latest **Tag** (Build ID number) of the Claims API container image.
+- You will need this image **Tag** value to implement *Canary* application deployments in a subsequent section.
+
 ### G. Create an Azure Kubernetes Service cluster and deploy Claims API microservice
 **Approx. time to complete this section: 1 Hour**
 
@@ -1075,13 +1079,13 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-19.PNG)
 
-    Uncomment lines 37 thru 64 (marked in red).
+    Uncomment lines 45 thru 72 (marked in red).
 
-    ![alt tag](./images/H-20.PNG)
+    ![alt tag](./images/H-20.jpg)
 
-    Uncomment lines 79 thru 87 (marked in red).
+    Uncomment lines 88 thru 96 (marked in red).
 
-    ![alt tag](./images/H-21.PNG)
+    ![alt tag](./images/H-21.jpg)
 
     After making the changes, provide a comment and commit (save) the `Startup.cs` file.
 
@@ -1118,7 +1122,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 **IMPORTANT NOTES:**
 - Login to the Azure Portal using a browser window/tab.
 - Access the *Repositories* blade of your ACR instance. Note down the value of the latest **Tag** (Build ID number) of the Claims API container image which was built and pushed by the Azure DevOps Build pipeline.
-- You will need this image **Tag** value to implement *Canary* application deployments in a subsequent exercise.
+- You will need this image **Tag** value to implement *Canary* application deployments in a subsequent section.
 
 ### Exercise 1:
 **Execute functional tests in *QA* region and then deploy Claims API microservice in *Production* region**
@@ -1396,7 +1400,7 @@ To complete this challenge, you will update and run a YAML *delivery* pipeline i
 **IMPORTANT NOTES:**
 - Login to the Azure Portal using a browser window/tab.
 - Access the *Repositories* blade of your ACR instance. Note down the value of the latest **Tag** (Build ID number) of the Claims API container image which you built and pushed into the ACR using the Azure DevOps Delivery pipeline.
-- You will need this image **Tag** value to implement *Canary* application deployments in a subsequent exercise.
+- You will need this image **Tag** value to implement *Canary* application deployments in a subsequent section.
 
 ## J. Explore out of box AKS features
 
