@@ -312,8 +312,8 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     $ dotnet --version
     #
     # Install EF Core 3.0
-    # Above command installs dotnet-ef in ~/.dotnet/tools directory. so this directory has to be in
-    # the Path!!
+    # This command installs dotnet-ef in ~/.dotnet/tools directory. so this directory has to be in
+    # the Path !!
     $ dotnet tool install --global dotnet-ef
     #
     # Finally, update '.bashrc' file and set the path to jq, Helm and Kubectl binaries
