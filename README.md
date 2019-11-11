@@ -278,12 +278,12 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Make sure you are in the home directory
     $ cd
     #
-    # Install Helm v2.14.3
+    # Install Helm v2.16.0
     # Create a new directory 'Helm' under home directory to store the helm binary
     $ mkdir helm
     $ cd helm
-    $ wget https://storage.googleapis.com/kubernetes-helm/helm-v2.14.3-linux-amd64.tar.gz
-    $ tar -xzvf helm-v2.14.3-linux-amd64.tar.gz
+    $ wget https://get.helm.sh/helm-v2.16.0-linux-amd64.tar.gz
+    $ tar -xzvf helm-v2.16.0-linux-amd64.tar.gz
     #
     # Switch back to home directory
     $ cd
@@ -767,15 +767,15 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
     Refer to the commands below to create the AKS cluster.  It will take a few minutes (< 10 mins) for the AKS cluster to get provisioned. 
     ```bash
-    # Create a 2 Node AKS cluster v1.14.5.  This is not the latest patch release.
+    # Create a 2 Node AKS cluster v1.14.7.  This is not the latest patch release.
     # We will upgrade to the latest patch release in a subsequent lab/Section. 
     # The 'az aks' command below will provision an AKS cluster with the following settings -
-    # - Kubernetes version ~ 1.14.5
+    # - Kubernetes version ~ 1.14.7
     # - No. of application/worker nodes ~ 2
     # - RBAC ~ Disabled
     # - Location ~ US West 2
     # - DNS Name prefix for API Server ~ akslab
-    $ az aks create --resource-group myResourceGroup --name akscluster --location westus2 --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.14.5"
+    $ az aks create --resource-group myResourceGroup --name akscluster --location westus2 --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.14.7"
     #
     # Verify state of AKS cluster
     $ az aks show -g myResourceGroup -n akscluster --output table
@@ -798,8 +798,8 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     # Check if Helm client is able to connect to Tiller on AKS.
     # This command should list both client and server versions.
     $ helm version
-    Client: &version.Version{SemVer:"v2.14.3", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
-    Server: &version.Version{SemVer:"v2.14.3", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
+    Client: &version.Version{SemVer:"v2.16.0", GitCommit:"e13bc94621d4ef666270cfbe734aaabf342a49bb", GitTreeState:"clean"}
+    Server: &version.Version{SemVer:"v2.16.0", GitCommit:"e13bc94621d4ef666270cfbe734aaabf342a49bb", GitTreeState:"clean"}
     ```
 
 5.  Deploy Traefik Kubernetes Ingress Controller.
@@ -1440,9 +1440,9 @@ In this section, we will explore value add features for administering & managing
     # List the available upgrade versions for the AKS cluster
     $ az aks get-upgrades -g myResourceGroup -n akscluster -o table
     #
-    # Upgrade the AKS cluster to v1.14.6.  Then confirm (y) the upgrade.
+    # Upgrade the AKS cluster to v1.14.8.  Then confirm (y) the upgrade.
     # Be patient.  The upgrade will run for a few minutes!
-    $ az aks upgrade -g myResourceGroup -n akscluster --kubernetes-version 1.14.6
+    $ az aks upgrade -g myResourceGroup -n akscluster --kubernetes-version 1.14.8
     #
     # Verify the nodes have been upgraded by checking the value under the 'KubernetesVersion' column
     $ az aks show -g myResourceGroup -n akscluster -o table
