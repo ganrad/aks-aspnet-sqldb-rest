@@ -85,7 +85,7 @@ namespace ClaimsApi
                 app.UseHsts();
             }
 
-            /**
+            
             // Enable middleware to serve generated Swagger as a JSON end-point
             app.UseSwagger();
             // Enable middleware to serve Swagger-ui, specifying Swagger JSON end-point.
@@ -93,7 +93,7 @@ namespace ClaimsApi
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Claims API");
             });
-            **/
+            
              
             // app.UseHttpsRedirection();
             // Add MVC middleware
