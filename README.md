@@ -1079,11 +1079,11 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-19.PNG)
 
-    Uncomment lines 45 thru 72 (marked in red).
+    Uncomment lines 47 thru 75 (marked in red).
 
     ![alt tag](./images/H-20.jpg)
 
-    Uncomment lines 88 thru 96 (marked in red).
+    Uncomment lines 91 thru 99 (marked in red).
 
     ![alt tag](./images/H-21.jpg)
 
