@@ -3,6 +3,7 @@
  *
  * Notes:
  * ID11092019: Upgraded application artifacts to use .Net Core 3.0
+ * ID11142019: Updated application to use Swashbuckle v55.0.0-rc4
  */
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ using Microsoft.Extensions.Options;
 using ClaimsApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.Extensions.Hosting; // ID11092019.n
+using Microsoft.OpenApi.Models; // ID11142019.n
 
 namespace ClaimsApi
 {
@@ -46,22 +48,23 @@ namespace ClaimsApi
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1",new Info 
+                c.SwaggerDoc("v1",new OpenApiInfo 
                 {
                     Version = "v1", 
                     Title = "Claims API",
                     Description = "An example ASP.NET Core Web API that retrieves medical claims records from a SQL server database",
-                    TermsOfService = "Education purposes only",
-                    Contact = new Contact
+                    TermsOfService = new Uri("https://github.com/ganrad/aks-aspnet-sqldb-rest"),
+                    Contact = new OpenApiContact
                     {
                         Name = "Microsoft",
-                        Url = "https://github.com/ganrad/aks-aspnet-sqldb-rest"
+			Email = "garadha@microsoft.com",
+                        Url = new Uri("https://github.com/ganrad/aks-aspnet-sqldb-rest")
                     },
-                    License = new License
+                    License = new OpenApiLicense
                     {
                         Name = "Apache 2.0",
-                        Url = "https://www.apache.org/licenses/LICENSE-2.0"
-                    }                    
+                        Url = new Uri("https://www.apache.org/licenses/LICENSE-2.0")
+                    }            
                 });
 
                  // Set the comments path for the Swagger JSON and UI.
@@ -69,7 +72,7 @@ namespace ClaimsApi
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
-            **/
+	    */
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,7 +96,7 @@ namespace ClaimsApi
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Claims API");
             });
-            **/
+	    */
              
             // app.UseHttpsRedirection();
             // Add MVC middleware
