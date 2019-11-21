@@ -42,7 +42,7 @@ This project provides step by step instructions to use **Azure DevOps Services**
 8.  (Windows users only) A **terminal emulator** is required to login (SSH) into the Linux VM (Bastion) host running on Azure. Download and install one of the utilities below.
     - [Putty](https://putty.org/)
     - [Git bash](https://gitforwindows.org/)
-    - [Windows Sub-System for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+    - [Windows Sub-System for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 9.  (Optional) Download and install [Microsoft SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-2017) to manage SQL Server database artifacts.
 10. (Optional) Download and install [Postman App](https://www.getpostman.com/apps), a REST API Client used for testing the Web API's.
 
