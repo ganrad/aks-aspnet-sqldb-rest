@@ -24,21 +24,30 @@ Table of Contents
 This project provides step by step instructions to use **Azure DevOps Services** to build the application binaries, package the binaries within a container and deploy the container on **Azure Kubernetes Service** (AKS). The deployed microservice exposes a Web API (REST interface) and supports all CRUD operations for accessing (retrieving / storing) medical claims records from a relational data store.  The microservice persists all claims records in an Azure SQL Server Database.
 
 **Prerequisites:**
-1.  An active **Microsoft Azure Subscription**.  You can obtain a free Azure subscription by accessing the [Microsoft Azure](https://azure.microsoft.com/en-us/?v=18.12) website.  In order to execute all the sections in this project, either your *Azure subscription* or the *Resource Group* **must** have **Owner** Role assigned to it.
-2.  A **GitHub** Account to fork and clone this GitHub repository.
-3.  A **Azure DevOps Services** (formerly Visual Studio Team Services) Account.  You can get a free Azure DevOps account by accessing the [Azure DevOps Services](https://azure.microsoft.com/en-us/services/devops/) web page.
-4.  Review [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview).  **Azure Cloud Shell** is an interactive, browser accessible shell for managing Azure resources.  You will be using the Cloud Shell to create the Bastion Host (Linux VM).
-5.  This project assumes readers/attendees are familiar with Linux Containers (*docker engine*), Kubernetes, DevOps (*Continuous Integration/Continuous Deployment*) concepts and developing/deploying Microservices in one or more programming languages.  If you are new to Linux Containers, go thru the tutorials [here](https://docs.microsoft.com/en-us/dotnet/core/docker/intro-net-docker).  If you are new to Kubernetes, go thru the resources [here](https://kubernetes.io/docs/tutorials/kubernetes-basics/) and become familiar with the basic concepts, fundamentals and tooling.
-6.  A **terminal emulator** is required to login (SSH) into the Linux VM (Bastion) host.  Download and install [Putty](https://putty.org/), [Git bash](https://gitforwindows.org/) or [Windows Sub-System for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
-7.  (Optional) Download and install [Microsoft SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-2017) to manage SQL Server database artifacts.
-8.  (Optional) Download and install [Postman App](https://www.getpostman.com/apps), a REST API Client used for testing the Web API's.
+1.  Each attendee should have completed all modules in [Azure Fundamentals](https://docs.microsoft.com/en-us/learn/paths/azure-fundamentals/) course and/or passed [Exam AZ-900](https://docs.microsoft.com/en-us/learn/certifications/exams/az-900).
+2.  An active **Microsoft Azure Subscription**.  You can obtain a free Azure subscription by accessing the [Microsoft Azure](https://azure.microsoft.com/en-us/?v=18.12) website.
+    **IMPORTANT NOTE:** In order to complete all sections in this project, at least one person in your team **must** have **Owner** *Role* permission for the Azure Subscription.
+3.  An Azure **Resource Group** with **Owner** *Role* permission.  All Azure resources will be deloyed into this resource group.
+4.  A **GitHub** Account to fork and clone this GitHub repository.
+5.  A **Azure DevOps Services** (formerly Visual Studio Team Services) Account.  You can get a free Azure DevOps account by accessing the [Azure DevOps Services](https://azure.microsoft.com/en-us/services/devops/) web page.
+6.  Review [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview).  **Azure Cloud Shell** is an interactive, browser accessible shell for managing Azure resources.  You will be using the Cloud Shell to create the Bastion Host (Linux VM).
+7.  This project assumes readers/attendees are familiar with Git SCM, Linux Containers (*docker engine*), Kubernetes, DevOps (*Continuous Integration/Continuous Deployment*) concepts and developing Microservices in one or more programming languages.  If you are new to any of these technologies, go thru the resources below -
+    - [Introduction to Git SCM](https://git-scm.com/docs/gittutorial)
+    - [Git SCM Docs](https://git-scm.com/book/en/v2)
+    - [Docker Overview](https://docs.docker.com/engine/docker-overview/)
+    - [Introduction to .NET and Docker](https://docs.microsoft.com/en-us/dotnet/core/docker/intro-net-docker).
+    - [Kubernetes Overview](https://kubernetes.io/docs/tutorials/kubernetes-basics/)
+    - [Introduction to Azure DevOps Services](https://azure.microsoft.com/en-us/overview/devops-tutorial/)
+8.  A **terminal emulator** is required to login (SSH) into the Linux VM (Bastion) host.  Download and install [Putty](https://putty.org/), [Git bash](https://gitforwindows.org/) or [Windows Sub-System for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+9.  (Optional) Download and install [Microsoft SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-2017) to manage SQL Server database artifacts.
+10. (Optional) Download and install [Postman App](https://www.getpostman.com/apps), a REST API Client used for testing the Web API's.
 
 **Functional Architecture:**
 
 ![alt tag](./images/aks-aspnetcore-sqldb-rest.PNG)
 
 For easy and quick reference, readers can refer to the following on-line resources as needed.
-- [Install Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+- [Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
 - [ASP.NET Core 3.0 Documentation](https://docs.microsoft.com/en-us/aspnet/core/?view=aspnetcore-3.0)
 - [Docker Documentation](https://docs.docker.com/)
 - [Kubernetes Documentation](https://kubernetes.io/docs/home/?path=users&persona=app-developer&level=foundational)
@@ -51,7 +60,7 @@ For easy and quick reference, readers can refer to the following on-line resourc
 
 **Important Notes:**
 - AKS is a managed [Kubernetes](https://kubernetes.io/) service on Azure.  Please refer to the [AKS](https://azure.microsoft.com/en-us/services/container-service/) product web page for more details.
-- This project has been tested on AKS v1.11.4+.
+- This project has been tested on AKS v1.14.5+ and .NET Core 3.0.
 - Commands which are required to be issued on a Linux terminal window are prefixed with a `$` sign.  Lines that are prefixed with the `#` symbol are to be treated as comments.
 - This project requires **all** resources to be deployed to the same Azure **Resource Group**.
 - Specify either **eastus**, **westus**, **westus2** or **centralus** as the *location* for the Azure *Resource Group* and the *AKS cluster*.
