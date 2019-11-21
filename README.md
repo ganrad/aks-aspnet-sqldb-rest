@@ -36,11 +36,13 @@ This project provides step by step instructions to use **Azure DevOps Services**
     - [Introduction to Git SCM](https://git-scm.com/docs/gittutorial)
     - [Git SCM Docs](https://git-scm.com/book/en/v2)
     - [Docker Overview](https://docs.docker.com/engine/docker-overview/)
-    - [Introduction to .NET and Docker](https://docs.microsoft.com/en-us/dotnet/core/docker/intro-net-docker).
+    - [Introduction to .NET and Docker](https://docs.microsoft.com/en-us/dotnet/core/docker/intro-net-docker)
     - [Kubernetes Overview](https://kubernetes.io/docs/tutorials/kubernetes-basics/)
     - [Introduction to Azure DevOps Services](https://azure.microsoft.com/en-us/overview/devops-tutorial/)
-8.  (Windows users only) A **terminal emulator** is required to login (SSH) into the Linux VM (Bastion) host.
-    - Download and install [Putty](https://putty.org/), [Git bash](https://gitforwindows.org/) or [Windows Sub-System for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+8.  (Windows users only) A **terminal emulator** is required to login (SSH) into the Linux VM (Bastion) host running on Azure. Download and install one of the utilities below.
+    - [Putty](https://putty.org/)
+    - [Git bash](https://gitforwindows.org/)
+    - [Windows Sub-System for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 9.  (Optional) Download and install [Microsoft SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-2017) to manage SQL Server database artifacts.
 10. (Optional) Download and install [Postman App](https://www.getpostman.com/apps), a REST API Client used for testing the Web API's.
 
