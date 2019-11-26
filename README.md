@@ -311,8 +311,8 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Install kubectl binary in the new directory
     $ az aks install-cli --install-location=./aztools/kubectl
     #
-    # Install Istio Service Mesh CLI v1.3.2
-    $ ISTIO_VERSION=1.3.2
+    # Install Istio Service Mesh CLI v1.4.0
+    $ ISTIO_VERSION=1.4.0
     $ curl -sL "https://github.com/istio/istio/releases/download/$ISTIO_VERSION/istio-$ISTIO_VERSION-linux.tar.gz" | tar xz --directory=$HOME/aztools
     # 
     # Register the Microsoft key, product repository and required dependencies.
@@ -347,10 +347,8 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     Install [power tools](https://github.com/ahmetb/kubectx) for `kubectl`.
     ```bash
     #
-    # Install 'kubectx' and 'kubens' in ~/git-repos/kubectx
-    $ git clone https://github.com/ahmetb/kubectx ~/git-repos/kubectx
-    $ sudo ln -s $HOME/git-repos/kubectx/kubectx /usr/local/bin/kubectx
-    $ sudo ln -s $HOME/git-repos/kubectx/kubectx /usr/local/bin/kubens
+    # Install 'kubectx' and 'kubens' in ~/aztools/
+    $ git clone https://github.com/ahmetb/kubectx $HOME/aztools/
     #
     ```
 
