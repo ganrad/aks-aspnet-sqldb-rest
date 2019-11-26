@@ -1130,7 +1130,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
       You should be able to view the Swagger UI as shown in the screenshot below.
 
-      ![alt tag](./images/H-22.PNG)
+      ![alt tag](./images/H-22.jpg)
 
 **IMPORTANT NOTES:**
 - Login to the Azure Portal using a browser window/tab.

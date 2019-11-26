@@ -3,7 +3,7 @@
  *
  * Notes:
  * ID11092019: Upgraded application artifacts to use .Net Core 3.0
- * ID11142019: Updated application to use Swashbuckle v55.0.0-rc4
+ * ID11142019: Updated application to use Swashbuckle v5 - 5.0.0-rc4
  */
 using System;
 using System.Collections.Generic;
