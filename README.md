@@ -34,6 +34,7 @@ This project provides step by step instructions to use **Azure DevOps Services**
 6.  Review [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview).  **Azure Cloud Shell** is an interactive, browser accessible shell for managing Azure resources.  You will be using the Cloud Shell to create the Bastion Host (Linux VM).
 7.  This project assumes readers/attendees are familiar with Linux fundamentals, Git SCM, Linux Containers (*docker engine*), Kubernetes, DevOps (*Continuous Integration/Continuous Deployment*) concepts and developing Microservices in one or more programming languages.  If you are new to any of these technologies, go thru the resources below.
     - [Learn Linux, 101: A roadmap for LPIC-1](https://developer.ibm.com/tutorials/l-lpic1-map/)
+
       Go thru the chapters in **Topic 103: GNU and UNIX commands**
     - [Introduction to Git SCM](https://git-scm.com/docs/gittutorial)
     - [Git SCM Docs](https://git-scm.com/book/en/v2)
