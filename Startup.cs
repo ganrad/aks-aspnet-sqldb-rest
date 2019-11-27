@@ -40,39 +40,42 @@ namespace ClaimsApi
         public void ConfigureServices(IServiceCollection services)
         {
             // services.AddDbContext<ClaimsContext>(opt => opt.UseInMemoryDatabase("ClaimItems"));
-            services.AddDbContext<ClaimsContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("SqlServerDb")));
+            services.AddDbContext<ClaimsContext>(opt =>
+            {
+               opt.UseSqlServer(Configuration.GetConnectionString("SqlServerDb"));
+            });
             services.AddControllers();
             // services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2); ID11092019.o
 
-            /**
+            
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1",new OpenApiInfo 
+                c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Version = "v1", 
+                    Version = "v1",
                     Title = "Claims API",
                     Description = "An example ASP.NET Core Web API that retrieves medical claims records from a SQL server database",
                     TermsOfService = new Uri("https://github.com/ganrad/aks-aspnet-sqldb-rest"),
                     Contact = new OpenApiContact
                     {
                         Name = "Microsoft",
-			Email = "garadha@microsoft.com",
+                        Email = "garadha@microsoft.com",
                         Url = new Uri("https://github.com/ganrad/aks-aspnet-sqldb-rest")
                     },
                     License = new OpenApiLicense
                     {
                         Name = "Apache 2.0",
                         Url = new Uri("https://www.apache.org/licenses/LICENSE-2.0")
-                    }            
+                    }
                 });
 
-                 // Set the comments path for the Swagger JSON and UI.
+                // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
-	    */
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -88,7 +91,7 @@ namespace ClaimsApi
                 app.UseHsts();
             }
 
-            /**
+            
             // Enable middleware to serve generated Swagger as a JSON end-point
             app.UseSwagger();
             // Enable middleware to serve Swagger-ui, specifying Swagger JSON end-point.
@@ -96,12 +99,12 @@ namespace ClaimsApi
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Claims API");
             });
-	    */
-             
+
+
             // app.UseHttpsRedirection();
             // Add MVC middleware
             // app.UseMvc(); ID11092019.o
- 
+
             // ID11092019.sn
             app.UseRouting();
             app.UseEndpoints(endpoints =>
