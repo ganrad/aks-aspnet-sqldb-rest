@@ -347,8 +347,11 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     Install [power tools](https://github.com/ahmetb/kubectx) for `kubectl`.
     ```bash
     #
-    # Install 'kubectx' and 'kubens' in ~/aztools/
-    $ git clone https://github.com/ahmetb/kubectx $HOME/aztools/
+    # Install 'kubectx' and 'kubens' in ~/aztools/kubectx
+    $ git clone https://github.com/ahmetb/kubectx $HOME/aztools/kubectx
+    # Create sym links to the power tools - kubectx and kubens
+    $ sudo ln -s $HOME/aztools/kubectx/kubectx /usr/local/bin/kubectx
+    $ sudo ln -s $HOME/aztools/kubectx/kubens /usr/local/bin/kubens
     #
     ```
 
