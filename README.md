@@ -322,12 +322,12 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     $ sudo yum update
     #
     # Install .NET Core 3.0 binaries
-    $ sudo yum install -y dotnet-sdk-3.0
+    $ sudo yum install -y dotnet-sdk-3.1
     #
     # Check .NET Core version (Should print 3.0.100)
     $ dotnet --version
     #
-    # Install EF Core 3.0
+    # Install EF Core
     # This command installs dotnet-ef in ~/.dotnet/tools directory. so this directory has to be in
     # the Path !!
     $ dotnet tool install --global dotnet-ef
