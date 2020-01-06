@@ -365,7 +365,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     $ sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
     $ sudo yum install -y docker-ce docker-ce-cli containerd.io
     $ sudo systemctl enable docker
-    # sudo groupadd docker (This command is no longer needed!)
+    $ sudo groupadd docker
     $ sudo usermod -aG docker labuser
     #
     ```
