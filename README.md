@@ -330,7 +330,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Install EF Core 3.0
     # This command installs dotnet-ef in ~/.dotnet/tools directory. so this directory has to be in
     # the Path !!
-    $ dotnet tool install --global dotnet-ef
+    $ dotnet tool install --global dotnet-ef --version 3.0
     #
     # Finally, update '.bashrc' file and set the path to jq, Helm and Kubectl binaries
     $ JQ=/home/labuser/jq
@@ -365,7 +365,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     $ sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
     $ sudo yum install -y docker-ce docker-ce-cli containerd.io
     $ sudo systemctl enable docker
-    # sudo groupadd docker (This command is no longer needed!)
+    $ sudo groupadd docker
     $ sudo usermod -aG docker labuser
     #
     ```
