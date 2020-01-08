@@ -707,13 +707,39 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
     Next, we will package the application binary within a container image.  Review the **dockerfile** in the source repository to understand how the application container image is built.
 
-    Click on the **Build an image** task on the left panel.  Select *0.* for **Task version**.  Specify *Build container image* for **Display name** field and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription.  Click on **Authorize**.  In the **Azure Container Registry** field, select the ACR which you provisioned in [Section E](#e-deploy-azure-container-registry) above.  In the **Action** field, select *Build an image*.  Check to make sure the **Docker File** field is set to `dockerfile`.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)*.  Enable **Qualify Image Name** and **Include Latest Tag** checkboxes.  See screenshot below.
+    Click on the **Build an image** task on the left panel.  Specify correct values for the following fields.
+
+    - Task version = `0.*`
+    - Display name = `Build container image`
+    - Container Registry Type = `Azure Container Registry`
+    - Azure Subscription = Select your Azure Subscription.  Click **Authorize**.
+    - Azure Container Registry = Select ACR which you provisioned in [Section E](#e-deploy-azure-container-registry) above.
+    - Action = `Build an image`
+    - Docker File = `dockerfile`
+    - Image Name = `claims-api:$(Build.BuildId)`
+    - Qualify Image Name = Enable checkbox.
+    - Include Latest Tag = Enable checkbox.
+
+    See screenshot below.
 
     ![alt tag](./images/F-14.PNG)
 
     Once the application container image has been built, it has to be pushed into the ACR.
 
-    Click on the *Push an image* task on the left panel.  Select *0.* for **Task version**.  Specify *Push container image to ACR* for field **Display name** and *Azure Container Registry* for **Container Registry Type**.  In the **Azure Subscription** field, select your Azure subscription (Under Available Azure service connections).  In the **Azure Container Registry** field, select the ACR which you provisioned in [Section E](#e-deploy-azure-container-registry) above.  In the **Action** field, select *Push an image*.  For **Image Name** field, specify value *claims-api:$(Build.BuildId)*. Enable **Qualify Image Name** and **Include Latest Tag** checkboxes.  See screenshot below.
+    Click on the *Push an image* task on the left panel.  Specify correct values for the following fields.
+
+    - Task version = `0.*`
+    - Display name = `Push container image to ACR`
+    - Container Registry Type = `Azure Container Registry`
+    - Azure Subscription = Select your Azure Subscription.
+    - Azure Container Registry = Select ACR which you provisioned in [Section E](#e-deploy-azure-container-registry) above.
+    - Action = `Push an image`
+    - Docker File = `dockerfile`
+    - Image Name = `claims-api:$(Build.BuildId)`
+    - Qualify Image Name = Enable checkbox.
+    - Include Latest Tag = Enable checkbox.
+
+    See screenshot below.
 
     ![alt tag](./images/F-15.PNG)
 
@@ -784,15 +810,15 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
     Refer to the commands below to create the AKS cluster.  It will take a few minutes (< 10 mins) for the AKS cluster to get provisioned. 
     ```bash
-    # Create a 2 Node AKS cluster v1.14.7.  This is not the latest patch release.
+    # Create a 2 Node AKS cluster v1.15.5.  This is not the latest patch release.
     # We will upgrade to the latest patch release in a subsequent lab/Section. 
     # The 'az aks' command below will provision an AKS cluster with the following settings -
-    # - Kubernetes version ~ 1.14.7
+    # - Kubernetes version ~ 1.15.5
     # - No. of application/worker nodes ~ 2
     # - RBAC ~ Disabled
     # - Location ~ US West 2
     # - DNS Name prefix for API Server ~ akslab
-    $ az aks create --resource-group myResourceGroup --name akscluster --location westus2 --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.14.7"
+    $ az aks create --resource-group myResourceGroup --name akscluster --location westus2 --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.15.5"
     #
     # Verify state of AKS cluster
     $ az aks show -g myResourceGroup -n akscluster --output table
@@ -1457,9 +1483,9 @@ In this section, we will explore value add features for administering & managing
     # List the available upgrade versions for the AKS cluster
     $ az aks get-upgrades -g myResourceGroup -n akscluster -o table
     #
-    # Upgrade the AKS cluster to v1.14.8.  Then confirm (y) the upgrade.
+    # Upgrade the AKS cluster to v1.15.7.  Then confirm (y) the upgrade.
     # Be patient.  The upgrade will run for a few minutes!
-    $ az aks upgrade -g myResourceGroup -n akscluster --kubernetes-version 1.14.8
+    $ az aks upgrade -g myResourceGroup -n akscluster --kubernetes-version 1.15.7
     #
     # Verify the nodes have been upgraded by checking the value under the 'KubernetesVersion' column
     $ az aks show -g myResourceGroup -n akscluster -o table
