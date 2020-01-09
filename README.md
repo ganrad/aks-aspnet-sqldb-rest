@@ -726,7 +726,7 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
     Once the application container image has been built, it has to be pushed into the ACR.
 
-    Click on the *Push an image* task on the left panel.  Specify correct values for the following fields.
+    Click on the **Push an image** task on the left panel.  Specify correct values for the following fields.
 
     - Task version = `0.*`
     - Display name = `Push container image to ACR`
