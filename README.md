@@ -27,7 +27,9 @@ This project provides step by step instructions to use **Azure DevOps Services**
 1.  Review and complete all modules in [Azure Fundamentals](https://docs.microsoft.com/en-us/learn/paths/azure-fundamentals/) course.
 2.  An active **Microsoft Azure Subscription** with **Owner** *Role* permission.  You can obtain a free Azure subscription by accessing the [Microsoft Azure](https://azure.microsoft.com/en-us/?v=18.12) website.
 
-    **IMPORTANT NOTE:** In order to complete all sections in this project, at least one person in your team **must** have **Owner** *Role* permission for the Azure Subscription.
+    **IMPORTANT NOTES:**
+    - In order to complete all sections in this project, at least one person in your team **must** have **Owner** *Role* permission for the Azure Subscription.
+    - For an Azure Subscription, there is a default limit on the number of **VM Cores** which can be provisioned per region.  The Azure limits are also referred to as quotas.  The VM Cores have both a regional total limit (~ 20) and a per-size series limit.  In case a single Azure Subscription is used by all attendees for provisioning resources (~ VM's), the default VM Cores limit may need to be increased.  The quota can be increased by opening an online Azure Customer Support request.  More details can be found [here](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#virtual-machines-limits). 
 3.  An Azure **Resource Group** with **Owner** *Role* permission.  All Azure resources will be deloyed into this resource group.
 4.  A **GitHub** Account to fork and clone this GitHub repository.
 5.  A **Azure DevOps Services** (formerly Visual Studio Team Services) Account.  You can get a free Azure DevOps account by accessing the [Azure DevOps Services](https://azure.microsoft.com/en-us/services/devops/) web page.
@@ -99,7 +101,11 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
     ![alt tag](./images/A-02.PNG)
 
-    Fill in the details in the **New Server** web page.  The **Server name** value should be unique as the SQL database server FQDN will be constructed with this name eg., <SQL_server_name>.database.windows.net. Use a pattern such as **<Your_Initial>sqldb** for the server name (Replace *Your_Initial* with your initials).  For the **Location** field, use the same location which you specified for the resource group.  Check the box besides field **Allow Azure services to access server**.  See screenshot below.
+    Fill in the details in the **New Server** web page.  The **Server name** value should be unique as the SQL database server FQDN will be constructed with this name eg., <SQL_server_name>.database.windows.net. Use a pattern such as **<Your_Initial>sqldb** for the server name (Replace *Your_Initial* with your initials).
+    Specify a **Server admin login** name.  Specify a simple password containing lower and uppercase letters.  Avoid using using special characters (eg., * ! # $ ...) in the password!
+    For the **Location** field, use the same location which you specified for the resource group.
+    Check the box besides field **Allow Azure services to access server**.
+    See screenshot below.
 
     ![alt tag](./images/A-07.PNG)
 
@@ -1183,7 +1189,7 @@ To complete this challenge, you will update the build and release pipelines in A
 
 2.  Update the Release pipeline
     - Edit the release/deployment pipeline and add a stage for production eg., *Prod-Env*.  This stage should deploy the microservice artifacts to **production** namespace on your AKS cluster.  Refer to [Section H](#h-define-and-execute-claims-api-release-pipeline-in-azure-devops-services).
-    - In the *QA-Env* stage, add a *Deploy to Kubernetes* Task.  Use this *Task* to retrieve the external/public IP address assigned to the **aks-aspnetcore-lab-qa-claims-api** service in the **qa-test** namespace. Refer to the Kubernetes CLI command snippet below.
+    - In the *QA-Env* stage, add a *Kubectl* Task.  Use this *Task* to retrieve the external/public IP address assigned to the **aks-aspnetcore-lab-qa-claims-api** service in the **qa-test** namespace. Refer to the Kubernetes CLI command snippet below.
 
       ```bash
       # Retrieve the Public/External IP address assigned to the microservice in 'qa-test` namespace
