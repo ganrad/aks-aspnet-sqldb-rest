@@ -29,7 +29,7 @@ This project provides step by step instructions to use **Azure DevOps Services**
 
     **IMPORTANT NOTES:**
     - In order to complete all sections in this project, at least one person in your team **must** have **Owner** *Role* permission for the Azure Subscription.
-    - For an Azure Subscription, there is a default limit on the number of **VM Cores** which can be provisioned per region.  The Azure limits are also referred to as quotas.  The VM Cores have both a regional total limit (~ 20) and a per-size series limit.  In case a single Azure Subscription is used by all attendees for provisioning resources (~ VM's), the default VM Cores limit may need to be increased.  The quota can be increased by opening an online Azure Customer Support request.  More details can be found [here](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#virtual-machines-limits). 
+    - For an Azure Subscription, there is a default limit on the number of **VM Cores** which can be provisioned per region.  The Azure limits are also referred to as quotas.  The VM Cores have both a regional total limit (~ 20) and a per-size series limit.  In case a single Azure Subscription is used for provisioning resources (~ VM's) by all attendees, the default VM Cores limit might get exceeded. The default quota can be increased by opening an online Azure Customer Support request.  More details can be found [here](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits).
 3.  An Azure **Resource Group** with **Owner** *Role* permission.  All Azure resources will be deloyed into this resource group.
 4.  A **GitHub** Account to fork and clone this GitHub repository.
 5.  A **Azure DevOps Services** (formerly Visual Studio Team Services) Account.  You can get a free Azure DevOps account by accessing the [Azure DevOps Services](https://azure.microsoft.com/en-us/services/devops/) web page.
@@ -102,9 +102,13 @@ In this section, we will create an Azure SQL Server instance and create a databa
     ![alt tag](./images/A-02.PNG)
 
     Fill in the details in the **New Server** web page.  The **Server name** value should be unique as the SQL database server FQDN will be constructed with this name eg., <SQL_server_name>.database.windows.net. Use a pattern such as **<Your_Initial>sqldb** for the server name (Replace *Your_Initial* with your initials).
-    Specify a **Server admin login** name.  Specify a simple password containing lower and uppercase letters.  Avoid using using special characters (eg., * ! # $ ...) in the password!
+
+    Specify a **Server admin login** name.  Specify a simple **Password** containing lower and uppercase letters.  Avoid using using special characters (eg., * ! # $ ...) in the password!
+
     For the **Location** field, use the same location which you specified for the resource group.
+
     Check the box besides field **Allow Azure services to access server**.
+
     See screenshot below.
 
     ![alt tag](./images/A-07.PNG)
