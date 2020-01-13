@@ -103,7 +103,7 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
     Fill in the details in the **New Server** web page.  The **Server name** value should be unique as the SQL database server FQDN will be constructed with this name eg., <SQL_server_name>.database.windows.net. Use a pattern such as **<Your_Initial>sqldb** for the server name (Replace *Your_Initial* with your initials).
 
-    Specify a **Server admin login** name.  Specify a simple **Password** containing lower and uppercase letters.  Avoid using special characters (eg., * ! # $ ...) in the password!
+    Specify a **Server admin login** name.  Specify a simple **Password** containing numbers, lower and uppercase letters.  Avoid using special characters (eg., * ! # $ ...) in the password!
 
     For the **Location** field, use the same location which you specified for the resource group.
 
