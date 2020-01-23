@@ -6,6 +6,7 @@
 	"AzureWebJobs.GetSbQueueCallClaimsDelApi.Disabled": "false",
         "ClaimsPostQueue": "claims-req-queue",
         "ClaimsDelQueue": "claims-del-queue",
-	"AzServiceBusConnection": ""
+	"AzServiceBusConnection": "",
+	"ClaimsApiHost": "claims-api-svc.development"
     }
 }

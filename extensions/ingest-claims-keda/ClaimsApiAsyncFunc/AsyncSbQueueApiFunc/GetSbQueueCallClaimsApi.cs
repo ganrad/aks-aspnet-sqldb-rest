@@ -5,20 +5,40 @@ using Microsoft.Extensions.Logging;
 
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace AsyncSbQueueApiFunc
 {
     public static class GetSbQueueCallClaimsApi
     {
+        static readonly HttpClient client = new HttpClient();
+
         [FunctionName("GetSbQueueCallClaimsDelApi")]
-        public static void Run([ServiceBusTrigger("%ClaimsDelQueue%", Connection = "AzServiceBusConnection")]string claimItem, ILogger log)
+        public static void Run0([ServiceBusTrigger("%ClaimsDelQueue%", Connection = "AzServiceBusConnection")]string claimItem, ILogger log)
         {
             log.LogInformation($"C# function: GetSbQueueCallClaimsDelApi - received message: {claimItem}");
 
             Dictionary<String, Object> claimsObj = JsonConvert.DeserializeObject<Dictionary<String,Object>>(claimItem);
-	    var claimItemId = claimsObj["claimItemId"];
+	    string claimItemId = claimsObj["claimItemId"].ToString();
 
 	    log.LogInformation($"GetSbQueueCallClaimsDelApi - Claim Item ID: {claimItemId}");
+	    deleteClaimsRec(claimItemId, log);
         }
+
+        private static async Task deleteClaimsRec(string claimId, ILogger log)
+	{
+	   String uriObj = "http://" + System.Environment.GetEnvironmentVariable("ClaimsApiHost") + "/api/v1/claims/" + claimId;
+	   log.LogInformation($"deleteClaimsRec - Http Uri : {uriObj}");
+	   try {
+	     HttpResponseMessage response = await client.DeleteAsync(uriObj);
+	     log.LogInformation($"deleteClaimsRec - Http Response: {response}");
+	   }
+	   catch (HttpRequestException hre)
+	   {
+	     log.LogError("deleteClaimsRec - An exception occured while calling the Claims Web Api");
+	     log.LogError($"deleteClaimsRec - Exception: {hre.Message}");
+	   }
+	}
     }
 }
