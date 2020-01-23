@@ -3,7 +3,7 @@ const http = require('http');
 module.exports = async function (context, claimItem) {
     var timeStamp = new Date().toISOString();
 
-    context.log('ReadQCallWebApi function called. Start time: ', timeStamp);
+    context.log('GetStorageQCallWebApi function called. Start time: ', timeStamp);
     context.log('Processing work item: ', claimItem);
 
     var apiHost = process.env["ClaimsApiHost"];

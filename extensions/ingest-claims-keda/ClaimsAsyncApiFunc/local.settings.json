@@ -5,9 +5,12 @@
     "AzureWebJobsStorage": "{AzureWebJobsStorage}",
     "AzureWebJobs.GetStorageQCallWebApi.Disabled": "true",
     "AzStorageConnectionString" : "",
+    "AzStorageQueueName" : "claims-queue",
     "AzServiceBusConnection": "",
-    "AzServiceBusPostQueueName": "claims-req-queue",
-    "AzServiceBusDelQueueName": "claims-del-queue",
+    "ClaimsApiEndpoint": "/api/v1/claims",
+    "ClaimsApiMethod": "POST",
+    "AzServiceBusInputQueueName": "claims-req-queue",
+    "AzServiceBusOutputQueueName": "claims-del-queue",
     "ClaimsApiHost" : "claims-api-svc.development"
   }
 }

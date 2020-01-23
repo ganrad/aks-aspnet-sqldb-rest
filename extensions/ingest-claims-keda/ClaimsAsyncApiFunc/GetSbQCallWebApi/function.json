@@ -4,14 +4,14 @@
       "name": "claimItem",
       "type": "serviceBusTrigger",
       "direction": "in",
-      "queueName": "%AzServiceBusPostQueueName%",
+      "queueName": "%AzServiceBusInputQueueName%",
       "connection": "AzServiceBusConnection"
     },
     {
       "name": "sbQueue",
       "type": "serviceBus",
       "direction": "out",
-      "queueName": "%AzServiceBusDelQueueName%",
+      "queueName": "%AzServiceBusOutputQueueName%",
       "connection": "AzServiceBusConnection"
     }
   ]
