@@ -3,7 +3,11 @@
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "AzureWebJobsStorage": "{AzureWebJobsStorage}",
+    "AzureWebJobs.GetStorageQCallWebApi.Disabled": "true",
     "AzStorageConnectionString" : "",
+    "AzServiceBusConnection": "",
+    "AzServiceBusPostQueueName": "claims-req-queue",
+    "AzServiceBusDelQueueName": "claims-del-queue",
     "ClaimsApiHost" : "claims-api-svc.development"
   }
 }

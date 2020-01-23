@@ -1,9 +1,0 @@
-{
-  "name": "ClaimsFuncApp",
-  "version": "1.0",
-  "description": "This is a sample Azure Functions Application. The function 'ReadQIngestWebApi' reads claims data from an Azure Storage Queue and then injests the data to a Claims db by calling a Web API.",
-  "scripts" : {
-    "test": "echo \"No tests yet...\""
-  },
-  "author": "Ganesh Radhakrishnan (Microsoft)"
-}

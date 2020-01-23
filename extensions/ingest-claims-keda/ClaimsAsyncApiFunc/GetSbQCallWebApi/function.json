@@ -1,0 +1,18 @@
+{
+  "bindings": [
+    {
+      "name": "claimItem",
+      "type": "serviceBusTrigger",
+      "direction": "in",
+      "queueName": "%AzServiceBusPostQueueName%",
+      "connection": "AzServiceBusConnection"
+    },
+    {
+      "name": "sbQueue",
+      "type": "serviceBus",
+      "direction": "out",
+      "queueName": "%AzServiceBusDelQueueName%",
+      "connection": "AzServiceBusConnection"
+    }
+  ]
+}
