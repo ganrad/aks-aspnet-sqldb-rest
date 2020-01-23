@@ -28,7 +28,10 @@ namespace AsyncSbQueueApiFunc
 
         private static async Task deleteClaimsRec(string claimId, ILogger log)
 	{
-	   String uriObj = "http://" + System.Environment.GetEnvironmentVariable("ClaimsApiHost") + "/api/v1/claims/" + claimId;
+	   String uriObj = "http://" + 
+	     System.Environment.GetEnvironmentVariable("ClaimsApiHost") + 
+	     System.Environment.GetEnvironmentVariable("ClaimsApiEndpoint") + 
+	     "/" + claimId;
 	   log.LogInformation($"deleteClaimsRec - Http Uri : {uriObj}");
 	   try {
 	     HttpResponseMessage response = await client.DeleteAsync(uriObj);
