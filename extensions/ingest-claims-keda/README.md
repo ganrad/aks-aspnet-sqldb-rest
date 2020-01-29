@@ -5,15 +5,20 @@ The Functions application modules are implemented in .NET Core and Nodejs respec
 
 A brief description of the Functions applications is provided below.
 - [ClaimsApiSyncFunc](./ClaimsApiAsyncFunc)
+
   This .NET Core application comprises of two Functions (modules) written in C#.
   - **GenHttpApiFunctions**:
+
     This Function exposes a generic REST API for processing new medical Claims.  Upon receiving medical Claims transactions, this function stores them in a persistent Azure Service Bus Queue. This step ensures the received Claims transactions are processed in a guaranteed and reliable manner.
   - **AsyncSbQueueApiFunc**:
+
     This Function reads medical Claims transactions from an Azure Service Bus Queue and then invokes the Claims REST API end-points implemented in the parent project. In the event the backend application is down or unreachable, the Claims transactions persist in the service bus queue.
 
 - [ClaimsAsyncApiFunc](./ClaimsAsyncApiFunc)
+
   This Nodejs application comprises of one Function (module) written in Javascript.
   - **GetSbQCallWebApi**:
+
     This Function reads the medical Claims transactions from the Azure Service Bus Queue and then invokes the Claims REST API end-point implemented in the parent project.  This step executes an atomic transaction and ensures the Claims records are successfully delivered to the backend application.  In the event the backend application is down or unreachable, the Claims transactions remain in the service bus queue.
 
 The solution leverages *Kubernetes Event Driven Auto-scaling* (KEDA) on AKS.  Kubernetes based Functions provides the Functions runtime in a Docker container with event-driven scaling through KEDA.
