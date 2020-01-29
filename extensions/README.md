@@ -3,4 +3,5 @@ The extensions below explore advanced features of AKS (Kubernetes) and additiona
 
 - [Ingest Claims records using KEDA](./ingest-claims-keda)
 
-   In this sub-project, claims records are read from an Azure storage queue and ingested into the backend data store via the Claims Web API.  The solution details the steps for using [Kubernetes-based Event Driven Autoscaling](https://docs.microsoft.com/en-us/azure/azure-functions/functions-kubernetes-keda) to process claims records at event driven scale in Kubernetes.
+   In this sub-project, a *generic* Claims Web API is used to persist Claims data in the backend SQL Server database in a guaranteed manner.  The generic Web API uses Azure **Service Bus Queues** to *reliably* ingest claims data into the backend data store.  Azure **Function Apps** are used to expose the generic Claims Web API and for persisting the Claims data in the data store via the Claims Web API (implemented in the parent project).  The solution details the steps for running Azure Function Apps on AKS and using [Kubernetes-based Event Driven Autoscaling](https://docs.microsoft.com/en-us/azure/azure-functions/functions-kubernetes-keda) to process messages (claims records) at event driven scale in Kubernetes.
+
