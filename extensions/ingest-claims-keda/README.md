@@ -4,15 +4,15 @@ This sub-project describes the steps for ingesting Claims records into the backe
 The Functions application modules are implemented in .NET Core and Nodejs respectively. The Azure Functions runtime itself is packaged within a Linux container and deployed on AKS.
 
 A brief description of the Functions applications is provided below.
-- [ClaimsApiSyncFunc](.NET Core Application)
-  This application comprises of two Functions (modules).
+- [ClaimsApiSyncFunc Application](./ClaimsApiAsyncFunc)
+  This .NET Core application comprises of two Functions (modules) written in C#.
   - **GenHttpApiFunctions**:
     This Function exposes a generic REST API for processing new medical Claims.  Upon receiving medical Claims transactions, this function stores them in a persistent Azure Service Bus Queue. This step ensures the received Claims transactions are processed in a guaranteed and reliable manner.
   - **AsyncSbQueueApiFunc**:
     This Function reads medical Claims transactions from an Azure Service Bus Queue and then invokes the Claims REST API end-points implemented in the parent project. In the event the backend application is down or unreachable, the Claims transactions persist in the service bus queue.
 
-- [ClaimsAsyncApiFunc](Nodejs Application)
-  This application comprises of one Function (module).
+- [ClaimsAsyncApiFunc Application](./ClaimsAsyncApiFunc)
+  This Nodejs application comprises of one Function (module) written in Javascript.
   - **GetSbQCallWebApi**:
     This Function reads the medical Claims transactions from the Azure Service Bus Queue and then invokes the Claims REST API end-point implemented in the parent project.  This step executes an atomic transaction and ensures the Claims records are successfully delivered to the backend application.  In the event the backend application is down or unreachable, the Claims transactions remain in the service bus queue.
 
