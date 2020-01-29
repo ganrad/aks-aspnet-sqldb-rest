@@ -31,8 +31,8 @@ Readers are advised to go thru the following on-line resources before proceeding
 - [Kubernetes based event driven auto-scaling - KEDA](https://keda.sh/)
 - [KEDA on AKS](https://docs.microsoft.com/en-us/azure/azure-functions/functions-kubernetes-keda)
 
-## A. Deploy an Azure Service Bus Namespace and Queue
-**Approx. time to complete this section: 10 minutes**
+## A. Deploy an Azure Service Bus Namespace and Queues
+**Approx. time to complete this section: 15 minutes**
 
 1. Login to the Azure Portal.
 
@@ -42,5 +42,5 @@ Readers are advised to go thru the following on-line resources before proceeding
 
    Refer to the tutorial below to provision an Azure Service Bus, Namespace and Queues.  Create two Queues named **claims-req-queue** and **claims-del-queue**.
 
-   [Create a Service Bus queue - Azure Portal](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-quickstart-portal)
-   [Create a Service Bus queue - Azure CLI](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-quickstart-cli)
+   - [Create a Service Bus queue - Azure Portal](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-quickstart-portal)
+   - [Create a Service Bus queue - Azure CLI](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-quickstart-cli)
