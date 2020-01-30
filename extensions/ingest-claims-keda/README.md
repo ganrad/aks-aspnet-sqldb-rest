@@ -44,3 +44,64 @@ Readers are advised to go thru the following on-line resources before proceeding
 
    - [Create a Service Bus queue - Azure Portal](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-quickstart-portal)
    - [Create a Service Bus queue - Azure CLI](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-quickstart-cli)
+
+## B. Install pre-requisite tools on the Linux VM (Bastion Host)
+**Approx. time to complete this section: 15 minutes**
+
+1. Login into the Linux VM via SSH.
+  
+   ```bash
+   # ssh into the VM. Substitute the public IP address for the Linux VM in the command below.
+   $ ssh labuser@x.x.x.x
+   #
+   ```
+
+2. Install Nodejs on the Linux VM.
+
+   ```bash
+   # Switch to home directory
+   $ cd
+   #
+   # Create a directory to save 'nodejs' runtime
+   $ mkdir nodejs
+   #
+   # Download and unzip the binary into $HOME/nodejs
+   $ curl -sL "https://nodejs.org/dist/v12.14.1/node-v12.14.1-linux-x64.tar.xz" | unxz | tar -xv --directory=$HOME/nodejs
+   #
+   # Edit '.bashrc' file in your home ($HOME) directory and set the PATH variable to include the 
+   # path of the 'nodejs' bin directory => '$HOME/nodejs/node-vx.x.x-linux-x64/bin'
+   #
+   # Check 'nodejs' version
+   $ node --version
+   #
+   ```
+
+3. Install Azure Function Core Tools v3.x.
+
+   **NOTE:** If you prefer, you can also install Azure Function Core Tools v2.x runtime.
+
+   ```bash
+   # Switch to home directory
+   $ cd
+   #
+   # Download Azure Function Core Tools 2.x runtime
+   # wget https://github.com/Azure/azure-functions-core-tools/releases/download/2.7.2045/Azure.Functions.Cli.linux-x64.2.7.2045.zip
+   #
+   # Download Azure Function Core Tools 3.x runtime
+   $ wget https://github.com/Azure/azure-functions-core-tools/releases/tag/3.0.2009
+   #
+   # Create a directory to save 'Azure Function Tools' binaries
+   $ mkdir az-func-core-tools
+   #
+   # Unzip the Azure Function Core Tools binaries into the 'az-func-core-tools' directory
+   $ unzip -d ~/az-func-core-tools/ Azure.Functions.Cli.linux-x64.3.0.2009.zip
+   #
+   # Edit '.bashrc' file in your home ($HOME) directory and set the PATH variable to include the 
+   # path of the 'Azure Function Core Tools' directory. See below.
+   # => AZ_FUNC_CORE_TOOLS=$HOME/az-func-core-tools
+   # => export PATH=$AZ_FUNC_CORE_TOOLS:$PATH
+   #
+   # Check Azure Function Core Tools version
+   $ func --version
+   #
+   ```
