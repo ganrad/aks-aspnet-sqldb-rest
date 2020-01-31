@@ -1,7 +1,7 @@
 {
-  "name": "ClaimsFuncApp",
+  "name": "ClaimsAsyncApiFunc",
   "version": "1.0",
-  "description": "This is a sample Azure Functions Application. 1. The function 'ReadQIngestWebApi' reads claims data from an Azure Storage Queue and then injests the data to a Claims db by calling a Web API. 2. The function 'GetSbQIngestWebApi' reads claims (JSON) data from an Azure Service Bus Queue and then posts the claims to the backend by calling the Claims Web API.",
+  "description": "This is a sample Azure Functions Application."
   "scripts": {
     "test": "echo \"No tests yet...\""
   },
