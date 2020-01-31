@@ -142,7 +142,77 @@ This section describes the steps for building, deploying and testing the Functio
    #
    ```
 
-## D. Build & push the Function Application container images into ACR instance
+## D. Build & Push the Function Application container images into ACR
 **Approx. time to complete this section: 20 mins**
 
 This section details the steps for building the Function application container images and pushing them into the ACR instance..
+
+All the steps below have to be executed on the Linux VM terminal window.
+
+1. Login to the ACR instance.
+
+   ```bash
+   # List the ACR instances
+   $ az acr list -o table
+   #
+   # Login to your ACR instance
+   # => ACR NAME : Substitute the 'name' of the ACR instance in the command below.
+   $ az acr login --name <ACR NAME>
+   #
+   ```
+
+2. Build and push the **ClaimsApiAsyncFunc** Function application container image into ACR.
+
+   ```bash
+   # Switch to the 'ClaimsApiAsyncFunc' Function application directory.
+   $ cd $HOME/git-repos/aks-aspnet-sqldb-rest/extensions/ingest-claims-keda/ClaimsApiAsyncFunc
+   #
+   # Build the Function application container image.
+   # => Keep in mind there is a dot '.' at the end of the command.
+   # => ACR NAME : Substitute the 'name' of the ACR instance in the command.
+   $ docker build -t <ACR NAME>.azurecr.io/claims-ingest-api:latest .
+   #
+   # (Optional) Verify the container image got built
+   $ docker images
+   #
+   # Push the Function application container image into ACR
+   # => Substitute the 'name' of the ACR instance in the command.
+   $ docker push <ACR Name>.azurecr.io/claims-ingest-api:latest
+   #
+   # List the ACR repositories
+   # => ACR NAME : Substitute the 'name' of the ACR instance in the command.
+   $ az acr repository list --name <ACR_NAME> -o table
+   #
+   # List the repository tags
+   # => ACR NAME : Substitute the 'name' of the ACR instance in the command.
+   $ az acr repository show-tags --name <ACR NAME> --repository claims-ingest-api -o table
+   #
+   ```
+
+3. Build and push the **ClaimsAsyncApiFunc** Function application container image into ACR.
+
+   ```bash
+   # Switch to the 'ClaimsAsyncApiFunc' Function application directory.
+   $ cd $HOME/git-repos/aks-aspnet-sqldb-rest/extensions/ingest-claims-keda/ClaimsAsyncApiFunc
+   #
+   # Build the Function application container image.
+   # => Keep in mind there is a dot '.' at the end of the command.
+   # => ACR NAME : Substitute the 'name' of the ACR instance in the command.
+   $ docker build -t <ACR NAME>.azurecr.io/claims-ingest-async:latest .
+   #
+   # (Optional) Verify the container image got built
+   $ docker images
+   #
+   # Push the Function application container image into ACR
+   # => Substitute the 'name' of the ACR instance in the command.
+   $ docker push <ACR Name>.azurecr.io/claims-ingest-async:latest
+   #
+   # List the ACR repositories
+   # => ACR NAME : Substitute the 'name' of the ACR instance in the command.
+   $ az acr repository list --name <ACR_NAME> -o table
+   #
+   # List the repository tags
+   # => ACR NAME : Substitute the 'name' of the ACR instance in the command.
+   $ az acr repository show-tags --name <ACR NAME> --repository claims-ingest-api -o table
+   #
+   ```
