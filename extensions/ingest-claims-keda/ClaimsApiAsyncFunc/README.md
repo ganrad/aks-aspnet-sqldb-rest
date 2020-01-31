@@ -1,4 +1,4 @@
-# Build and deploy this Azure Function locally on the Linux VM
+# Build and deploy this Azure Function Application locally on the Linux VM
 
 Follow the steps below for building and running the Function application locally on the Linux VM.
 
@@ -26,5 +26,5 @@ Follow the steps below for building and running the Function application locally
    #
    # Leave this terminal window open.
 
-[Return back to ingest-claims-keda extension](../)
+[Return back to ingest-claims-keda extension](../#c-build-and-test-the-azure-application-locally-on-the-linux-vm)
 
