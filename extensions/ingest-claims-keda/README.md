@@ -133,7 +133,7 @@ This section describes the steps for building, deploying and testing the Functio
    # Script parameter descriptions are provided below:
    #
    # runs => 2 [any integer value]
-   # port => 7071 [port should be the 'ClaimsApiAsyncFunc' Function Application listen port 
+   # port => 7071 [port should be the 'ClaimsApiAsyncFunc' Function Application listen port]
    # location of test data => ./../../test-data/claim01.json
    #
    $ ./shell-scripts/create-load.sh <runs> localhost:<port> <location of test data>
