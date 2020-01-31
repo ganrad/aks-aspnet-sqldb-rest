@@ -107,7 +107,7 @@ Readers are advised to go thru the following on-line resources before proceeding
    ```
 
 ## C. Build and Test the Azure Function Applications locally on the Linux VM
-**Approx. time to complete this section: 45 mins**
+**Approx. time to complete this section: 30 mins**
 
 This section describes the steps for building, deploying and testing the Function applications locally on the Linux VM.  Follow the steps below.
 
@@ -141,5 +141,6 @@ This section describes the steps for building, deploying and testing the Functio
    ```
 
 ## D. Build & push the Function Application container images into ACR instance
+**Approx. time to complete this section: 20 mins**
 
 This section details the steps for building the Function application container images and pushing them into the ACR instance..
