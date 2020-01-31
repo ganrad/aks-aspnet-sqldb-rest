@@ -105,3 +105,41 @@ Readers are advised to go thru the following on-line resources before proceeding
    $ func --version
    #
    ```
+
+## C. Build and Test the Azure Function Applications locally on the Linux VM
+**Approx. time to complete this section: 45 mins**
+
+This section describes the steps for building, deploying and testing the Function applications locally on the Linux VM.  Follow the steps below.
+
+1. Refer to [ClaimsApiAsyncFunc](./ClaimsApiAsyncFunc) to build and deploy this Azure Function Application on the Linux VM.
+
+2. Refer to [ClaimsAsyncApiFunc](./ClaimsAsyncApiFunc) to deploy this Azure Function Application on the Linux VM.
+
+3. Test both the Function applications locally on the Linux VM.
+
+   Login to the Linux VM via another SSH terminal window. Execute the test shell script `./shell-scripts/create-load.sh`.  Refer to the command snippet below.
+
+   ```bash
+   # ssh login into the Linux VM.
+   $ ssh labuser@x.x.x.x
+   #
+   # Make sure you are in the 'PROJECT_DIR/extensions/ingest-claims-keda'
+   # PROJECT_DIR => $HOME/git-repos/aks-aspnet-sqldb-rest
+   $ cd $HOME/git-repos/aks-aspnet-sqldb-rest/extensions/ingest-claims-keda
+   #
+   # Run the shell script => 'create-load.sh'
+   # Script parameter descriptions are provided below:
+   #
+   # runs => 2 [any integer value]
+   # port => 7071 [port should be the 'ClaimsApiAsyncFunc' Function Application listen port 
+   # location of test data => ./../../test-data/claim01.json
+   #
+   $ ./shell-scripts/create-load.sh <runs> localhost:<port> <location of test data>
+   #
+   # After testing the Function apps, shut them down (control + c)
+   #
+   ```
+
+## D. Build & push the Function Application container images into ACR instance
+
+This section details the steps for building the Function application container images and pushing them into the ACR instance..
