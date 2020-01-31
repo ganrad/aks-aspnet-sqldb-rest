@@ -45,6 +45,8 @@ Readers are advised to go thru the following on-line resources before proceeding
    - [Create a Service Bus queue - Azure Portal](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-quickstart-portal)
    - [Create a Service Bus queue - Azure CLI](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-quickstart-cli)
 
+   Save the Azure Service Bus Connection **Connection String** in a file.  The connection string for the Service Bus namespace can be obtained from the Azure Portal under the *Shared Access Policies* blade/section.  The namespace connection string will be required to test the Function applications locally on the Linux VM.
+
 ## B. Install pre-requisite tools on the Linux VM (Bastion Host)
 **Approx. time to complete this section: 15 minutes**
 
