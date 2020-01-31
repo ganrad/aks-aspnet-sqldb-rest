@@ -6,22 +6,21 @@ Follow the steps below for building and running the Function application locally
 
    Function Parameter Name | Value | Description
    ----------------------- | ----- | -----------
-   ClaimsPostQueue | claims-req-queue | This is the queue the **GetHttpApiFunctions** application puts/delivers the Claims transactions to.  The function **PostClaimsHttpApiToSbQueue** puts/saves the Claims record/transaction into this queue.
-   ClaimsDelQueue | claims-del-queue | This is the queue the **AsyncSbQueueApiFunc** application gets/reads the Claims transactions from.  The function **GetSbQueueCallClaimsDelApi** reads a Claims record from this queue and sends a HTTP DELETE request to the backend Claims Web API.  The backend Claims Web API deletes the Claims record from the persistent data store (Azure SQL DB).
+   AzServiceBusInputQueueName | claims-req-queue | This is the queue the **GetSbQCallWebApi** Function reads/gets the Claims transactions from.  The function then calls the Claims Web API and invokes an HTTP POST request.  
+   AzServiceBusOutputQueueName | claims-del-queue | This is the queue the **GetSbQCallWebApi** Function puts/saves the Claims transactions to.  The HTTP POST response (JSON) returned by the Claims Web API is saved in this queue.
    AzServiceBusConnection | "Endpoint=" | Specify the value of Azure Service Bus namespace **Connection String**.
    ClaimsApiHost | claims-api-svc.development | Kubernetes DNS **Service** name where the Claims Web API is exposed.
    ClaimsApiEndpoint | /api/v1/claims | Context path of the backend Claims Web API.
+   ClaimsApiMethod | POST | HTTP method invoked by the **GetSbQCallWebApi** Function on the backend Claims Web API.
 
 2. Run the Function Application.
 
    Run the following commands in a Linux terminal window.
    ```bash
-   # Switch to the Function Application 'ClaimsApiAsyncFunc' directory
-   $ cd $HOME/git-repos/aks-aspnet-sqldb-rest/extensions/ingest-claims-keda/ClaimsApiAsyncFunc
+   # Switch to the Function Application 'ClaimsAsyncApiFunc' directory
+   $ cd $HOME/git-repos/aks-aspnet-sqldb-rest/extensions/ingest-claims-keda/ClaimsAsyncApiFunc
    #
    # Run the function application
-   # Upon successful startup, the Function runtime should display the URL to access the Claims
-   # HTTP end-point.
    $ func start
    #
    # Leave this terminal window open.
