@@ -26,5 +26,5 @@ Follow the steps below for building and running the Function application locally
    #
    # Leave this terminal window open.
 
-[Return back to ingest-claims-keda extension](../#c-build-and-test-the-azure-applications-locally-on-the-linux-vm)
+[Return back to ingest-claims-keda extension](../#c-build-and-test-the-azure-function-applications-locally-on-the-linux-vm)
 
