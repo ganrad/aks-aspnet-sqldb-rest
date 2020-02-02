@@ -220,7 +220,9 @@ All the steps below have to be executed on the Linux VM terminal window.
 
 ## E. Deploy KEDA and Osiris (HTTP zero-scaler) on AKS
 
-If you haven't already, Log into the Linux VM thru a SSH terminal window.  All the steps below have to be executed on the Linux VM terminal window.
+If you haven't already, log into the Linux VM thru a SSH terminal window.
+
+All the steps below have to be executed on the Linux VM terminal window.
   
 1. Deploy Keda on AKS
 
@@ -233,7 +235,7 @@ If you haven't already, Log into the Linux VM thru a SSH terminal window.  All t
    # Update the local repo
    $ helm repo update
    #
-   # Install Keda on AKS namespace 'keda'
+   # Install Keda in AKS namespace 'keda'
    $ helm install kedacore/keda --namespace keda --name keda
    #
    # List all resources deployed in the 'keda' namespace
@@ -252,7 +254,7 @@ If you haven't already, Log into the Linux VM thru a SSH terminal window.  All t
      --username eae9749a-fccf-4a24-ac0d-6506fe2a6ab3 \
      --password =s-e.2-84BhIo6LM6=/l4C_sFzxb=sT[
    #
-   # Install Osiris on AKS namespace 'osiris-system'
+   # Install Osiris in AKS namespace 'osiris-system'
    $ helm install osiris/osiris-edge \
      --name osiris \
      --namespace osiris-system \
