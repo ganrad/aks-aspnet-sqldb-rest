@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: claims-api-func-http
+  labels:
+    app: claims-api-func-http
+    release: {{ .Release.Name }}
+  annotations:
+    osiris.deislabs.io/enabled: "true"
+    osiris.deislabs.io/deployment: claims-api-func-http
+spec:
+  selector:
+    app: claims-api-func-http
+    release: {{ .Release.Name }}
+  ports:
+  - protocol: TCP
+    port: {{ .Values.service.port }}
+    targetPort: 80
+  type: {{ .Values.service.type }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: claims-api-func-http
+  labels:
+    app: claims-api-func-http
+    release: {{ .Release.Name }}
+  annotations:
+    osiris.deislabs.io/enabled: "true"
+    osiris.deislabs.io/minReplicas: "{{ .Values.function.api.minReplicas }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: claims-api-func-http
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: claims-api-func-http
+        release: {{ .Release.Name }}
+      annotations:
+        osiris.deislabs.io/enabled: "true"
+    spec:
+      containers:
+      - name: claims-api-func-http
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        env:
+        - name: AzureFunctionsJobHost__functions__0
+          value: PostClaimsHttpApiToSbQueue
+        - name: AzServiceBusConnection
+          value: "{{ .Values.function.azServiceBusConnection }}"
+        envFrom:
+        - secretRef:
+            name: claims-api-func
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: claims-api-func
+  labels:
+    app: claims-api-func
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: claims-api-func
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: claims-api-func
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: claims-api-func
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: AzureFunctionsJobHost__functions__0
+          value: GetSbQueueCallClaimsDelApi
+        - name: AzServiceBusConnection
+          value: "{{ .Values.function.azServiceBusConnection }}"
+        envFrom:
+        - secretRef:
+            name: claims-api-func
+---
+apiVersion: keda.k8s.io/v1alpha1
+kind: ScaledObject
+metadata:
+  name: claims-api-func
+  labels:
+    deploymentName: claims-api-func
+spec:
+  scaleTargetRef:
+    deploymentName: claims-api-func
+  minReplicaCount: {{ .Values.function.async.minReplicas }}
+  maxReplicaCount: {{ .Values.function.async.maxReplicas }}
+  pollingInterval: {{ .Values.function.async.pollInterval }}
+  coolingPeriod: {{ .Values.function.async.coolPeriod }}
+  triggers:
+  - type: azure-servicebus
+    metadata:
+      type: serviceBusTrigger
+      connection: AzServiceBusConnection
+      queueName: '%ClaimsDelQueue%'
+      name: claimItem
+---
+

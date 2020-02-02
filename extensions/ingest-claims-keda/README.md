@@ -30,6 +30,7 @@ Readers are advised to go thru the following on-line resources before proceeding
 - [Azure Functions Documentation](https://docs.microsoft.com/en-us/azure/azure-functions/)
 - [Kubernetes based event driven auto-scaling - KEDA](https://keda.sh/)
 - [KEDA on AKS](https://docs.microsoft.com/en-us/azure/azure-functions/functions-kubernetes-keda)
+- [Osiris - A general purpose scale to zero component for Kubernetes](https://github.com/deislabs/osiris)
 
 ## A. Deploy an Azure Service Bus Namespace and Queues
 **Approx. time to complete this section: 15 minutes**
@@ -217,13 +218,23 @@ All the steps below have to be executed on the Linux VM terminal window.
    #
    ```
 
-## E. Deploy KEDA on AKS
+## E. Deploy KEDA and Osiris (HTTP zero-scaler) on AKS
 
-   Log into the Linux VM thru a SSH terminal window.  Run the commands shown in the snippet below.
+If you haven't already, Log into the Linux VM thru a SSH terminal window.  All the steps below have to be executed on the Linux VM terminal window.
+  
+1. Deploy Keda on AKS
+
+   Run the commands shown in the snippet below.
 
    ```bash
-   # Deploy KEDA resources on AKS
-   $ func kubernetes install --namespace keda
+   # Add Keda Helm repo on local machine
+   $ helm repo add kedacore https://kedacore.github.io/charts
+   #
+   # Update the local repo
+   $ helm repo update
+   #
+   # Install Keda on AKS namespace 'keda'
+   $ helm install kedacore/keda --namespace keda --name keda
    #
    # List all resources deployed in the 'keda' namespace
    # Before proceeding to the next section, make sure all pods are in 'running' state.
@@ -231,6 +242,27 @@ All the steps below have to be executed on the Linux VM terminal window.
    #
    ```
 
+2. Deploy Osiris http zero-scaler on AKS
+
+   Run the commands shown in the snippet below.
+
+   ```bash
+   # Add Osiris Helm repo on local machine
+   $ helm repo add osiris https://osiris.azurecr.io/helm/v1/repo \
+     --username eae9749a-fccf-4a24-ac0d-6506fe2a6ab3 \
+     --password =s-e.2-84BhIo6LM6=/l4C_sFzxb=sT[
+   #
+   # Install Osiris on AKS namespace 'osiris-system'
+   $ helm install osiris/osiris-edge \
+     --name osiris \
+     --namespace osiris-system \
+     --devel
+   #
+   # List all resources deployed in 'osiris-system' namespace
+   # Before proceeding to the next section, make sure all pods are in 'running' state.
+   $ kubectl get all -n osiris-system
+   #
+   ```
 ## F. Deploy containerized Azure Function Applications to AKS
 
    **Helm** charts will be used to deploy the containerized Function Applications to AKS.

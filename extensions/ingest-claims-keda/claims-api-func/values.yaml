@@ -5,13 +5,31 @@
 replicaCount: 1
 
 image:
-  repository: nginx
-  tag: stable
-  pullPolicy: IfNotPresent
+  repository: csulabtestct.azurecr.io/claims-ingest-api
+  tag: latest
+  pullPolicy: Always
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 80
+
+function:
+  api:
+    minReplicas: 1
+  async:
+    minReplicas: 0
+    maxReplicas: 3
+    pollInterval: 5
+    coolPeriod: 120
+  azServiceBusConnection: ""
+# All values below must be base64 encoded !!
+  azureWebJobsStorage: "VXNlRGV2ZWxvcG1lbnRTdG9yYWdlPXRydWU="
+  claimsPostQueue: "Y2xhaW1zLXJlcS1xdWV1ZQ=="
+  claimsDelQueue: "Y2xhaW1zLWRlbC1xdWV1ZQ=="
+  claimsApiHost: "Y2xhaW1zLWFwaS1zdmMuZGV2ZWxvcG1lbnQ="
+  claimsApiEndpoint: "L2FwaS92MS9jbGFpbXM="
+  disabled: "ZmFsc2U="
+  enabled: "dHJ1ZQ=="
 
 ingress:
   enabled: false
