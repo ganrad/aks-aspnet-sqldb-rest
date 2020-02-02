@@ -1,0 +1,81 @@
+data:
+  FUNCTIONS_WORKER_RUNTIME: bm9kZQ==
+  AzureWebJobsStorage: {{ .Values.function.azureWebJobsStorage }}
+  AzureWebJobs.GetStorageQCallWebApi.Disabled: {{ .Values.function.isTrue }}
+  AzStorageQueueName: {{ .Values.function.azStorageQueueName }}
+  ClaimsApiEndpoint: {{ .Values.function.claimsApiEndpoint }}
+  ClaimsApiMethod: {{ .Values.function.claimsApiMethod }}
+  AzServiceBusInputQueueName: {{ .Values.function.azServiceBusInpQName }}
+  AzServiceBusOutputQueueName: {{ .Values.function.azServiceBusOutQName }}
+  ClaimsApiHost: {{ .Values.function.claimsApiHost }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: claims-async-func
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: claims-async-func
+  labels:
+    app: claims-async-func
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: claims-async-func
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: claims-async-func
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: claims-async-func
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: AzureFunctionsJobHost__functions__0
+          value: GetSbQCallWebApi
+        - name: AzureFunctionsJobHost__functions__1
+          value: GetStorageQCallWebApi
+        - name: AzureFunctionsJobHost__functions__2
+          value: ReadSbQCallWebApi
+        - name: AzServiceBusConnection
+          value: "{{ .Values.function.azServiceBusConnection }}"
+        envFrom:
+        - secretRef:
+            name: claims-async-func
+---
+apiVersion: keda.k8s.io/v1alpha1
+kind: ScaledObject
+metadata:
+  name: claims-async-func
+  labels:
+    deploymentName: claims-async-func
+spec:
+  scaleTargetRef:
+    deploymentName: claims-async-func
+  minReplicaCount: {{ .Values.function.async.minReplicas }}
+  maxReplicaCount: {{ .Values.function.async.maxReplicas }}
+  pollingInterval: {{ .Values.function.async.pollInterval }}
+  coolingPeriod: {{ .Values.function.async.coolPeriod }}
+  triggers:
+  - type: azure-servicebus
+    metadata:
+      name: claimItem
+      type: serviceBusTrigger
+      direction: in
+      queueName: {{ .Values.function.claimsReqQueue }}
+      connection: AzServiceBusConnection
+  - type: azure-queue
+    metadata:
+      name: myQueueItem
+      type: queueTrigger
+      direction: in
+      queueName: {{ .Values.function.storageQueueName }}
+      connection: AzStorageConnectionString
+---
+

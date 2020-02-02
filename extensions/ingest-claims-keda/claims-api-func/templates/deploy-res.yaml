@@ -109,7 +109,7 @@ spec:
     metadata:
       type: serviceBusTrigger
       connection: AzServiceBusConnection
-      queueName: '%ClaimsDelQueue%'
+      queueName: "{{ .Values.function.claimsDelQueue }}"
       name: claimItem
 ---
 
