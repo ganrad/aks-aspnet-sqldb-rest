@@ -1,13 +1,13 @@
 data:
-  FUNCTIONS_WORKER_RUNTIME: bm9kZQ==
-  AzureWebJobsStorage: {{ .Values.function.azureWebJobsStorage }}
-  AzureWebJobs.GetStorageQCallWebApi.Disabled: {{ .Values.function.isTrue }}
-  AzStorageQueueName: {{ .Values.function.azStorageQueueName }}
-  ClaimsApiEndpoint: {{ .Values.function.claimsApiEndpoint }}
-  ClaimsApiMethod: {{ .Values.function.claimsApiMethod }}
-  AzServiceBusInputQueueName: {{ .Values.function.azServiceBusInpQName }}
-  AzServiceBusOutputQueueName: {{ .Values.function.azServiceBusOutQName }}
-  ClaimsApiHost: {{ .Values.function.claimsApiHost }}
+  FUNCTIONS_WORKER_RUNTIME: "bm9kZQ=="
+  AzureWebJobsStorage: "{{ .Values.function.azureWebJobsStorage }}"
+  AzureWebJobs.GetStorageQCallWebApi.Disabled: "{{ .Values.function.isTrue }}"
+  AzStorageQueueName: "{{ .Values.function.azStorageQueueName }}"
+  ClaimsApiEndpoint: "{{ .Values.function.claimsApiEndpoint }}"
+  ClaimsApiMethod: "{{ .Values.function.claimsApiMethod }}"
+  AzServiceBusInputQueueName: "{{ .Values.function.azServiceBusInpQName }}"
+  AzServiceBusOutputQueueName: "{{ .Values.function.azServiceBusOutQName }}"
+  ClaimsApiHost: "{{ .Values.function.claimsApiHost }}"
 apiVersion: v1
 kind: Secret
 metadata:
@@ -39,10 +39,6 @@ spec:
         env:
         - name: AzureFunctionsJobHost__functions__0
           value: GetSbQCallWebApi
-        - name: AzureFunctionsJobHost__functions__1
-          value: GetStorageQCallWebApi
-        - name: AzureFunctionsJobHost__functions__2
-          value: ReadSbQCallWebApi
         - name: AzServiceBusConnection
           value: "{{ .Values.function.azServiceBusConnection }}"
         envFrom:
@@ -70,12 +66,5 @@ spec:
       direction: in
       queueName: {{ .Values.function.claimsReqQueue }}
       connection: AzServiceBusConnection
-  - type: azure-queue
-    metadata:
-      name: myQueueItem
-      type: queueTrigger
-      direction: in
-      queueName: {{ .Values.function.storageQueueName }}
-      connection: AzStorageConnectionString
 ---
 

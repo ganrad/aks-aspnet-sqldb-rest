@@ -81,7 +81,7 @@ Readers are advised to go thru the following on-line resources before proceeding
 
 3. Install Azure Function Core Tools v3.x.
 
-   **NOTE:** If you prefer, you can also install Azure Function Core Tools v2.x runtime.
+   Execute the commands shown in the snippet below.
 
    ```bash
    # Switch to home directory
@@ -267,4 +267,56 @@ All the steps below have to be executed on the Linux VM terminal window.
    ```
 ## F. Deploy containerized Azure Function Applications to AKS
 
-   **Helm** charts will be used to deploy the containerized Function Applications to AKS.
+All the steps in this section have to be executed on the Linux VM terminal window.
+
+**Helm** charts will be used to deploy the containerized Function Applications to AKS.  
+
+
+1. Switch to the **ingest-claims-keda** extension directory.
+
+   ```bash
+   # Switch to the 'ingest-claims-keda' extension directory
+   $ cd $HOME/git-repos/aks-asp-sqldb-rest/extensions/ingest-claims-keda
+   #
+   ```
+
+   **NOTE:** Before proceeding, review the Helm charts in `claims-api-func` and `claims-async-func` directories.
+
+2. Update **ClaimsApiAsyncFunc** Function Helm chart. 
+
+   Update the **Azure Service Bus Connection** string and **Queue** names in the Helm chart `./claims-api-func/values.yaml` file.  Refer to the table below.
+
+   Parameter Name | Value | Description
+   -------------- | ----- | -----------
+   azServiceBusConnection | "" | Specify Azure Service Bus namespace **Connection String**.
+   claimsDelQueue | claims-del-queue | The function gets/reads a Claims transaction from this queue and calls the backend Claims Web API to delete the Claims record from the underlying persistent Azure SQL database.
+
+
+   For a description of all other parameters in `./claims-api-func/values.yaml`, refer to [ClaimsApiAsyncFunc documentation](./ClaimsApiAsyncFunc).
+
+   **NOTE:** All **Function** parameter values have to be **Base64** encoded in the Helm chart `values.yaml` file.
+
+   Refer to the command snippet below for encoding and decoding parameter values.
+
+   ```bash
+   # Base64 encode a string value.
+   $ echo -n "This is a test" | base64
+   #
+   # For a decoding an Base64 encoded value, use the command below.
+   $ echo -n "Base64 encoded value" | base64 -d
+   #
+   ```
+
+3. Update **ClaimsAsyncApiFunc** Function Helm chart. 
+
+   Update the **Azure Service Bus Connection** string and **Queue** names in the Helm chart `./claims-async-func/values.yaml` file.  Refer to the table below.
+
+   Parameter Name | Value | Description
+   -------------- | ----- | -----------
+   azServiceBusConnection | "" | Specify Azure Service Bus namespace **Connection String**.
+   claimsReqQueue | claims-req-queue | The function gets/reads a Claims transaction from this queue and calls the backend Claims Web API to insert the Claims record into the underlying persistent Azure SQL database.
+
+
+   For a description of all other parameters in `./claims-async-func/values.yaml`, refer to [ClaimsAsyncApiFunc documentation](./ClaimsAsyncApiFunc).
+
+   **NOTE:** All **Function** parameter values have to be **Base64** encoded in the Helm chart `values.yaml` file.
