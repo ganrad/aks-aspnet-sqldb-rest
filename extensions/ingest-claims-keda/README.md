@@ -23,7 +23,7 @@ A brief description of the Functions applications is provided below.
 
 **Functional Diagram:**
 
-![alt tag](./images/ingest-claims-keda.jpg)
+![alt tag](./images/ingest-claims-keda-v1.jpg)
 
 The solution leverages *Kubernetes Event Driven Auto-scaling* (KEDA) on AKS.  Kubernetes based Functions provides the Functions runtime in a Docker container with event-driven scaling through KEDA.
 
