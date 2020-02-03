@@ -21,6 +21,10 @@ A brief description of the Functions applications is provided below.
 
     This Function reads the medical Claims transactions from the Azure Service Bus Queue and then invokes the Claims REST API end-point implemented in the parent project.  This step executes an atomic transaction and ensures the Claims records are successfully delivered to the backend application.  In the event the backend application is down or unreachable, the Claims transactions remain in the service bus queue.
 
+**Functional Diagram:**
+
+![alt tag](./images/ingest-claims-keda.jpg)
+
 The solution leverages *Kubernetes Event Driven Auto-scaling* (KEDA) on AKS.  Kubernetes based Functions provides the Functions runtime in a Docker container with event-driven scaling through KEDA.
 
 **Prerequisites:**
