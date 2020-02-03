@@ -265,7 +265,7 @@ All the steps below have to be executed on the Linux VM terminal window.
    $ kubectl get all -n osiris-system
    #
    ```
-## F. Deploy containerized Azure Function Applications to AKS
+## F. Deploy containerized Azure Function Applications on AKS
 
 All the steps in this section have to be executed on the Linux VM terminal window.
 
@@ -276,7 +276,7 @@ All the steps in this section have to be executed on the Linux VM terminal windo
 
    ```bash
    # Switch to the 'ingest-claims-keda' extension directory
-   $ cd $HOME/git-repos/aks-asp-sqldb-rest/extensions/ingest-claims-keda
+   $ cd $HOME/git-repos/aks-aspnet-sqldb-rest/extensions/ingest-claims-keda
    #
    ```
 
@@ -320,3 +320,50 @@ All the steps in this section have to be executed on the Linux VM terminal windo
    For a description of all other parameters in `./claims-async-func/values.yaml`, refer to [ClaimsAsyncApiFunc documentation](./ClaimsAsyncApiFunc).
 
    **NOTE:** All **Function** parameter values have to be **Base64** encoded in the Helm chart `values.yaml` file.
+
+4. Deploy **ClaimsApiAsyncFunc** Function application on AKS.
+
+   ```bash
+   # Use Helm to install/deploy the application on AKS
+   # Deploy the Function apps in a new namespace eg., 'dev-claims'
+   $ helm install ./claims-api-func/ --namespace dev-claims --name claims-api-func --atomic
+   #
+   ```
+
+5. Deploy **ClaimsAsyncApiFunc** Function application on AKS.
+
+   ```bash
+   # Use Helm to install/deploy the application on AKS
+   $ helm install ./claims-async-func/ --namespace dev-claims --name claims-async-func --atomic
+   #
+   ```
+
+## G. Test the zero (Osiris and KEDA) and auto event (KEDA) scalers 
+
+Use the shell script `./shell-scripts/create-load.sh` to invoke the Claims HTTP API.  Refer to the command snippet below.
+
+```bash
+# To test auto Function scaling, run multiple instance of the shell script in
+# parallel.
+# => Runs : 1...N (An integer eg., 50)
+# => Service IP address : $ kubectl get service -n dev-claims
+#
+$ ./shell-scripts/create-load.sh <Runs> <'claims-api-func' Service IP address> ./../../test-data/claim01.json
+#
+# Check the number of Pods
+$ kubectl get pods -n dev-claims
+#
+# Check and stream pod logs
+$ kubectl logs -f <Pod name> -n dev-claims
+#
+```
+
+## H. Use Azure DevOps to build and deploy the containerized Function Applications
+
+This section is left as an exercise to the readers and workshop attendees.  Refer to the parent project to implement the Azure DevOps build, release and delivery pipelines.
+
+**Hint:**
+- Use the `Dockerfile` in the build pipeline to build the Function application container images.  
+- Use the `Helm Charts` in the release pipeline to deploy the containerized Function applications on AKS.
+
+**--The END.**
