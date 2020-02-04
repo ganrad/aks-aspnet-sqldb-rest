@@ -16,6 +16,7 @@ service:
 function:
   api:
     minReplicas: 1
+    metricsCheckInterval: 120
   async:
     minReplicas: 0
     maxReplicas: 3

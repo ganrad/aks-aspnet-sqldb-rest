@@ -28,6 +28,7 @@ metadata:
   annotations:
     osiris.deislabs.io/enabled: "true"
     osiris.deislabs.io/minReplicas: "{{ .Values.function.api.minReplicas }}"
+    osiris.deislabs.io/minReplicas: "{{ .Values.function.api.metricsCheckInterval }}"
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
