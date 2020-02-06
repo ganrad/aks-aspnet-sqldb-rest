@@ -832,7 +832,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
        # - DNS Name prefix for API Server ~ akslab
        $ az aks create --resource-group myResourceGroup --name akscluster --location westus2 --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.15.5"
        #
-       # Verify state of AKS cluster
+       # Verify status of AKS cluster
        $ az aks show -g myResourceGroup -n akscluster --output table
        ```
     b. With this option, the AKS cluster will be provisioned in a private virtual network on Azure.  You will need **Owner** level permission (role) for the Azure Subscription in order to proceed with the next steps.
@@ -886,6 +886,9 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
          --vnet-subnet-id <subnetId> \
          --service-principal <appId> \
          --client-secret <password>
+       #
+       # Verify status of AKS cluster
+       $ az aks show -g myResourceGroup -n akscluster --output table
        ```
 
 4.  Connect to the AKS cluster and initialize Helm package manager.
