@@ -816,23 +816,77 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
 3.  Provision an AKS cluster.
 
-    Use the latest supported Kubernetes version to deploy the AKS cluster.  At the time of this writing, version `1.11.5` was the latest AKS version. 
+    There are two options here for deploying the AKS cluster.  If you plan to work on the labs in the [extensions](./extensions) sub-directory, then follow the steps in option (b) below.
 
-    Refer to the commands below to create the AKS cluster.  It will take a few minutes (< 10 mins) for the AKS cluster to get provisioned. 
-    ```bash
-    # Create a 2 Node AKS cluster v1.15.5.  This is not the latest patch release.
-    # We will upgrade to the latest patch release in a subsequent lab/Section. 
-    # The 'az aks' command below will provision an AKS cluster with the following settings -
-    # - Kubernetes version ~ 1.15.5
-    # - No. of application/worker nodes ~ 2
-    # - RBAC ~ Disabled
-    # - Location ~ US West 2
-    # - DNS Name prefix for API Server ~ akslab
-    $ az aks create --resource-group myResourceGroup --name akscluster --location westus2 --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.15.5"
-    #
-    # Verify state of AKS cluster
-    $ az aks show -g myResourceGroup -n akscluster --output table
-    ```
+    a. Use the latest supported Kubernetes version to deploy the AKS cluster.  At the time of this writing, version `1.11.5` was the latest AKS version. 
+
+       Refer to the commands below to create the AKS cluster.  It will take a few minutes (< 10 mins) for the AKS cluster to get provisioned. 
+       ```bash
+       # Create a 2 Node AKS cluster v1.15.5.  This is not the latest patch release.
+       # We will upgrade to the latest patch release in a subsequent lab/Section. 
+       # The 'az aks' command below will provision an AKS cluster with the following settings -
+       # - Kubernetes version ~ 1.15.5
+       # - No. of application/worker nodes ~ 2
+       # - RBAC ~ Disabled
+       # - Location ~ US West 2
+       # - DNS Name prefix for API Server ~ akslab
+       $ az aks create --resource-group myResourceGroup --name akscluster --location westus2 --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.15.5"
+       #
+       # Verify state of AKS cluster
+       $ az aks show -g myResourceGroup -n akscluster --output table
+       ```
+    b. With this option, the AKS cluster will be provisioned in a private virtual network on Azure.  You will need **Owner** level permission (role) for the Azure Subscription in order to proceed with the next steps.
+
+       ```bash
+       # Create a virtual network
+       $ az network vnet create \
+         --resource-group myResourceGroup \
+         --name myVnet \
+         --address-prefixes 10.0.0.0/8 \
+         --subnet-name myAKSSubnet \
+         --subnet-prefix 10.240.0.0/16
+       #
+       # Create a separate subnet for virtual nodes (to be used later).
+       $ az network vnet subnet create \
+         --resource-group myResourceGroup \
+         --vnet-name myVnet \
+         --name myVirtualNodeSubnet \
+         --address-prefixes 10.241.0.0/16
+       #
+       # Create a service principal to allow AKS to interact with other Azure resources
+       # NOTE: Make a note of the appId and password.
+       $ az ad sp create-for-rbac --skip-assignment
+       #
+       # Get the VNET resource id => vnetId
+       $ az network vnet show --resource-group myResourceGroup --name myVnet --query id -o tsv
+       #
+       # Assign permissions to the virtual network
+       # Substitute the correct values for appId and vnetId.
+       $ az role assignment create --assignee <appId> --scope <vnetId> --role Contributor 
+       #
+       # Get the subnet resource ID provisioned for the AKS Cluster
+       # Take a note of the AKS Subnet resource ID => subnetId
+       $ az network vnet subnet show --resource-group myResourceGroup --vnet-name myVnet --name myAKSSubnet --query id -o tsv
+       #
+       # Provision the AKS cluster within a private VNET
+       # Substitute correct values for appId, password & subnetId
+       $ az aks create \
+         --resource-group myResourceGroup \
+         --name akscluster \
+         --location westus2 \
+         --node-count 2 \
+         --dns-name-prefix akslab \
+         --generate-ssh-keys \
+         --disable-rbac \
+         --kubernetes-version "1.15.5" \
+         --network-plugin azure \
+         --service-cidr 10.0.0.0/16 \
+         --dns-service-ip 10.0.0.10 \
+         --docker-bridge-address 172.17.0.1/16 \
+         --vnet-subnet-id <subnetId> \
+         --service-principal <appId> \
+         --client-secret <password>
+       ```
 
 4.  Connect to the AKS cluster and initialize Helm package manager.
     ```bash
