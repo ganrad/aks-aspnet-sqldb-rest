@@ -816,7 +816,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
 3.  Provision an AKS cluster.
 
-    There are two options here for deploying the AKS cluster.  If you plan to work on the labs in the [extensions](./extensions) sub-directory, then follow the steps in option (b) below.
+    **NOTE:** Follow the steps in one of the options below (a. or b.) for deploying the AKS cluster.  If you plan to work on the labs in the [extensions](./extensions) sub-directory, then follow the steps in option (b) below.  Otherwise, follow the steps in option (a).
 
     a. Use the latest supported Kubernetes version to deploy the AKS cluster.  At the time of this writing, version `1.11.5` was the latest AKS version. 
 
