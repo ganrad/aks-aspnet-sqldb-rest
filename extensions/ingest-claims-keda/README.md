@@ -300,7 +300,7 @@ All the steps in this section have to be executed on the Linux VM terminal windo
 
    For a description of all other parameters in `./claims-api-func/values.yaml`, refer to [ClaimsApiAsyncFunc documentation](./ClaimsApiAsyncFunc).
 
-   **NOTE:** **Function** parameter values which are specified in a *Secret* have to be **Base64** encoded in the Helm chart `values.yaml` file.
+   **NOTE:** **Function** parameter values which are specified in a Kubernetes *Secret* have to be **Base64** encoded in the Helm chart `values.yaml` file.
 
    Refer to the command snippet below for encoding and decoding parameter values.
 
@@ -315,18 +315,18 @@ All the steps in this section have to be executed on the Linux VM terminal windo
 
 3. Update **ClaimsAsyncApiFunc** Function Helm chart. 
 
-   Update the **Azure Service Bus Connection** string and **Queue** names in the Helm chart `./claims-async-func/values.yaml` file.  Refer to the table below.
+   Update the following parameter values in the Helm chart `./claims-async-func/values.yaml` file.  Refer to the table below.
 
    Parameter Name | Value | Description
    -------------- | ----- | -----------
-   image.repository | <acrname>.azurecr.io/claims-ingest-api | ACR (name) to download the Function application container image from.  Substitute correct value for ACR name.
+   image.repository | <acrname>.azurecr.io/claims-ingest-async | ACR (name) to download the Function application container image from.  Substitute correct value for ACR name.
    azServiceBusConnection | "" | Specify Azure Service Bus namespace **Connection String**.
    claimsReqQueue | claims-req-queue | The function gets/reads a Claims transaction from this queue and calls the backend Claims Web API to insert the Claims record into the underlying persistent Azure SQL database.
 
 
    For a description of all other parameters in `./claims-async-func/values.yaml`, refer to [ClaimsAsyncApiFunc documentation](./ClaimsAsyncApiFunc).
 
-   **NOTE:** **Function** parameter values which are specified in a *Secret* have to be **Base64** encoded in the Helm chart `values.yaml` file.
+   **NOTE:** **Function** parameter values which are specified in a Kubernetes *Secret* have to be **Base64** encoded in the Helm chart `values.yaml` file.
 
 4. Deploy **ClaimsApiAsyncFunc** Function application on AKS.
 
