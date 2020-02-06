@@ -9,7 +9,7 @@ Follow the steps below for building and running the Function application locally
    AzServiceBusInputQueueName | claims-req-queue | This is the queue the **GetSbQCallWebApi** Function reads/gets the Claims transactions from.  The function then calls the Claims Web API and invokes an HTTP POST request.  
    AzServiceBusOutputQueueName | claims-del-queue | This is the queue the **GetSbQCallWebApi** Function puts/saves the Claims transactions to.  The HTTP POST response (JSON) returned by the Claims Web API is saved in this queue.
    AzServiceBusConnection | "Endpoint=" | Specify the value of Azure Service Bus namespace **Connection String**.
-   ClaimsApiHost | claims-api-svc.development | Kubernetes DNS **Service** name where the Claims Web API is exposed.
+   ClaimsApiHost | x.x.x.x | Azure Load Balancer **Service** IP address where the backend Claims Web API ('claims-api-svc') is exposed.
    ClaimsApiEndpoint | /api/v1/claims | Context path of the backend Claims Web API.
    ClaimsApiMethod | POST | HTTP method invoked by the **GetSbQCallWebApi** Function on the backend Claims Web API.
 

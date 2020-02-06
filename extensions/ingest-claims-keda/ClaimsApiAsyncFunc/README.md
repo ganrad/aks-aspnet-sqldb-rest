@@ -9,7 +9,7 @@ Follow the steps below for building and running the Function application locally
    ClaimsPostQueue | claims-req-queue | This is the queue the **GetHttpApiFunctions** application puts/delivers the Claims transactions to.  The function **PostClaimsHttpApiToSbQueue** puts/saves the Claims record/transaction into this queue.
    ClaimsDelQueue | claims-del-queue | This is the queue the **AsyncSbQueueApiFunc** application gets/reads the Claims transactions from.  The function **GetSbQueueCallClaimsDelApi** reads a Claims record from this queue and sends a HTTP DELETE request to the backend Claims Web API.  The backend Claims Web API deletes the Claims record from the persistent data store (Azure SQL DB).
    AzServiceBusConnection | "Endpoint=" | Specify the value of Azure Service Bus namespace **Connection String**.
-   ClaimsApiHost | claims-api-svc.development | Kubernetes DNS **Service** name where the Claims Web API is exposed.
+   ClaimsApiHost | x.x.x.x | Azure Load Balancer **Service** IP address where the Claims Web API ('claims-api-svc') is exposed.
    ClaimsApiEndpoint | /api/v1/claims | Context path of the backend Claims Web API.
 
 2. Run the Function Application.

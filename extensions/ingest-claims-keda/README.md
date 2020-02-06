@@ -295,6 +295,7 @@ All the steps in this section have to be executed on the Linux VM terminal windo
    -------------- | ----- | -----------
    image.repository | <acrname>.azurecr.io/claims-ingest-api | ACR (name) to download the Function application container image from.  Substitute correct value for ACR name.
    function.azServiceBusConnection | "" | Specify Azure Service Bus namespace **Connection String**.
+   function.ClaimsApiHost | claims-api-svc.development | Kubernetes DNS **Service** name where the Claims Web API is exposed.  This value has to be **Base64** encoded!
    function.claimsDelQueue | claims-del-queue | The function gets/reads a Claims transaction from this queue and calls the backend Claims Web API to delete the Claims record from the underlying persistent Azure SQL database.
 
 
@@ -320,8 +321,9 @@ All the steps in this section have to be executed on the Linux VM terminal windo
    Parameter Name | Value | Description
    -------------- | ----- | -----------
    image.repository | <acrname>.azurecr.io/claims-ingest-async | ACR (name) to download the Function application container image from.  Substitute correct value for ACR name.
-   azServiceBusConnection | "" | Specify Azure Service Bus namespace **Connection String**.
-   claimsReqQueue | claims-req-queue | The function gets/reads a Claims transaction from this queue and calls the backend Claims Web API to insert the Claims record into the underlying persistent Azure SQL database.
+   function.azServiceBusConnection | "" | Specify Azure Service Bus namespace **Connection String**.
+   function.ClaimsApiHost | claims-api-svc.development | Kubernetes DNS **Service** name where the Claims Web API is exposed.  This value has to be **Base64** encoded!
+   function.claimsReqQueue | claims-req-queue | The function gets/reads a Claims transaction from this queue and calls the backend Claims Web API to insert the Claims record into the underlying persistent Azure SQL database.
 
 
    For a description of all other parameters in `./claims-async-func/values.yaml`, refer to [ClaimsAsyncApiFunc documentation](./ClaimsAsyncApiFunc).
