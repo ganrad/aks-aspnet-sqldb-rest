@@ -855,6 +855,9 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
        #
        # Create a service principal to allow AKS to interact with other Azure resources
        # NOTE: Make a note of the appId and password.
+       # IMPORTANT: Save the appId and password in a file.  You will need to use these values
+       # while executing the hands-on labs in the 'extentions' directory!!
+       #
        $ az ad sp create-for-rbac --skip-assignment
        #
        # Get the VNET resource id => vnetId
