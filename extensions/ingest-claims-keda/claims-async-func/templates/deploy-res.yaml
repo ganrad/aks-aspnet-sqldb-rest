@@ -1,4 +1,5 @@
 data:
+  AzureWebJobsStorage: "e0F6dXJlV2ViSm9ic1N0b3JhZ2V9"
   FUNCTIONS_WORKER_RUNTIME: "bm9kZQ=="
   ClaimsApiEndpoint: "{{ .Values.function.claimsApiEndpoint }}"
   ClaimsApiMethod: "{{ .Values.function.claimsApiMethod }}"
