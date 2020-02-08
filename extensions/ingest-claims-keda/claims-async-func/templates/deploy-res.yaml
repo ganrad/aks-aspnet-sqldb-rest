@@ -1,8 +1,5 @@
 data:
   FUNCTIONS_WORKER_RUNTIME: "bm9kZQ=="
-  AzureWebJobsStorage: "{{ .Values.function.azureWebJobsStorage }}"
-  AzureWebJobs.GetStorageQCallWebApi.Disabled: "{{ .Values.function.isTrue }}"
-  AzStorageQueueName: "{{ .Values.function.azStorageQueueName }}"
   ClaimsApiEndpoint: "{{ .Values.function.claimsApiEndpoint }}"
   ClaimsApiMethod: "{{ .Values.function.claimsApiMethod }}"
   AzServiceBusInputQueueName: "{{ .Values.function.azServiceBusInpQName }}"
@@ -44,6 +41,8 @@ spec:
         envFrom:
         - secretRef:
             name: claims-async-func
+      imagePullSecrets:
+      - name: regcred
 ---
 apiVersion: keda.k8s.io/v1alpha1
 kind: ScaledObject

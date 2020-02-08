@@ -59,6 +59,8 @@ spec:
         envFrom:
         - secretRef:
             name: claims-api-func
+      imagePullSecrets:
+      - name: regcred
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -91,6 +93,8 @@ spec:
         envFrom:
         - secretRef:
             name: claims-api-func
+      imagePullSecrets:
+      - name: regcred
 ---
 apiVersion: keda.k8s.io/v1alpha1
 kind: ScaledObject
