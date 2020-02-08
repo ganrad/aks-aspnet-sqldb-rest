@@ -37,8 +37,58 @@ Readers are advised to go thru the following on-line resources before proceeding
 - [KEDA on AKS](https://docs.microsoft.com/en-us/azure/azure-functions/functions-kubernetes-keda)
 - [Osiris - A general purpose scale to zero component for Kubernetes](https://github.com/deislabs/osiris)
 
-## A. Deploy an Azure Service Bus Namespace and Queues
-**Approx. time to complete this section: 15 minutes**
+## A. Deploy dependent Azure Infrastructure resources
+**Approx. time to complete this section: 30 minutes**
+
+For this project, the Azure Function (serverless) applications will be deployed on **Virtual** (ACI) **Nodes** on AKS.  With virtual nodes, customers only have to pay for container execution time.  Virtual nodes are ideal for running data processing workloads which typically run for a few minutes (< 10 minutes).  By running these workloads on virtual nodes, customers can achieve significant cost savings through **per-second** billing.
+
+Virtual nodes enable network communication between pods that run on [ACI](https://azure.microsoft.com/en-us/services/container-instances/) and AKS cluster.  As such, virtual nodes only work with AKS clusters created using **Advanced** networking (Azure CNI).
+
+Follow the steps below to provision a Virtual Node and associate it with an AKS cluster.
+
+1. Login into the Linux VM via SSH.
+  
+   ```bash
+   # ssh into the VM. Substitute the public IP address for the Linux VM in the command below.
+   $ ssh labuser@x.x.x.x
+   #
+   ```
+2. Register Azure Service Provider for Container Instances.
+
+   ```bash
+   # Register the ACI provider with your subscription.
+   $ az provider list --query "[?contains(namespace,'Microsoft.ContainerInstance')]" -o table
+   #
+   # The provider should report as 'registered' (above command).  If the output displays 
+   # 'NotRegistered' execute the next command below.
+   #
+   # Register the provider
+   $ az provider register --namespace Microsoft.ContainerInstance
+   #
+   ```
+
+3. Enable Virtual Nodes addon on AKS Cluster.
+
+   ```bash
+   # Enable the virtual node addon on the AKS cluster which you provisioned in parent project.
+   # NOTE: In the parente project, you should have provisioned an AKS cluster with Azure CNI 
+   # networking!!
+   # Substitute the name of the virtual node subnet.
+   #
+   $ az aks enable-addons \
+     --resource-group myResourceGroup \
+     --name akscluster \
+     --addons virtual-node \
+     --subnet-name myVirtualNodeSubnet
+   #
+   # Verify the virtual node is provisioned and associated with the cluster.
+   # The output of the command should list 3 nodes including the 'aci' node 
+   # eg., virtual-node-aci-linux
+   $ kubectl get nodes
+   #
+   ```
+
+Next, follow the steps below to provision an Azure Service Bus Namespace and Queues.  The service bus queues will be used by the function applications to reliably process claims records in a guaranteed manner.
 
 1. Login to the Azure Portal.
 
