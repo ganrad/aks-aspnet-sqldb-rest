@@ -3,7 +3,6 @@
     "Values": {
         "AzureWebJobsStorage": "UseDevelopmentStorage=true",
         "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-	"AzureWebJobs.GetSbQueueCallClaimsDelApi.Disabled": "false",
         "ClaimsPostQueue": "claims-req-queue",
         "ClaimsDelQueue": "claims-del-queue",
 	"AzServiceBusConnection": "",
