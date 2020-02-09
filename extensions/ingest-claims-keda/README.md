@@ -380,7 +380,45 @@ All the steps in this section have to be executed on the Linux VM terminal windo
 
    **NOTE:** **Function** parameter values which are specified in a Kubernetes *Secret* have to be **Base64** encoded in the Helm chart `values.yaml` file.
 
-4. Deploy **ClaimsApiAsyncFunc** Function application on AKS.
+4. Create an Kubernetes namespace and image pull secret.
+
+   The virtual node is not yet integrated with Azure AD service principal authentication.  Hence a Kubernetes *Secret* object has to be created containing the service principal credentials.  This secret object will then be used by the kubelet to pull the container image from ACR.  Review the deployment manifest ('deploy-res.yaml') in the Helm chart folder to understand how this works.
+
+   ```bash
+   # Create a kubernetes namespace first.
+   # This namespace will be used to deploy all the Function apps.
+   $ kubectl create ns dev-claims
+   #
+   # Create a kubernetes secret containing the SP credentials.
+   # You should have saved the SP 'appId' and 'password' values in a file while 
+   # completing the hands-on labs in the parent project.  Refer to Section [G]
+   # in parent project..
+   # 
+   # Substitute the correct values for 
+   # acr-name => Fully quailified acr name eg., xyz.azurecr.io
+   # SP appId => Service Principal App ID
+   # SP password => Service Principal password
+   #
+   $ kubectl create secret docker-registry regcred \
+     --docker-server=<acr-name>
+     --docker-username=<SP appId> \
+     --docker-password=<SP password> \
+     --docker-email=<your email id>
+     -n dev-claims
+   #
+   # Verify if the secret got created in k8s namespace 'dev-claims'
+   $ kubectl get secrets -n dev-claims
+   #
+   # (Optional) Inspect the contents of the secret
+   $ kubectl get secret regred -n dev-claims -o yaml
+   #
+   # Inspect the value of '.dockerconfigjson' field, should contain the ACR 
+   # name, SP appId + password and email id.
+   $ kubectl get secret regcred --output="jsonpath={.data.\.dockerconfigjson}" -n dev-claims | base64 --decode
+   #
+   ```
+
+5. Deploy **ClaimsApiAsyncFunc** Function application on AKS.
 
    ```bash
    # Use Helm to install/deploy the application on AKS
@@ -389,7 +427,7 @@ All the steps in this section have to be executed on the Linux VM terminal windo
    #
    ```
 
-5. Deploy **ClaimsAsyncApiFunc** Function application on AKS.
+6. Deploy **ClaimsAsyncApiFunc** Function application on AKS.
 
    ```bash
    # Use Helm to install/deploy the application on AKS
