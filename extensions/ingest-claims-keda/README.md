@@ -40,7 +40,7 @@ Readers are advised to go thru the following on-line resources before proceeding
 ## A. Deploy dependent Azure Infrastructure resources
 **Approx. time to complete this section: 30 minutes**
 
-For this project, the Azure Function (serverless) applications will be deployed on **Virtual** (ACI) **Nodes** on AKS.  With virtual nodes, customers only have to pay for container execution time.  Virtual nodes are ideal for running data processing workloads which typically run for a few minutes (< 10 minutes).  By running these workloads on virtual nodes, customers can achieve significant cost savings through **per-second** billing.
+In this project, the Azure Function (serverless) applications will be deployed on **Virtual** (ACI) **Nodes** on AKS.  With virtual nodes, customers only have to pay for container execution time.  Virtual nodes are ideal for running data processing workloads which typically run for a few minutes (< 10 minutes).  By running these workloads on virtual nodes, customers can achieve significant cost savings through **per-second** billing.
 
 Virtual nodes enable network communication between pods that run on [ACI](https://azure.microsoft.com/en-us/services/container-instances/) and AKS cluster.  As such, virtual nodes only work with AKS clusters created using **Advanced** networking (Azure CNI).
 
@@ -392,7 +392,7 @@ All the steps in this section have to be executed on the Linux VM terminal windo
    # Create a kubernetes secret containing the SP credentials.
    # You should have saved the SP 'appId' and 'password' values in a file while 
    # completing the hands-on labs in the parent project.  Refer to Section [G]
-   # in parent project..
+   # in parent project.
    # 
    # Substitute the correct values for 
    # acr-name => Fully quailified acr name eg., xyz.azurecr.io
@@ -400,10 +400,10 @@ All the steps in this section have to be executed on the Linux VM terminal windo
    # SP password => Service Principal password
    #
    $ kubectl create secret docker-registry regcred \
-     --docker-server=<acr-name>
+     --docker-server=<acr-name> \
      --docker-username=<SP appId> \
      --docker-password=<SP password> \
-     --docker-email=<your email id>
+     --docker-email=<your email id> \
      -n dev-claims
    #
    # Verify if the secret got created in k8s namespace 'dev-claims'
