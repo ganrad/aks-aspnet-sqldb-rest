@@ -1,3 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: claims-async-func
 data:
   AzureWebJobsStorage: "e0F6dXJlV2ViSm9ic1N0b3JhZ2V9"
   FUNCTIONS_WORKER_RUNTIME: "bm9kZQ=="
@@ -6,10 +10,6 @@ data:
   AzServiceBusInputQueueName: "{{ .Values.function.azServiceBusInpQName }}"
   AzServiceBusOutputQueueName: "{{ .Values.function.azServiceBusOutQName }}"
   ClaimsApiHost: "{{ .Values.function.claimsApiHost }}"
-apiVersion: v1
-kind: Secret
-metadata:
-  name: claims-async-func
 ---
 apiVersion: apps/v1
 kind: Deployment
