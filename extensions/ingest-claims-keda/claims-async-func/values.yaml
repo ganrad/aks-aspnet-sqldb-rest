@@ -15,24 +15,22 @@ service:
 
 function:
   async:
-    minReplicas: 1
+    minReplicas: 0
     maxReplicas: 3
     pollInterval: 5
     coolPeriod: 120
   azServiceBusConnection: ""
   claimsReqQueue: "claims-req-queue"
-  azStorageConnectionString: ""
-  storageQueueName: "claims-queue"
 # All values below must be base64 encoded !!
-  azureWebJobsStorage: "e0F6dXJlV2ViSm9ic1N0b3JhZ2V9"
   azStorageQueueName: "Y2xhaW1zLXF1ZXVl"
   azServiceBusInpQName: "Y2xhaW1zLXJlcS1xdWV1ZQ=="
   azServiceBusOutQName: "Y2xhaW1zLWRlbC1xdWV1ZQ=="
+  # claims-api-svc.development
   claimsApiHost: "Y2xhaW1zLWFwaS1zdmMuZGV2ZWxvcG1lbnQ="
+  # Test instance : claims-dev.westus2.cloudapp.azure.com
+  # claimsApiHost: "Y2xhaW1zLWRldi53ZXN0dXMyLmNsb3VkYXBwLmF6dXJlLmNvbQ=="
   claimsApiMethod: "UE9TVA=="
   claimsApiEndpoint: "L2FwaS92MS9jbGFpbXM="
-  isFalse: "ZmFsc2U="
-  isTrue: "dHJ1ZQ=="
 
 ingress:
   enabled: false

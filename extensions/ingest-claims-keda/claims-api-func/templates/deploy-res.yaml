@@ -25,10 +25,10 @@ metadata:
   labels:
     app: claims-api-func-http
     release: {{ .Release.Name }}
-#  annotations:
-#    osiris.deislabs.io/enabled: "true"
-#    osiris.deislabs.io/minReplicas: "{{ .Values.function.api.minReplicas }}"
-#    osiris.deislabs.io/minReplicas: "{{ .Values.function.api.metricsCheckInterval }}"
+  annotations:
+    osiris.deislabs.io/enabled: "true"
+    osiris.deislabs.io/minReplicas: "{{ .Values.function.api.minReplicas }}"
+    osiris.deislabs.io/metricsCheckInterval: "{{ .Values.function.api.metricsCheckInterval }}"
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -40,8 +40,8 @@ spec:
       labels:
         app: claims-api-func-http
         release: {{ .Release.Name }}
-#      annotations:
-#        osiris.deislabs.io/enabled: "true"
+      annotations:
+        osiris.deislabs.io/enabled: "true"
     spec:
       containers:
       - name: claims-api-func-http

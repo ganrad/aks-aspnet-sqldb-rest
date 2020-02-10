@@ -25,13 +25,13 @@ function:
   azServiceBusConnection: ""
   claimsDelQueue: "claims-del-queue"
 # All values below must be base64 encoded !!
-  azureWebJobsStorage: "VXNlRGV2ZWxvcG1lbnRTdG9yYWdlPXRydWU="
   azServiceBusInpQueue: "Y2xhaW1zLXJlcS1xdWV1ZQ=="
   azServiceBusDelQueue: "Y2xhaW1zLWRlbC1xdWV1ZQ=="
+  # Test instance : claims-dev.westus2.cloudapp.azure.com
+  # claimsApiHost: "Y2xhaW1zLWRldi53ZXN0dXMyLmNsb3VkYXBwLmF6dXJlLmNvbQ=="
+  # claims-api-svc.development
   claimsApiHost: "Y2xhaW1zLWFwaS1zdmMuZGV2ZWxvcG1lbnQ="
   claimsApiEndpoint: "L2FwaS92MS9jbGFpbXM="
-  isFalse: "ZmFsc2U="
-  isTrue: "dHJ1ZQ=="
 
 ingress:
   enabled: false
