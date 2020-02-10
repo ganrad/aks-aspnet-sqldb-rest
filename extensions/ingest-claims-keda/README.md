@@ -37,7 +37,7 @@ Readers are advised to go thru the following on-line resources before proceeding
 - [KEDA on AKS](https://docs.microsoft.com/en-us/azure/azure-functions/functions-kubernetes-keda)
 - [Osiris - A general purpose scale to zero component for Kubernetes](https://github.com/deislabs/osiris)
 
-## A. Deploy dependent Azure Infrastructure resources
+## A. Deploy Azure Infrastructure resources
 **Approx. time to complete this section: 30 minutes**
 
 In this project, the Azure Function (serverless) applications will be deployed on **Virtual** (ACI) **Nodes** on AKS.  With virtual nodes, customers only have to pay for container execution time.  Virtual nodes are ideal for running data processing workloads which typically run for a few minutes (< 10 minutes).  By running these workloads on virtual nodes, customers can achieve significant cost savings through **per-second** billing.
