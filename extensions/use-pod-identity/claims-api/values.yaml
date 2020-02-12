@@ -13,7 +13,7 @@ image:
   pullPolicy: Always
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 80
 
 checks:
@@ -37,9 +37,9 @@ kv:
   secretName: sqldbconn
   # Multiple object types can be specified separated by commas.
   objectTypes: secret
-  resourceGroup: csu-dev-grts-rg10
-  subscriptionId: f99e3e10-4fe2-476a-bf9c-e2e1be9e7a53
-  tenantId: 72f988bf-86f1-41af-91ab-2d7cd011db47
+  resourceGroup: <resource-group>
+  subscriptionId: <azure-subscription-id>
+  tenantId: <azure-tenant-id>
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious

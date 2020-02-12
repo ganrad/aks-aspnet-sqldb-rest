@@ -36,7 +36,7 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["/bin/sh","-c", "export ConnectionStrings__SqlServerDb='$(cat /kvmnt/sqldbconn)'; echo $ConnectionStrings__SqlServerDb; dotnet ClaimsApi.dll"]
+        command: ["/bin/sh","-c", "export ConnectionStrings__SqlServerDb=\"$(cat /kvmnt/sqldbconn)\"; echo $ConnectionStrings__SqlServerDb; dotnet ClaimsApi.dll"]
         volumeMounts:
         - name: kv-sql-conn
           mountPath: /kvmnt
