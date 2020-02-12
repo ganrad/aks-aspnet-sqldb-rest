@@ -1,0 +1,7 @@
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentityBinding
+metadata:
+  name: claims-api-podid-binding
+spec:
+  AzureIdentity: claims-api-podid
+  Selector: claims-api-kv-mid
