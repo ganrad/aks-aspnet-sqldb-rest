@@ -17,27 +17,7 @@ Readers are advised to go thru the following on-line resources before proceeding
 - [Azure AAD Pod Identity](https://github.com/Azure/aad-pod-identity)
 - [Azure/Kubernetes Key Vault FlexVolume Driver](https://github.com/Azure/kubernetes-keyvault-flexvol)
 
-## A. Deploy pre-requisite Azure resources
-**Approx. time to complete this section: 10 minutes**
-
-The Azure SQL Database *Connection String* will be stored in an Azure Key Vault. To provision a Key Vault and save the connection string as a **Secret**, refer to the steps below.
-
-1. Login to the Azure Portal.
-
-   Login to the [Azure Portal](https://portal.azure.com) using your credentials.
-
-2. Provision an Azure Key Vault and create a Secret.
-
-   Refer to the tutorial below to provision an Azure Key Vault and create a *Secret* to store the Azure SQL Database connection string.
-   - [Set and retrieve a secret from Azure key Vault using the Azure Portal](https://docs.microsoft.com/en-us/azure/key-vault/quick-create-portal)
-
-   Create a secret for the SQL database connection string in the Key Vault.  Refer to the table below.
-
-   Secret Name | Value | Description
-   ----------- | ----- | -----------
-   sqldbconn | Value of 'ConnectionStrings.SqlServerDb' parameter in `appsettings.json` file | The Azure SQL Database connection string from `appsettings.json` file. Substitute actual values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD 
-
-## B. Deploy Azure Key Vault FlexVolume Driver on AKS cluster
+## A. Deploy Azure Key Vault FlexVolume Driver on AKS cluster
 **Approx. time to complete this section: 10 minutes**
 
 Follow the steps below to provision the FlexVolume driver on the AKS cluster.
@@ -61,7 +41,7 @@ Follow the steps below to provision the FlexVolume driver on the AKS cluster.
    #
    ```
 
-## C. Install AAD Pod Identity resources on AKS Cluster
+## B. Install AAD Pod Identity components on AKS Cluster
 **Approx. time to complete this section: 45 minutes**
 
 AAD Pod Identity consists of two key components and custom resources.  The two core components are described below.
@@ -104,15 +84,16 @@ Follow the steps below to deploy AAD Pod Identity components and custom resource
    # Make sure you are logged in to your Azure account and have configured the correct subscription.
    # Substitute correct values for the following parameters:
    # - resource-group => Azure resource group 
-   # - name => Managed Identity name
-   # Important: Save the values of 'clientId' and 'id' from the json output.
+   # - name => Managed Identity name eg., claims-api-mid
    #
    $ az identity create -g <resource-group> -n <name> -o json
+   # Important: Save the json output of the above command in a file !! We will need to use 'clientId', 'principalId' 
+   # 'id' and other values from the json output in the subsequent commands below.
    #
    ```
 4. Assign AKS cluster SPN Role.
 
-   If the Service Principal used for the AKS cluster was created separately (not automatically assigned at cluster creation), assign it the **Managed Identity Operator** role.
+   If the Service Principal used for the AKS cluster was created separately (not automatically assigned at cluster creation), assign it the **Managed Identity Operator** role for (scope of) the managed identity.
 
    ```bash
    # Retrieve the AKS cluster service principal id.
@@ -125,10 +106,93 @@ Follow the steps below to deploy AAD Pod Identity components and custom resource
    # Assign the 'Managed Identity Operator' role to the AKS cluster service principal on the
    # managed identity.
    # Substitute correct values for the following parameters:
-   # - sp-id => Service Principal ID (output of previous command)
+   # - sp-id => AKS Service Principal ID (output of previous command)
    # - managed-identity-id => value of 'id' from json output in step (3) above.
    #
    $ az role assignment create --role "Managed Identity Operator" --assignee <sp-id> --scope <managed-identity-id>
+   #
+   ```
+
+## C. Deploy Azure Key Vault and Custom Resources
+**Approx. time to complete this section: 10 minutes**
+
+The Azure SQL Database *Connection String* will be stored in an Azure Key Vault. To provision a Key Vault and save the connection string as a **Secret**, refer to the steps below.
+
+1. Login to the Azure Portal.
+
+   Login to the [Azure Portal](https://portal.azure.com) using your credentials.
+
+2. Provision an Azure Key Vault and create a Secret.
+
+   Refer to the tutorial below to provision an Azure Key Vault and create a *Secret* to store the Azure SQL Database connection string.
+   - [Set and retrieve a secret from Azure key Vault using the Azure Portal](https://docs.microsoft.com/en-us/azure/key-vault/quick-create-portal)
+
+   Create a secret for the SQL database connection string in the Key Vault.  Refer to the table below.
+
+   Secret Name | Value | Description
+   ----------- | ----- | -----------
+   sqldbconn | Value of 'ConnectionStrings.SqlServerDb' parameter in `appsettings.json` file | The Azure SQL Database connection string. Make sure to substitute actual values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD 
+
+3. Assign Azure Identity Roles.
+
+   Assign Azure Identity role assignments to the managed identity so it can read the Key Vault instance and access it's contents.
+
+   ```bash
+   # Switch to the Linux VM terminal window.
+   #
+   # Assign 'reader' role to the managed identity for the Key Vault
+   # Specify correct values for the following parameters:
+   # - principal-id => 'principalId' value of the managed identity created in Section B step 3
+   # - subscriptionid => Azure Subscription ID containing the Key Vault resource
+   # - resourcegroup => Resource group containing the Key Vault
+   # - keyvaultname => Name of the Key Vault instance eg., claims-api-kv
+   #
+   $ az role assignment create --role Reader --assignee <principal-id> --scope /subscriptions/<subscriptionid>/resourcegroups/<resourcegroup>/providers/Microsoft.KeyVault/vaults/<keyvaultname>
+   #
+   # Set policy to access secrets from the Key Vault
+   # Specify correct values for the following parameters:
+   # - kv-name => Key Vault name
+   # - client-id => 'clientId' value of the managed identity created in Section B step 3
+   #
+   $ az keyvault set-policy -n <kv-name> --secret-permissions get --spn <client-id>
+   #
+   ```
+
+4. Create a new Kubernetes namespace for deploying Claims Web API with AAD Pod Identity.
+  
+   ```bash
+   # Create a new Kubernetes namespace 'dev-claims-podid' for deploying the Claims Web API application with AAD Pod Identity 
+   $ kubectl create namespace dev-claims-podid 
+   #
+   ```
+
+5. Install Azure Pod Identity for Claims Web API Pod.
+
+   ```bash
+   # Switch to the 'use-pod-identity' directory.
+   $ cd ./extensions/use-pod-identity
+   #
+   # Edit the Pod Identity Kubernetes manifest file `./k8s-resources/aadpodidentity.yaml`, update values for the following two
+   # attributes and then save the file.
+   # - ResourceID => 'id' attribute value of the managed identity created in Section B step 3
+   # - ClientID => 'clientId' value of the managed identity created in Section B step 3
+   #
+   # Deploy the pod identity custom resource on AKS
+   $ kubectl apply -f ./k8s-resources/aadpodidentity.yaml -n dev-claims-podid
+   #
+   # Verify the Azure Identity resource got created in Kubernetes
+   $ kubectl get azureidentity -n dev-claims-podid  
+   #
+   ```
+
+6. Install the Azure Pod Identity Binding for Claims Web API Pod.
+
+   ```bash
+   # Deploy the pod identity binding custom resource on AKS
+   $ kubectl apply -f ./k8s-resources/aadpodidentitybinding.yaml -n dev-claims-podid
+   #
+   # Verify the Azure Identity Binding resource got created in Kubernetes
+   $ kubectl get azureidentitybinding -n dev-claims-podid  
    #
    ```
 
