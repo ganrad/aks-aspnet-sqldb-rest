@@ -1,6 +1,6 @@
 # Use AAD Pod Identity and FlexVolume driver to inject Secrets into the Claims Web API container
 
-This sub-project describes the steps for configuring AAD Pod Identity and Azure FlexVolume driver for retreiving secrets from Azure Key Vault and mounting them onto the file system within the application (Claims Web API) container.
+This sub-project describes the steps for configuring AAD Pod Identity and Azure FlexVolume driver for retreiving secrets from Azure Key Vault and mounting them onto the file system within the Claims Web API application container.
 
 In production environments, confidential data such as database user names and passwords are stored in a secure location such as Azure Key Vault and then injected into the application container at runtime.
 
@@ -131,7 +131,7 @@ The Azure SQL Database *Connection String* will be stored in an Azure Key Vault.
 
    Secret Name | Value | Description
    ----------- | ----- | -----------
-   sqldbconn | Value of 'ConnectionStrings.SqlServerDb' parameter in `appsettings.json` file | The Azure SQL Database connection string. Make sure to substitute actual values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD 
+   sqldbconn | Value of 'ConnectionStrings.SqlServerDb' parameter in `appsettings.json` file | The Azure SQL Database connection string. Make sure to substitute actual values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD in the connection string.
 
 3. Assign Azure Identity Roles.
 
