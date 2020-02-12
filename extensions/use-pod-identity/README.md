@@ -42,7 +42,7 @@ Follow the steps below to provision the FlexVolume driver on the AKS cluster.
    ```
 
 ## B. Install AAD Pod Identity components on AKS Cluster
-**Approx. time to complete this section: 45 minutes**
+**Approx. time to complete this section: 30 minutes**
 
 AAD Pod Identity consists of two key components and custom resources.  The two core components are described below.
 - **Managed Identity Controller (MIC)**
@@ -213,12 +213,12 @@ Execute the steps below to deploy the Claims Web API application on AKS.
 
    Parameter Name | Value | Description
    -------------- | ----- | -----------
-   image.repository | <acr-name>.azurecr.io/claims-api | Specify the registry name and image name for the Claims Web API container image. Substitute the name of the ACR instance.
+   image.repository | acr-name.azurecr.io/claims-api | Specify the registry name and image name for the Claims Web API container image. Substitute the name of the ACR instance.
    image.tag | latest | Specify the claims-api image tag.
    kv.secretName | sqldbconn | Specify the name of the Azure Key Vault **secret** containing the Azure SQL Database connection string.
-   kv.resourceGroup | <resource-group> | Specify the name of the resource group containing the Azure Key Vault.
-   kv.subscriptionId | <subscription-id> | Specify the Azure subscription in which the Key Vault is provisioned.
-   kv.tenantId | <tenant-id> | Specify the AAD Tenant in which the Key Vault is provisioned.
+   kv.resourceGroup | resource-group | Specify the name of the resource group containing the Azure Key Vault.
+   kv.subscriptionId | subscription-id | Specify the Azure subscription in which the Key Vault is provisioned.
+   kv.tenantId | tenant-id | Specify the AAD Tenant in which the Key Vault is provisioned.
 
    ```bash
    # (If you have not already) Switch to the 'use-pod-identity' extension directory.
@@ -244,4 +244,5 @@ Execute the steps below to deploy the Claims Web API application on AKS.
    ```
 
 Congrats! In this extension, you installed Azure **FlexVolume** driver and **AAD Pod Identity** components.  Finally, you configured the Claims Web API application to use FlexVolume driver and the managed Pod Identity to retrieve SQL Connection String from an Azure Key Vault. 
+
 **--The END.**
