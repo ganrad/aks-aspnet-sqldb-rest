@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app.name }}
+  labels:
+    app: {{ .Values.app.name }}
+    chart: {{ template "claims-api.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app.name }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app.name }}
+        release: {{ .Release.Name }}
+        aadpodidbinding: "{{ .Values.azureIdentityBinding.selector }}"
+    spec:
+      volumes:
+      - name: kv-sql-conn
+        flexVolume:
+          driver: "azure/kv"
+          options:
+            usepodidentity: "true"
+            keyvaultname: "{{ .Values.kv.name }}"
+            keyvaultobjectnames: "{{ .Values.kv.secretName }}"
+            keyvaultobjecttypes: "{{ .Values.kv.objectTypes }}"       
+            resourcegroup: "{{ .Values.kv.resourceGroup }}"
+            subscriptionid: "{{ .Values.kv.subscriptionId }}"
+            tenantid: "{{ .Values.kv.tenantId }}"
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/bin/sh","-c", "export ConnectionStrings__SqlServerDb='$(cat /kvmnt/sqldbconn)'; echo $ConnectionStrings__SqlServerDb; dotnet ClaimsApi.dll"]
+        volumeMounts:
+        - name: kv-sql-conn
+          mountPath: /kvmnt
+          readOnly: true
+        ports:
+          - name: http
+            containerPort: 80
+            protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /api/v1/claims/healthz
+            port: http
+          initialDelaySeconds: {{ .Values.checks.initialDelay }}
+          periodSeconds: {{ .Values.checks.periodSeconds }}
+        livenessProbe:
+          httpGet:
+            path: /api/v1/claims/healthz
+            port: http
+          initialDelaySeconds: {{ .Values.checks.initialDelay }}
+          periodSeconds: {{ .Values.checks.periodSeconds }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
