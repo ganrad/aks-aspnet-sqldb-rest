@@ -199,7 +199,7 @@ This section describes the steps for building, deploying and testing the Functio
    ```
 
 ## D. Build & Push the Function Application container images into ACR
-**Approx. time to complete this section: 20 mins**
+**Approx. time to complete this section: 15 mins**
 
 This section details the steps for building the Function application container images and pushing them into the ACR instance..
 
@@ -274,6 +274,7 @@ All the steps below have to be executed on the Linux VM terminal window.
    ```
 
 ## E. Deploy KEDA and Osiris (HTTP zero-scaler) on AKS
+**Approx. time to complete this section: 20 mins**
 
 If you haven't already, log into the Linux VM thru a SSH terminal window.
 
@@ -321,6 +322,7 @@ All the steps below have to be executed on the Linux VM terminal window.
    #
    ```
 ## F. Deploy containerized Azure Function Applications on AKS
+**Approx. time to complete this section: 60 mins**
 
 All the steps in this section have to be executed on the Linux VM terminal window.
 
@@ -436,6 +438,7 @@ All the steps in this section have to be executed on the Linux VM terminal windo
    ```
 
 ## G. Test the zero (Osiris and KEDA) and auto event (KEDA) scalers 
+**Approx. time to complete this section: 30 mins**
 
 Use the shell script `./shell-scripts/create-load.sh` to invoke the Claims HTTP API.  Refer to the command snippet below.
 
