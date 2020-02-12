@@ -131,7 +131,7 @@ The Azure SQL Database *Connection String* will be stored in an Azure Key Vault.
 
    Secret Name | Value | Description
    ----------- | ----- | -----------
-   sqldbconn | Value of 'ConnectionStrings.SqlServerDb' parameter in `appsettings.json` file | The Azure SQL Database connection string. Make sure to substitute actual values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD in the connection string.
+   sqldbconn | Value of 'ConnectionStrings.SqlServerDb' parameter in `appsettings.json` file | The Azure SQL Database connection string. Make sure to substitute correct values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD in the connection string.
 
 3. Assign Azure Identity Roles.
 
