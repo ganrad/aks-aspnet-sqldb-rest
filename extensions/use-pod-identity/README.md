@@ -45,9 +45,11 @@ Follow the steps below to provision the FlexVolume driver on the AKS cluster.
 **Approx. time to complete this section: 45 minutes**
 
 AAD Pod Identity consists of two key components and custom resources.  The two core components are described below.
-- Managed Identity Controller (MIC)
+- **Managed Identity Controller (MIC)**
+
   The MIC is a custom Kubernetes resource that watches for changes to Pods, Identities and Bindings through the Kubernetes API Server.   When it detects a change, the MIC adds or deletes assigned identities as required.
-- Node Managed Identity (NMI)
+- **Node Managed Identity (NMI)**
+
   The NMI component is responsible for intercepting a Service Principal Token request sent by a Pod to an MSI endpoint, retrieving a matching Azure Identity from MIC and then making an [ADAL]() request to get a token for the client id.  The token is then returned to the Pod (FlexVolume driver).
 
 Follow the steps below to deploy AAD Pod Identity components and custom resources.
@@ -114,7 +116,7 @@ Follow the steps below to deploy AAD Pod Identity components and custom resource
    ```
 
 ## C. Deploy Azure Key Vault and Custom Resources
-**Approx. time to complete this section: 10 minutes**
+**Approx. time to complete this section: 45 minutes**
 
 The Azure SQL Database *Connection String* will be stored in an Azure Key Vault. To provision a Key Vault and save the connection string as a **Secret**, refer to the steps below.
 
@@ -166,14 +168,16 @@ The Azure SQL Database *Connection String* will be stored in an Azure Key Vault.
    #
    ```
 
-5. Install Azure Pod Identity for Claims Web API Pod.
+5. Install Azure Pod Identity Kubernetes resource.
+
+   This custom Kubernetes resource contains the ID's of the Azure Managed Identity.
 
    ```bash
    # Switch to the 'use-pod-identity' directory.
    $ cd ./extensions/use-pod-identity
    #
-   # Edit the Pod Identity Kubernetes manifest file `./k8s-resources/aadpodidentity.yaml`, update values for the following two
-   # attributes and then save the file.
+   # Edit the Pod Identity Kubernetes manifest file `./k8s-resources/aadpodidentity.yaml`, update 
+   # values for the following two attributes and then save the file.
    # - ResourceID => 'id' attribute value of the managed identity created in Section B step 3
    # - ClientID => 'clientId' value of the managed identity created in Section B step 3
    #
@@ -185,7 +189,9 @@ The Azure SQL Database *Connection String* will be stored in an Azure Key Vault.
    #
    ```
 
-6. Install the Azure Pod Identity Binding for Claims Web API Pod.
+6. Install the Azure Pod Identity Binding Kubernetes resource.
+  
+   This custom Kubernetes resource binds the Claims Web API Pod (via the 'selector') with the Azure Managed Identity.
 
    ```bash
    # Deploy the pod identity binding custom resource on AKS
@@ -196,12 +202,46 @@ The Azure SQL Database *Connection String* will be stored in an Azure Key Vault.
    #
    ```
 
-## D. Use Azure DevOps to build and deploy the containerized Function Applications
+## D. Deploy the Claims Web API application
+**Approx. time to complete this section: 20 minutes**
 
-This section is left as an exercise to the readers and workshop attendees.  Refer to the parent project to implement the Azure DevOps build, release and delivery pipelines.
+Execute the steps below to deploy the Claims Web API application on AKS.
 
-**Hint:**
-- Use the `Dockerfile` in the build pipeline to build the Function application container images.  
-- Use the `Helm Charts` in the release pipeline to deploy the containerized Function applications on AKS.
+1. Update the Helm chart for the Claims Web API application.
 
+   Update the Helm chart `./claims-api/values.yaml` file by referring to the table below.
+
+   Parameter Name | Value | Description
+   -------------- | ----- | -----------
+   image.repository | <acr-name>.azurecr.io/claims-api | Specify the registry name and image name for the Claims Web API container image. Substitute the name of the ACR instance.
+   image.tag | latest | Specify the claims-api image tag.
+   kv.secretName | sqldbconn | Specify the name of the Azure Key Vault **secret** containing the Azure SQL Database connection string.
+   kv.resourceGroup | <resource-group> | Specify the name of the resource group containing the Azure Key Vault.
+   kv.subscriptionId | <subscription-id> | Specify the Azure subscription in which the Key Vault is provisioned.
+   kv.tenantId | <tenant-id> | Specify the AAD Tenant in which the Key Vault is provisioned.
+
+   ```bash
+   # (If you have not already) Switch to the 'use-pod-identity' extension directory.
+   $ cd ./extensions/use-pod-identity
+   #
+   # Edit the './claims-api/values.yaml` file by referring to the table above.
+   #
+   ```
+
+2. Deploy the Claims Web API application.
+
+   ```bash
+   # Use Helm to install the Claims Web API application in namespace 'dev-claims-podid'
+   $ helm install ./claims-api/ --namespace dev-claims-podid --name claims-api-podid
+   #
+   # Verify the Claims Web API pod is running
+   $ kubectl get pods -n dev-claims-podid
+   #
+   # Get the ALB IP address for the Claims Web API service
+   $ kubectl get svc -n dev-claims-podid
+   #
+   # Access the Claims Web API service using a browser.
+   ```
+
+Congrats! In this extension, you installed Azure **FlexVolume** driver and **AAD Pod Identity** components.  Finally, you configured the Claims Web API application to use FlexVolume driver and the managed Pod Identity to retrieve SQL Connection String from an Azure Key Vault. 
 **--The END.**
