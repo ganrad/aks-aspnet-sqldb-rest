@@ -1,4 +1,4 @@
-# Build and deploy Azure Functions for ingesting Claims records at scale
+# Use Azure Functions on AKS for ingesting Claims records at scale
 This sub-project describes the steps for ingesting Claims records into the backend Azure SQL Server Database using **Azure Functions** serverless applications.
 
 The Functions application modules are implemented in .NET Core and Nodejs respectively. The Azure Functions runtime itself is packaged within a Linux container and deployed on AKS.

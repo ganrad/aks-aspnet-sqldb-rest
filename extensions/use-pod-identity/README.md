@@ -1,6 +1,6 @@
-# Use AAD Pod Identity and FlexVolume driver to inject Secrets into the Claims Web API container
+# Use AAD Pod Identity and FlexVolume driver to inject Secrets into containerized applications on AKS
 
-This sub-project describes the steps for configuring AAD Pod Identity and Azure FlexVolume driver for retreiving secrets from Azure Key Vault and mounting them onto the file system within the Claims Web API application container.
+This extension project describes the steps for configuring AAD Pod Identity and Azure FlexVolume driver for retreiving secrets from Azure Key Vault and mounting them onto the file system within the Claims Web API application container.
 
 In production environments, confidential data such as database user names and passwords are stored in a secure location such as Azure Key Vault and then injected into the application container at runtime.
 
@@ -214,7 +214,7 @@ Execute the steps below to deploy the Claims Web API application on AKS.
    Parameter Name | Value | Description
    -------------- | ----- | -----------
    image.repository | acr-name.azurecr.io/claims-api | Specify the ACR name and image name for the Claims Web API container image.
-   image.tag | latest | Specify the claims-api image tag.
+   image.tag | latest | Specify the claims-api image tag name.
    kv.secretName | sqldbconn | Specify the name of the Azure Key Vault **secret** containing the Azure SQL Database connection string.
    kv.resourceGroup | resource-group | Specify the name of the resource group containing the Azure Key Vault.
    kv.subscriptionId | subscription-id | Specify the Azure subscription in which the Key Vault is provisioned.
