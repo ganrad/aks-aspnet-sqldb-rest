@@ -35,7 +35,7 @@ The Azure SQL Database *Connection String* will be stored in an Azure Key Vault.
 
    Secret Name | Value | Description
    ----------- | ----- | -----------
-   sqldbconn | Value of 'ConnectionStrings.SqlServerDb' parameter in `appsettings.jon` file | The Azure SQL Database connection string from `appsettings.json` file. Substitute actual values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD 
+   sqldbconn | Value of 'ConnectionStrings.SqlServerDb' parameter in `appsettings.json` file | The Azure SQL Database connection string from `appsettings.json` file. Substitute actual values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD 
 
 ## B. Deploy Azure Key Vault FlexVolume Driver on AKS cluster
 **Approx. time to complete this section: 10 minutes**
