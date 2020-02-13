@@ -1,4 +1,4 @@
-# Use Azure Functions on AKS for ingesting Claims records at scale
+# Process Claims records at scale using Azure Functions and KEDA on AKS
 This sub-project describes the steps for ingesting Claims records into the backend Azure SQL Server Database using **Azure Functions** serverless applications.
 
 The Functions application modules are implemented in .NET Core and Nodejs respectively. The Azure Functions runtime itself is packaged within a Linux container and deployed on AKS.
@@ -337,7 +337,7 @@ All the steps in this section have to be executed on the Linux VM terminal windo
    #
    ```
 
-   **NOTE:** Before proceeding, review the Helm charts in `claims-api-func` and `claims-async-func` directories.
+   >**NOTE:** Before proceeding, review the Helm charts in `claims-api-func` and `claims-async-func` directories.
 
 2. Update **ClaimsApiAsyncFunc** Function Helm chart. 
 
