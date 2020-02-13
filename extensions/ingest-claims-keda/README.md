@@ -1,4 +1,4 @@
-# Process Claims records at scale using Azure Functions and KEDA on AKS
+# Process transactions at scale using Azure Functions and KEDA on AKS
 This sub-project describes the steps for ingesting Claims records into the backend Azure SQL Server Database using **Azure Functions** serverless applications.
 
 The Functions application modules are implemented in .NET Core and Nodejs respectively. The Azure Functions runtime itself is packaged within a Linux container and deployed on AKS.
