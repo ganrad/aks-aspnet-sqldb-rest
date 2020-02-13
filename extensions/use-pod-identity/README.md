@@ -133,9 +133,9 @@ The Azure SQL Database *Connection String* will be stored in an Azure Key Vault.
 
    Create a secret for the SQL database connection string in the Key Vault.  Refer to the table below.
 
-   Secret Name | Value | Description
-   ----------- | ----- | -----------
-   sqldbconn | Server=tcp:{SQL_SRV_PREFIX}.database.windows.net;Initial Catalog=ClaimsDB;Persist Security Info=False;User ID={SQL_USER_ID};Password={SQL_USER_PWD};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30; | The Azure SQL Database connection string. Value of 'ConnectionStrings.SqlServerDb' parameter in `appsettings.json` file.  Make sure to substitute correct values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD in the connection string.
+   | Secret Name | Value | Description |
+   | ----------- | ----- | ----------- |
+   sqldbconn | Server=tcp:{SQL_SRV_PREFIX}.database.windows.net;Initial Catalog=ClaimsDB;Persist Security Info=False;User ID={SQL_USER_ID};Password={SQL_USER_PWD};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30; | The Azure SQL Database connection string. Value of 'ConnectionStrings.SqlServerDb' parameter in `appsettings.json` file.  Make sure to substitute correct values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD in the connection string. |
 
 3. Assign Azure Identity Roles.
 
