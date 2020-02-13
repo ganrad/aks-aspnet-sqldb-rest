@@ -9,7 +9,8 @@ In this project, the Azure SQL Database **Connection String** will be stored in 
 Azure Active Directory (AAD) Pod Identity enables Kubernetes applications to access cloud resources securely using managed identities and service principals.  Without any code modifications, containerized applications can access any resource on Azure cloud that uses AAD as an Identity provider.
 
 **Functional Diagram:**
-Refer to the architecture diagram [here](https://docs.microsoft.com/en-us/azure/aks/operator-best-practices-identity#use-pod-identities)
+
+Refer to the architecture diagram [here](https://docs.microsoft.com/en-us/azure/aks/operator-best-practices-identity#use-pod-identities).
 
 **Prerequisites:**
 1. Readers are required to complete Sections A thru G in the [parent project](https://github.com/ganrad/aks-aspnet-sqldb-rest) before proceeding with the hands-on labs in this sub-project.
@@ -134,7 +135,7 @@ The Azure SQL Database *Connection String* will be stored in an Azure Key Vault.
 
    Secret Name | Value | Description
    ----------- | ----- | -----------
-   sqldbconn | Value of 'ConnectionStrings.SqlServerDb' parameter in `appsettings.json` file | The Azure SQL Database connection string. Make sure to substitute correct values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD in the connection string.
+   sqldbconn | Server=tcp:{SQL_SRV_PREFIX}.database.windows.net;Initial Catalog=ClaimsDB;Persist Security Info=False;User ID={SQL_USER_ID};Password={SQL_USER_PWD};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30; | The Azure SQL Database connection string. Value of 'ConnectionStrings.SqlServerDb' parameter in `appsettings.json` file.  Make sure to substitute correct values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD in the connection string.
 
 3. Assign Azure Identity Roles.
 
@@ -245,5 +246,3 @@ Execute the steps below to deploy the Claims Web API application on AKS.
    ```
 
 Congrats! In this extension, you installed Azure **FlexVolume** driver and **AAD Pod Identity** components.  Finally, you configured the Claims Web API application to use FlexVolume driver and the managed Pod Identity to retrieve SQL Connection String from an Azure Key Vault. 
-
-**--The END.**

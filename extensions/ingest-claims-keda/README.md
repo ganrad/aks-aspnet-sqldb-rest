@@ -466,4 +466,4 @@ This section is left as an exercise to the readers and workshop attendees.  Refe
 - Use the `Dockerfile` in the build pipeline to build the Function application container images.  
 - Use the `Helm Charts` in the release pipeline to deploy the containerized Function applications on AKS.
 
-**--The END.**
+Congrats! In this extension, you learnt how to build and deploy event driven serverless applications (**Azure Function Apps**) on AKS and scale them using **KEDA** and **Osiris**!
