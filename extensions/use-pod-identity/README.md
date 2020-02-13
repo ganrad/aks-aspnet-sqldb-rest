@@ -57,7 +57,7 @@ Follow the steps below to provision the Nginx Ingress Controller on the AKS clus
    #
    $ kubectl get pods -n ingress-basic
    #
-   # Retreive the Ingress Controller external interface Public IP address.
+   # Retreive the Ingress Controller external interface (ALB) Public IP address.
    # Important: Make a note of the Public IP address listed under the 'EXTERNAL-IP' column.
    # You will be using this IP address to access the Claims Web API's later. 
    #
@@ -287,10 +287,10 @@ Execute the steps below to deploy the Claims Web API application on AKS.
    Retrieve the Public IP address of the Nginx ingress controller. See the command snippet below.
    
    ```bash
-   # Get the ALB IP address for the Claims Web API service.
+   # Get the ALB IP address for the Nginx Ingress Controller service.
    # The ALB Public IP address should be listed under column 'EXTERNAL-IP' in the command output.
    #
-   $ kubectl get svc -n dev-claims-podid
+   $ kubectl get svc -n ingress-basic
    #
    ```
 
