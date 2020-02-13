@@ -176,7 +176,11 @@ The Azure SQL Database *Connection String* will be stored in an Azure Key Vault.
 
    | Secret Name | Value | Description |
    | ----------- | ----- | ----------- |
-   sqldbconn | Server=tcp:{SQL_SRV_PREFIX}.database.windows.net;Initial Catalog=ClaimsDB;Persist Security Info=False;User ID={SQL_USER_ID};Password={SQL_USER_PWD};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30; | The Azure SQL Database connection string. Value of 'ConnectionStrings.SqlServerDb' parameter in `appsettings.json` file.  Make sure to substitute correct values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD in the connection string. |
+   sqldbconn | Server=tcp:{SQL_SRV_PREFIX}.database.windows.net;
+   Initial Catalog=ClaimsDB;Persist Security Info=False;
+   User ID={SQL_USER_ID};Password={SQL_USER_PWD};
+   MultipleActiveResultSets=False;Encrypt=True;
+   TrustServerCertificate=False;Connection Timeout=30; | The Azure SQL Database connection string. Value of 'ConnectionStrings.SqlServerDb' parameter in `appsettings.json` file.  Make sure to substitute correct values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD in the connection string. |
 
 3. Assign Azure Identity Roles.
 
@@ -280,10 +284,20 @@ Execute the steps below to deploy the Claims Web API application on AKS.
    # Verify the Claims Web API pod is running
    $ kubectl get pods -n dev-claims-podid
    #
-   # Get the ALB IP address for the Claims Web API service
+   ```
+
+3. Access the Claims Web API application.
+
+   Retrieve the Public IP address of the Nginx ingress controller. See the command snippet below.
+   
+   ```bash
+   # Get the ALB IP address for the Claims Web API service.
+   # The ALB Public IP address should be listed under column 'EXTERNAL-IP' in the command output.
+   #
    $ kubectl get svc -n dev-claims-podid
    #
-   # Access the Claims Web API service using a browser.
    ```
+
+   Access the Claims Web API service using a browser eg., http://[ALB Public IP]/api/v1/claims.
 
 Congrats! In this extension, you installed Azure **FlexVolume** driver and **AAD Pod Identity** components.  Finally, you configured the Claims Web API application to use FlexVolume driver and the managed Pod Identity to retrieve SQL Connection String from an Azure Key Vault. 
