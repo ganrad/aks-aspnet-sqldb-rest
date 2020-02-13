@@ -13,16 +13,20 @@ Azure Active Directory (AAD) Pod Identity enables Kubernetes applications to acc
 Refer to the architecture diagram [here](https://docs.microsoft.com/en-us/azure/aks/operator-best-practices-identity#use-pod-identities).
 
 **Prerequisites:**
-1. Readers are required to complete Sections A thru G in the [parent project](https://github.com/ganrad/aks-aspnet-sqldb-rest) before proceeding with the hands-on labs in this sub-project.
+1. Readers are required to complete Sections A thru G in the [parent project](https://github.com/ganrad/aks-aspnet-sqldb-rest) before proceeding with the hands-on labs in this project.
 
 Readers are advised to go thru the following on-line resources before proceeding with the hands-on sections.
 - [Azure AAD Pod Identity](https://github.com/Azure/aad-pod-identity)
 - [Azure/Kubernetes Key Vault FlexVolume Driver](https://github.com/Azure/kubernetes-keyvault-flexvol)
 
-## A. Deploy Azure Key Vault FlexVolume Driver on AKS cluster
+## A. Deploy an Nginx Ingress Controller on the AKS Cluster
 **Approx. time to complete this section: 10 minutes**
 
-Follow the steps below to provision the FlexVolume driver on the AKS cluster.
+An ingress controller provides reverse proxy, configurable traffic routing and TLS termination for applications (Web Services) deployed on the AKS cluster.  The ingress controller acts as a single entry point for all external HTTP traffic inbound into the cluster and intelligently routes the calls to the respective application service end-points.
+
+In this project, we will deploy an [Nginx Ingress Controller](https://github.com/kubernetes/ingress-nginx) and configure it to intercept and route HTTP calls to the Claims API microservice.
+
+Follow the steps below to provision the Nginx Ingress Controller on the AKS cluster.  You can also refer to the steps in the AKS documentation [here](https://docs.microsoft.com/en-us/azure/aks/ingress-basic).
 
 1. Login into the Linux VM via SSH.
   
@@ -31,7 +35,44 @@ Follow the steps below to provision the FlexVolume driver on the AKS cluster.
    $ ssh labuser@x.x.x.x
    #
    ```
-2. Deploy Key Vault FlexVolume Driver on the AKS Cluster
+
+2. Install the Nginx Ingress Controller.
+
+   ```bash
+   # Create a k8s namespace for the Ingress Controller
+   $ kubectl create namespace ingress-basic
+   #
+   # Add the official stable repository for k8s helm charts
+   $ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+   #
+   # Use Helm to deploy the Nginx Ingress Controller on AKS
+   $ helm install nginx-ingress stable/nginx-ingress \
+     --namespace ingress-basic \
+     --set controller.replicaCount=2 \
+     --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
+     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+   #
+   # Verify the ingress controller Pods are 'running'
+   # There should 2 ingress controller pods and one backend pod
+   #
+   $ kubectl get pods -n ingress-basic
+   #
+   # Retreive the Ingress Controller external interface Public IP address.
+   # Important: Make a note of the Public IP address listed under the 'EXTERNAL-IP' column.
+   # You will be using this IP address to access the Claims Web API's later. 
+   #
+   $ kubectl get svc -n ingress-basic
+   #
+   ```
+
+## B. Deploy Azure Key Vault FlexVolume Driver on AKS cluster
+**Approx. time to complete this section: 10 minutes**
+
+The FlexVolume driver is responsible for retrieving secrets from Azure Key Vault and mounting them into separate files on the application container's file system.
+
+Follow the steps below to provision the FlexVolume driver on the AKS cluster.
+
+1. Deploy Key Vault FlexVolume Driver on the AKS Cluster
 
    ```bash
    # Deploy the KV FlexVolume Driver on the AKS cluster.
@@ -43,7 +84,7 @@ Follow the steps below to provision the FlexVolume driver on the AKS cluster.
    #
    ```
 
-## B. Install AAD Pod Identity components on AKS Cluster
+## C. Install AAD Pod Identity components on AKS Cluster
 **Approx. time to complete this section: 30 minutes**
 
 AAD Pod Identity consists of two key components and custom resources.  The two core components are described below.
@@ -117,7 +158,7 @@ Follow the steps below to deploy AAD Pod Identity components and custom resource
    #
    ```
 
-## C. Deploy Azure Key Vault and Custom Resources
+## D. Deploy Azure Key Vault and Custom Resources
 **Approx. time to complete this section: 45 minutes**
 
 The Azure SQL Database *Connection String* will be stored in an Azure Key Vault. To provision a Key Vault and save the connection string as a **Secret**, refer to the steps below.
@@ -204,7 +245,7 @@ The Azure SQL Database *Connection String* will be stored in an Azure Key Vault.
    #
    ```
 
-## D. Deploy the Claims Web API application
+## E. Deploy the Claims Web API application
 **Approx. time to complete this section: 20 minutes**
 
 Execute the steps below to deploy the Claims Web API application on AKS.
