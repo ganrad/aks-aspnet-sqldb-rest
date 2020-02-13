@@ -1,4 +1,4 @@
-# Use AAD Pod Identity and FlexVolume driver to inject Secrets into containerized applications on AKS
+# Use AAD Pod Identity and Key Vault FlexVolume driver to inject Secrets into applications on AKS
 
 This extension project describes the steps for configuring AAD Pod Identity and Azure FlexVolume driver for retreiving secrets from Azure Key Vault and mounting them onto the file system within the Claims Web API application container.
 
@@ -9,6 +9,7 @@ In this project, the Azure SQL Database **Connection String** will be stored in 
 Azure Active Directory (AAD) Pod Identity enables Kubernetes applications to access cloud resources securely using managed identities and service principals.  Without any code modifications, containerized applications can access any resource on Azure cloud that uses AAD as an Identity provider.
 
 **Functional Diagram:**
+Refer to the architecture diagram [here](https://docs.microsoft.com/en-us/azure/aks/operator-best-practices-identity#use-pod-identities)
 
 **Prerequisites:**
 1. Readers are required to complete Sections A thru G in the [parent project](https://github.com/ganrad/aks-aspnet-sqldb-rest) before proceeding with the hands-on labs in this sub-project.
@@ -50,7 +51,7 @@ AAD Pod Identity consists of two key components and custom resources.  The two c
   The MIC is a custom Kubernetes resource that watches for changes to Pods, Identities and Bindings through the Kubernetes API Server.   When it detects a change, the MIC adds or deletes assigned identities as required.
 - **Node Managed Identity (NMI)**
 
-  The NMI component is responsible for intercepting a Service Principal Token request sent by a Pod to an MSI endpoint, retrieving a matching Azure Identity from MIC and then making an [ADAL]() request to get a token for the client id.  The token is then returned to the Pod (FlexVolume driver).
+  The NMI component is responsible for intercepting a Service Principal Token request sent by a Pod to an MSI endpoint, retrieving a matching Azure Identity from MIC and then making an [ADAL](https://docs.microsoft.com/en-us/azure/active-directory/azuread-dev/active-directory-authentication-libraries) request to get a token for the client id.  The token is then returned to the Pod (FlexVolume driver).
 
 Follow the steps below to deploy AAD Pod Identity components and custom resources.
 

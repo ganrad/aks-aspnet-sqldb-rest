@@ -353,7 +353,7 @@ All the steps in this section have to be executed on the Linux VM terminal windo
 
    For a description of all other parameters in `./claims-api-func/values.yaml`, refer to [ClaimsApiAsyncFunc documentation](./ClaimsApiAsyncFunc).
 
-   **NOTE:** **Function** parameter values which are specified in a Kubernetes *Secret* have to be **Base64** encoded in the Helm chart `values.yaml` file.
+   >**NOTE:** **Function** parameter values which are specified in a Kubernetes *Secret* have to be **Base64** encoded in the Helm chart `values.yaml` file.
 
    Refer to the command snippet below for encoding and decoding parameter values.
 
@@ -380,7 +380,7 @@ All the steps in this section have to be executed on the Linux VM terminal windo
 
    For a description of all other parameters in `./claims-async-func/values.yaml`, refer to [ClaimsAsyncApiFunc documentation](./ClaimsAsyncApiFunc).
 
-   **NOTE:** **Function** parameter values which are specified in a Kubernetes *Secret* have to be **Base64** encoded in the Helm chart `values.yaml` file.
+   >**NOTE:** **Function** parameter values which are specified in a Kubernetes *Secret* have to be **Base64** encoded in the Helm chart `values.yaml` file.
 
 4. Create an Kubernetes namespace and image pull secret.
 
