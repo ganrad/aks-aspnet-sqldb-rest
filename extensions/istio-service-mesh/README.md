@@ -2,12 +2,12 @@
 
 This extension project explores many of the advanced capabilities supported by Istio Service Mesh.
 
-What is a Service Mesh ? Here's are a few excerpts taken from the Istio Service Mesh website
+What is a Service Mesh ? Here are a few excerpts taken from the Istio Service Mesh website
 >The term service mesh is used to describe the network of microservices that make up such applications and the interactions between them.
 
 >In production environments, Istio's diverse feature set lets you successfully and efficiently run a distributed microservice architecture and provides a uniform way to secure, connect and monitor microservices.
 
-Istio provides the following four capabilities uniformly across a network of services:
+At a high level, Istio provides the following four capabilities uniformly across a network of services:
 - Traffic Management
 
   Let's you control the flow of traffic and API calls between services.
@@ -43,6 +43,6 @@ Refer to the architecture diagram [here](https://istio.io/docs/ops/deployment/ar
 Readers are advised to go thru the following on-line resources before proceeding with the hands-on sections.
 - [Istio Service Mesh](https://istio.io/docs/concepts/what-is-istio/)
 
-## A. Deploy an Nginx Ingress Controller on the AKS Cluster
+## A. Deploy an Istio Service Mesh on AKS
 
 Congrats! In this extension, you examined many of the advanced features supported by Istio Service Mesh and how they can help you build scalable, fault tolerant cloud-native applications.  Now that you have fully explored the power of Kubernetes cloud-native platform on Azure (AKS) and associated open source ecosystem of frameworks and runtimes, go build and deploy business applications on Azure Cloud! 
