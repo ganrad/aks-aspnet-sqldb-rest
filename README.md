@@ -125,7 +125,7 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
     Click on **Next : Networking >** at the bottom of the web page.  In the **Networking** tab, select *Public endpoint* for **Connectivity method**.  Also, enable the button besides **Allow Azure services and resources to access this server**.  Next, click on **Review + create**.  See screenshot below.
 
-    ![alt tag](./images/A-12.PNG)
+    ![alt tag](./images/A-12.jpg)
 
     Review and make sure all options you have selected are correct.
 
