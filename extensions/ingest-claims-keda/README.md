@@ -386,6 +386,8 @@ All the steps in this section have to be executed on the Linux VM terminal windo
 
 4. Create an Kubernetes namespace and image pull secret.
 
+   >**NOTE:** This step is required only if you have provisioned an AKS cluster with advanced networking (Azure CNI).  You can skip this step if you have deployed an AKS cluster with basic (Kubenet) networking plug-in.
+
    The virtual node is not yet integrated with Azure AD service principal authentication.  Hence a Kubernetes *Secret* object has to be created containing the service principal credentials.  This secret object will then be used by the kubelet to pull the container image from ACR.  Review the deployment manifest ('deploy-res.yaml') in the Helm chart folder to understand how this works.
 
    ```bash
