@@ -46,6 +46,8 @@ Virtual nodes enable network communication between pods that run on [ACI](https:
 
 Follow the steps below to provision a Virtual Node and associate it with an AKS cluster.
 
+>**NOTE:** Skip the steps (1 .. 3) below if you have deployed a *Basic* AKS cluster with **Kubenet** overlay networking.  For adding **Virtual Nodes** to an AKS cluster and deploying ACI containers, Azure CNI networking is required!  Complete the steps below only if you have provisioned an AKS cluster within a private VNET and also configured the cluster to use Azure CNI.
+
 1. Login into the Linux VM via SSH.
   
    ```bash
