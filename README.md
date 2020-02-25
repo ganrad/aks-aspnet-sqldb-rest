@@ -1521,10 +1521,11 @@ To complete this challenge, you will update and run a YAML *delivery* pipeline i
   - **Canary** application deployments in a subsequent section.
   - **Intelligent request routing** and traffic splitting in the **Istio** *Service Mesh* extension project.
 
->**NOTES:**
-At this point, you have built and deployed three different versions of the Claims API microservice.  Each version has a separate **Build ID number**.  For quick reference, here are the versions and their descriptions.
-- **v1**: Version 1 is the initial version of the microservice.
-- **v2**: Version 2 is the second version of the microservice and includes the enhancements for serving an OpenAPI for API end-points.
+At this point, you have built and pushed three different container images for the Claims API microservice into the ACR instance.  Each application version is packaged within a separate container image and the image has been tagged with a unique **Build ID number**.
+
+For quick reference, here are the Claims API container image versions and their descriptions.  Each image version is tagged with a separate and unique Build ID.
+- **v1**: Version 1 is the initial version of the Claims API microservice.
+- **v2**: Version 2 is the second version of the microservice and includes enhancements for serving an OpenAPI for Claims API end-points.
 - **v3**: Version 3 is the final version of the microservice and includes enhancements for sending metrics data to Azure Application Insights.
 
 ## J. Explore out of box AKS features
