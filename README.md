@@ -780,8 +780,8 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 You have now successfully **built** the Claims API microservice container image and pushed it to the Azure Container Registry.
 
 **IMPORTANT NOTES:**
-- Access the *Repositories* blade of your ACR instance in Azure Portal. Note down the value of the latest **Tag** (Build ID number) of the Claims API container image.
-- The ""Build ID number** will represent version **v1** of the Claims API microservice. You will be using this image **Tag** value to implement 
+- Access the *Repositories* blade of your ACR instance in Azure Portal.
+- Note down the value of the latest **Tag** (Build ID number) of the Claims API container image. The **Build ID number** will represent version **v1** of the Claims API microservice. You will be using this image **Tag** value (ID number) to implement 
   - **Canary** application deployments in a subsequent section.
   - **Intelligent request routing** and traffic splitting in the **Istio** *Service Mesh* extension project.
 
@@ -1236,8 +1236,8 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
 **IMPORTANT NOTES:**
 - Login to the Azure Portal using a browser window/tab.
-- Access the *Repositories* blade of your ACR instance. Note down the value of the latest **Tag** (Build ID number) of the Claims API container image which was built and pushed by the Azure DevOps Build pipeline.
-- The ""Build ID number** will represent version **v2** of the Claims API microservice. You will be using this image **Tag** value to implement 
+- Access the *Repositories* blade of your ACR instance.
+- Note down the value of the latest **Tag** (Build ID number) of the Claims API container image which was built and pushed by the Azure DevOps Build pipeline. The **Build ID number** will represent version **v2** of the Claims API microservice. You will be using this image **Tag** value (ID number) to implement 
   - **Canary** application deployments in a subsequent section.
   - **Intelligent request routing** and traffic splitting in the **Istio** *Service Mesh* extension project.
 
@@ -1516,11 +1516,10 @@ To complete this challenge, you will update and run a YAML *delivery* pipeline i
 
 **IMPORTANT NOTES:**
 - Login to the Azure Portal using a browser window/tab.
-- Access the *Repositories* blade of your ACR instance. Note down the value of the latest **Tag** (Build ID number) of the Claims API container image which you built and pushed into the ACR using the Azure DevOps Delivery pipeline.
-- The ""Build ID number** will represent version **v3** of the Claims API microservice. You will be using this image **Tag** value to implement 
+- Access the *Repositories* blade of your ACR instance.
+- Note down the value of the latest **Tag** (Build ID number) of the Claims API container image which you built and pushed into the ACR using the Azure DevOps Delivery pipeline.  The **Build ID number** will represent version **v3** of the Claims API microservice. You will be using this image **Tag** value (ID number) to implement 
   - **Canary** application deployments in a subsequent section.
   - **Intelligent request routing** and traffic splitting in the **Istio** *Service Mesh* extension project.
-
 
 >**NOTES:**
 At this point, you have built and deployed three different versions of the Claims API microservice.  Each version has a separate **Build ID number**.  For quick reference, here are the versions and their descriptions.
