@@ -1610,7 +1610,7 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     Token | Value
     ----- | ----- 
     ACR Name | Name of your ACR instance
-    Image Tag | Images tag values which you had noted down at the end of *Section H* and *Exercise 3*
+    Image Tag | Images tag values which you had noted down at the end of *Section I* and *Exercise 3*
     Azure SQL Server Connection String | SQL Server connection string
     
     ```bash
@@ -1619,7 +1619,7 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     #
     # Go thru and edit the `./k8s-resources/claims-canary-deploy.yaml` file.
     # Substitute values for ACR Name and Image Tag - placeholders in the file (see above)
-    # Deploy version 1.0 and version 1.1 of the Claims API
+    # Deploy version v1 and version v2 of the Claims API
     $ kubectl apply -f ./k8s-resources/claims-canary-deploy.yaml -n canary-test
     #
     # Get the Public IP address of the deployed service
@@ -1628,11 +1628,11 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     # Verify only 1 in 4 API calls are being served by the Canary release
     ```
 
-    Use **curl** and invoke the Claims API end-point in a loop.  You will observe that version 1.1 of the Claims API will only be invoked once for every 3 invokations of version 1.0 of the API.
+    Use **curl** and invoke the Claims API end-point in a loop.  You will observe that version v1 of the Claims API will only be invoked once for every 3 invokations of version v2 of the API.
 
-    You can tweak the number of replicas in the v1.0 and v1.1 deployments to determine the ratio of each release which will receive live traffic.
+    You can tweak the number of replicas in the v1 and v2 deployments to determine the ratio of each release which will receive live traffic.
 
-    **Challenge:** Direct all (100%) API traffic to the Canary release (v1.1) and make it the current stable release.  Additionally, scale down the old (v1.0) release.
+    **Challenge:** Direct all (100%) API traffic to the Canary release (v2) and make it the current stable release.  Additionally, scale down the old (v1) release.
 
 3.  Auto-scale application containers (*Pods*)
 
