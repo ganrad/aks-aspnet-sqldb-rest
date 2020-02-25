@@ -304,12 +304,12 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Make sure you are in the home directory
     $ cd
     #
-    # Install Helm v2.16.0
+    # Install Helm v2.16.3
     # Create a new directory 'Helm' under home directory to store the helm binary
     $ mkdir helm
     $ cd helm
-    $ wget https://get.helm.sh/helm-v2.16.0-linux-amd64.tar.gz
-    $ tar -xzvf helm-v2.16.0-linux-amd64.tar.gz
+    $ wget https://get.helm.sh/helm-v2.16.3-linux-amd64.tar.gz
+    $ tar -xzvf helm-v2.16.3-linux-amd64.tar.gz
     #
     # Switch back to home directory
     $ cd
@@ -911,8 +911,8 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     # Check if Helm client is able to connect to Tiller on AKS.
     # This command should list both client and server versions.
     $ helm version
-    Client: &version.Version{SemVer:"v2.16.0", GitCommit:"e13bc94621d4ef666270cfbe734aaabf342a49bb", GitTreeState:"clean"}
-    Server: &version.Version{SemVer:"v2.16.0", GitCommit:"e13bc94621d4ef666270cfbe734aaabf342a49bb", GitTreeState:"clean"}
+    Client: &version.Version{SemVer:"v2.16.3", GitCommit:"e13bc94621d4ef666270cfbe734aaabf342a49bb", GitTreeState:"clean"}
+    Server: &version.Version{SemVer:"v2.16.3", GitCommit:"e13bc94621d4ef666270cfbe734aaabf342a49bb", GitTreeState:"clean"}
     ```
 
 5.  Deploy Traefik Kubernetes Ingress Controller.
