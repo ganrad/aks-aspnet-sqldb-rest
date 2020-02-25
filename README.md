@@ -89,7 +89,7 @@ In this section, we will create an Azure SQL Server instance and create a databa
     ```bash
     $ az group create --name myResourceGroup --location westus2
     ```
-    **NOTE:** Keep in mind, if you specify a different name for the resource group (other than **myResourceGroup**), you will need to substitute the same value in multiple CLI commands in the remainder of this project!  If you are new to Azure Cloud, it's best to use the suggested name.
+    >**NOTE:** Keep in mind, if you specify a different name for the resource group (other than **myResourceGroup**), you will need to substitute the same value in multiple CLI commands in the remainder of this project!  If you are new to Azure Cloud, it's best to use the suggested name.
 
 3.  Create an Azure SQL Server (managed instance) and database.
 
@@ -145,7 +145,7 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
     Click on **Save**.
 
-    **NOTE**: Remember to delete the firewall rule setting once you have finished working on all labs in this project.
+    >**NOTE**: Remember to delete the firewall rule setting once you have finished working on all labs in this project.
 
 5.  Copy the Azure SQL Server database (ClaimsDB) connection string.
 
@@ -189,7 +189,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
 
     On a Windows PC, you can use a SSH client such as [Putty](https://putty.org/), [Git Bash](https://gitforwindows.org/) or the [Windows Sub-System for Linux (Windows 10)](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to login into the VM.
 
-    **NOTE:** Use of Cloud Shell to SSH into the VM is **NOT** recommended.
+    >**NOTE:** Use of Cloud Shell to SSH into the VM is **NOT** recommended.
     ```bash
     # SSH into the VM.  Substitute the public IP address for the Linux VM in the command below.
     $ ssh labuser@x.x.x.x
@@ -321,8 +321,8 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Install kubectl binary in the new directory
     $ az aks install-cli --install-location=./aztools/kubectl
     #
-    # Install Istio Service Mesh CLI v1.4.0
-    $ ISTIO_VERSION=1.4.0
+    # Install Istio Service Mesh CLI v1.4.5
+    $ ISTIO_VERSION=1.4.5
     $ curl -sL "https://github.com/istio/istio/releases/download/$ISTIO_VERSION/istio-$ISTIO_VERSION-linux.tar.gz" | tar xz --directory=$HOME/aztools
     # 
     # Register the Microsoft key, product repository and required dependencies.
@@ -816,7 +816,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
 3.  Provision an AKS cluster.
 
-    **NOTE:** Follow the steps in one of the options below (a. or b.) for deploying the AKS cluster.  If you plan to work on the labs in the [extensions](./extensions) sub-directory, then follow the steps in option (b) below.  Otherwise, follow the steps in option (a).
+    >**NOTE:** Follow the steps in one of the options below (a. or b.) for deploying the AKS cluster.  If you would like to explore deploying containers on **Virtual Nodes** in the [extensions](./extensions) projects, follow the steps in option (b) below.  Otherwise, follow the steps in option (a).
 
     a. Use the latest supported Kubernetes version to deploy the AKS cluster.  At the time of this writing, version `1.11.5` was the latest AKS version. 
 
