@@ -54,7 +54,7 @@ Follow the steps below.
 
    To explore the broad feature set of Istio Service Mesh, we will deploy the **demo** profile in this project.
 
-   >**NOTE:** The **default** profile serves as a good starting point for **production* clusters.  Refer to the Istio documentation for deploying a custom profile.
+   >**NOTE:** The **default** profile serves as a good starting point for **production** clusters.  Refer to the Istio documentation for deploying a custom profile.
 
    ```bash
    # Install the 'demo' profile
