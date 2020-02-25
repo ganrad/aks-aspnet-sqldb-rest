@@ -781,7 +781,9 @@ You have now successfully **built** the Claims API microservice container image 
 
 **IMPORTANT NOTES:**
 - Access the *Repositories* blade of your ACR instance in Azure Portal. Note down the value of the latest **Tag** (Build ID number) of the Claims API container image.
-- You will need this image **Tag** value to implement *Canary* application deployments in a subsequent section.
+- The ""Build ID number** will represent version **v1** of the Claims API microservice. You will be using this image **Tag** value to implement 
+  - **Canary** application deployments in a subsequent section.
+  - **Intelligent request routing** and traffic splitting in the **Istio** *Service Mesh* extension project.
 
 ### G. Create an Azure Kubernetes Service cluster and deploy Claims API microservice
 **Approx. time to complete this section: 1 Hour**
@@ -1235,7 +1237,9 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 **IMPORTANT NOTES:**
 - Login to the Azure Portal using a browser window/tab.
 - Access the *Repositories* blade of your ACR instance. Note down the value of the latest **Tag** (Build ID number) of the Claims API container image which was built and pushed by the Azure DevOps Build pipeline.
-- You will need this image **Tag** value to implement *Canary* application deployments in a subsequent section.
+- The ""Build ID number** will represent version **v2** of the Claims API microservice. You will be using this image **Tag** value to implement 
+  - **Canary** application deployments in a subsequent section.
+  - **Intelligent request routing** and traffic splitting in the **Istio** *Service Mesh* extension project.
 
 ### Exercise 1:
 **Execute functional tests in *QA* region and then deploy Claims API microservice in *Production* region**
@@ -1513,7 +1517,16 @@ To complete this challenge, you will update and run a YAML *delivery* pipeline i
 **IMPORTANT NOTES:**
 - Login to the Azure Portal using a browser window/tab.
 - Access the *Repositories* blade of your ACR instance. Note down the value of the latest **Tag** (Build ID number) of the Claims API container image which you built and pushed into the ACR using the Azure DevOps Delivery pipeline.
-- You will need this image **Tag** value to implement *Canary* application deployments in a subsequent section.
+- The ""Build ID number** will represent version **v3** of the Claims API microservice. You will be using this image **Tag** value to implement 
+  - **Canary** application deployments in a subsequent section.
+  - **Intelligent request routing** and traffic splitting in the **Istio** *Service Mesh* extension project.
+
+
+>**NOTES:**
+At this point, you have built and deployed three different versions of the Claims API microservice.  Each version has a separate **Build ID number**.  For quick reference, here are the versions and their descriptions.
+- **v1**: Version 1 is the initial version of the microservice.
+- **v2**: Version 2 is the second version of the microservice and includes the enhancements for serving an OpenAPI for API end-points.
+- **v3**: Version 3 is the final version of the microservice and includes enhancements for sending metrics data to Azure Application Insights.
 
 ## J. Explore out of box AKS features
 
