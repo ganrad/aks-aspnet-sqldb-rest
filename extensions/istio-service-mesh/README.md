@@ -44,7 +44,7 @@ Readers are advised to go thru the following on-line resources before proceeding
 - [Istio Service Mesh](https://istio.io/docs/concepts/what-is-istio/)
 
 ## A. Deploy an Istio Service Mesh on AKS
-**Approx. time to complete this section: 20 minutes
+**Approx. time to complete this section: 20 minutes**
 
 In this section, we will install **Istio** Service Mesh using Istio CLI (`istioctl`).  You should have installed the CLI on the Linux VM (Bastion Host) in the parent project.
 
@@ -72,23 +72,23 @@ Follow the steps below.
    # Sample output is provided below.
    #
    $ kubectl get svc -n istio-system
-   NAME                     TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                                                                                                                                      AGE
-grafana                  ClusterIP      172.21.211.123   <none>          3000/TCP                                                                                                                                     2m
-istio-citadel            ClusterIP      172.21.177.222   <none>          8060/TCP,15014/TCP                                                                                                                           2m
-istio-egressgateway      ClusterIP      172.21.113.24    <none>          80/TCP,443/TCP,15443/TCP                                                                                                                     2m
-istio-galley             ClusterIP      172.21.132.247   <none>          443/TCP,15014/TCP,9901/TCP                                                                                                                   2m
-istio-ingressgateway     LoadBalancer   172.21.144.254   52.116.22.242   15020:31831/TCP,80:31380/TCP,443:31390/TCP,31400:31400/TCP,15029:30318/TCP,15030:32645/TCP,15031:31933/TCP,15032:31188/TCP,15443:30838/TCP   2m
-istio-pilot              ClusterIP      172.21.105.205   <none>          15010/TCP,15011/TCP,8080/TCP,15014/TCP                                                                                                       2m
-istio-policy             ClusterIP      172.21.14.236    <none>          9091/TCP,15004/TCP,15014/TCP                                                                                                                 2m
-istio-sidecar-injector   ClusterIP      172.21.155.47    <none>          443/TCP,15014/TCP                                                                                                                            2m
-istio-telemetry          ClusterIP      172.21.196.79    <none>          9091/TCP,15004/TCP,15014/TCP,42422/TCP                                                                                                       2m
-jaeger-agent             ClusterIP      None             <none>          5775/UDP,6831/UDP,6832/UDP                                                                                                                   2m
-jaeger-collector         ClusterIP      172.21.135.51    <none>          14267/TCP,14268/TCP                                                                                                                          2m
-jaeger-query             ClusterIP      172.21.26.187    <none>          16686/TCP                                                                                                                                    2m
-kiali                    ClusterIP      172.21.155.201   <none>          20001/TCP                                                                                                                                    2m
-prometheus               ClusterIP      172.21.63.159    <none>          9090/TCP                                                                                                                                     2m
-tracing                  ClusterIP      172.21.2.245     <none>          80/TCP                                                                                                                                       2m
-zipkin                   ClusterIP      172.21.182.245   <none>          9411/TCP
+   NAME                     TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                 AGE
+   grafana                  ClusterIP      172.21.211.123   <none>          3000/TCP                   2m
+   istio-citadel            ClusterIP      172.21.177.222   <none>          8060/TCP,15014/TCP         2m
+   istio-egressgateway      ClusterIP      172.21.113.24    <none>          80/TCP,443/TCP,15443/TCP   2m
+   istio-galley             ClusterIP      172.21.132.247   <none>          443/TCP,15014/TCP,9901/TCP 2m
+   istio-ingressgateway     LoadBalancer   172.21.144.254   52.116.22.242   15020:31831/TCP            2m
+   istio-pilot              ClusterIP      172.21.105.205   <none>          15010/TCP,15011/TCP,8080/TCP,15014/TCP                                                                                                       2m
+   istio-policy             ClusterIP      172.21.14.236    <none>          9091/TCP,15004/TCP,15014/TCP             2m
+   istio-sidecar-injector   ClusterIP      172.21.155.47    <none>          443/TCP,15014/TCP          2m
+   istio-telemetry          ClusterIP      172.21.196.79    <none>          9091/TCP,15004/TCP,15014/TCP,42422/TCP   2m
+   jaeger-agent             ClusterIP      None             <none>          5775/UDP,6831/UDP,6832/UDP 2m
+   jaeger-collector         ClusterIP      172.21.135.51    <none>          14267/TCP,14268/TCP        2m
+   jaeger-query             ClusterIP      172.21.26.187    <none>          16686/TCP                  2m
+   kiali                    ClusterIP      172.21.155.201   <none>          20001/TCP                  2m
+   prometheus               ClusterIP      172.21.63.159    <none>          9090/TCP                   2m
+   tracing                  ClusterIP      172.21.2.245     <none>          80/TCP                     2m
+   zipkin                   ClusterIP      172.21.182.245   <none>          9411/TCP                   2m
    #
    ```
 
@@ -102,6 +102,5 @@ zipkin                   ClusterIP      172.21.182.245   <none>          9411/TC
    $ istioctl verify-install -f $HOME/istio-manifest.yaml
    #
    ```
-
 
 Congrats! In this extension, you examined many of the advanced features supported by Istio Service Mesh and how they can help you build scalable, fault tolerant cloud-native applications.  Now that you have fully explored the power of Kubernetes cloud-native platform on Azure (AKS) and associated open source ecosystem of frameworks and runtimes, go build and deploy business applications on Azure Cloud! 
