@@ -52,7 +52,9 @@ Follow the steps below.
 
 1. Install the **demo** profile.
 
-   The **demo** profile is intended for evaluating the broad feature set of Istio Service Mesh.  For production clusters, the **default** profile would serve as a good starting point.
+   To explore the broad feature set of Istio Service Mesh, we will deploy the **demo** profile in this project.
+
+   >**NOTE:** The **default** profile serves as a good starting point for **production* clusters.  Refer to the Istio documentation for deploying a custom profile.
 
    ```bash
    # Install the 'demo' profile
