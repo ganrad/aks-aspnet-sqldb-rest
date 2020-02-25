@@ -105,4 +105,11 @@ Follow the steps below.
    #
    ```
 
+## B. Explore the Istio Service Mesh features
+**Approx. time to complete this section: 2 hours**
+
+In this section, we will explore several advanced features supported by Istio.
+
+1. [Intelligent Request Routing](./intelligent-req-routing)
+
 Congrats! In this extension, you examined many of the advanced features supported by Istio Service Mesh and how they can help you build scalable, fault tolerant cloud-native applications.  Now that you have fully explored the power of Kubernetes cloud-native platform on Azure (AKS) and associated open source ecosystem of frameworks and runtimes, go build and deploy business applications on Azure Cloud! 
