@@ -1,0 +1,186 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app.name }}-v1
+  labels:
+    app: {{ .Values.app.name }}
+    version: v1
+    chart: {{ template "claims-api.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app.name }}
+      version: v1
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app.name }}
+        version: v1
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag-v1 }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: ConnectionStrings__SqlServerDb
+          value: "{{ .Values.sqldb.connectionString }}"
+        ports:
+          - name: http
+            containerPort: 80
+            protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /api/v1/claims/healthz
+            port: http
+          initialDelaySeconds: {{ .Values.checks.initialDelay }}
+          periodSeconds: {{ .Values.checks.periodSeconds }}
+        livenessProbe:
+          httpGet:
+            path: /api/v1/claims/healthz
+            port: http
+          initialDelaySeconds: {{ .Values.checks.initialDelay }}
+          periodSeconds: {{ .Values.checks.periodSeconds }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app.name }}-v2
+  labels:
+    app: {{ .Values.app.name }}
+    version: v2
+    chart: {{ template "claims-api.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app.name }}
+      version: v2
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app.name }}
+        version: v2
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag-v2 }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: ConnectionStrings__SqlServerDb
+          value: "{{ .Values.sqldb.connectionString }}"
+        ports:
+          - name: http
+            containerPort: 80
+            protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /api/v1/claims/healthz
+            port: http
+          initialDelaySeconds: {{ .Values.checks.initialDelay }}
+          periodSeconds: {{ .Values.checks.periodSeconds }}
+        livenessProbe:
+          httpGet:
+            path: /api/v1/claims/healthz
+            port: http
+          initialDelaySeconds: {{ .Values.checks.initialDelay }}
+          periodSeconds: {{ .Values.checks.periodSeconds }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app.name }}-v3
+  labels:
+    app: {{ .Values.app.name }}
+    version: v3
+    chart: {{ template "claims-api.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app.name }}
+      version: v3
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app.name }}
+        version: v3
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag-v3 }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: ConnectionStrings__SqlServerDb
+          value: "{{ .Values.sqldb.connectionString }}"
+        ports:
+          - name: http
+            containerPort: 80
+            protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /api/v1/claims/healthz
+            port: http
+          initialDelaySeconds: {{ .Values.checks.initialDelay }}
+          periodSeconds: {{ .Values.checks.periodSeconds }}
+        livenessProbe:
+          httpGet:
+            path: /api/v1/claims/healthz
+            port: http
+          initialDelaySeconds: {{ .Values.checks.initialDelay }}
+          periodSeconds: {{ .Values.checks.periodSeconds }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+---

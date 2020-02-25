@@ -38,7 +38,7 @@ In this project, we will reuse the Claims Web API microservice and Azure Functio
 Refer to the architecture diagram [here](https://istio.io/docs/ops/deployment/architecture/)
 
 **Prerequisites:**
-1. Readers are required to complete Sections A thru G in the [parent project](https://github.com/ganrad/aks-aspnet-sqldb-rest) before proceeding with the hands-on labs in this project.
+1. Readers are required to complete Sections A thru I in the [parent project](https://github.com/ganrad/aks-aspnet-sqldb-rest) before proceeding with the hands-on labs in this project.
 
 Readers are advised to go thru the following on-line resources before proceeding with the hands-on sections.
 - [Istio Service Mesh](https://istio.io/docs/concepts/what-is-istio/)
@@ -48,7 +48,7 @@ Readers are advised to go thru the following on-line resources before proceeding
 
 In this section, we will install **Istio** Service Mesh using Istio CLI (`istioctl`).  You should have installed the CLI on the Linux VM (Bastion Host) in the parent project.
 
-Follow the steps below.
+Login (ssh) to the Linux VM (Bastion Host) via a terminal window.  Follow the steps below.
 
 1. Install the **demo** profile.
 
@@ -105,11 +105,47 @@ Follow the steps below.
    #
    ```
 
-## B. Explore the Istio Service Mesh features
+## B. Deploy the Claims API microservice on Istio
+**Approx. time to complete this section: 10 minutes**
+
+Before proceeding, make sure you are logged into the Linux VM via a terminal window.
+
+Follow the steps below to deploy the Claims API microservice application in a new Istio enabled Kubernetes namespace.
+
+1. Create an Istio enabled namespace.
+
+   ```bash
+   # Create the k8s namespace 'dev-exp-istio`.
+   $ kubectl create namespace dev-exp-istio
+   #
+   # Label the namespace so that the sidecar container (Envoy proxy) is automatically injected 
+   # when a Pod is deployed in this namespace.
+   $ kubectl label namespace dev-exp-istio istio-injection=enabled
+   #
+   ```
+
+2. Deploy the Claims API microservice application.
+
+   ```bash
+   ```
+
+## C. Explore Istio Service Mesh features
 **Approx. time to complete this section: 2 hours**
 
 In this section, we will explore several advanced features supported by Istio.
 
 1. [Intelligent Request Routing](./intelligent-req-routing)
 
+## D. Uninstall the Claims API microservice application and Istio Service Mesh
+**Approx. time to complete this section: 10 minutes**
+
+After you have explored all the advanced features supported by Istio Service Mesh, you can uninstall the application and the service mesh from your Kubernetes cluster.
+   ```bash
+   # Delete the namespace
+   $ kubectl delete namespace dev-exp-istio
+   #
+   # Uninstall Istio service mesh
+   $ istioctl manifest generate --set profile=demo > kubectl delete -f -
+   #
+   ```
 Congrats! In this extension, you examined many of the advanced features supported by Istio Service Mesh and how they can help you build scalable, fault tolerant cloud-native applications.  Now that you have fully explored the power of Kubernetes cloud-native platform on Azure (AKS) and associated open source ecosystem of frameworks and runtimes, go build and deploy business applications on Azure Cloud! 
