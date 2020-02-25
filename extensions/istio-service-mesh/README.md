@@ -65,7 +65,7 @@ Follow the steps below.
 
 2. Verify the installation.
 
-   Verify the service mesh installation by ensuring kubernetes services are deployed and they all have a ClusterIP (except **jaeger-agent** service).  Also, the **istio-ingressgateway** should have been assigned an Public IP on the Azure Load Balancer.  Verify the IP for this service under the **EXTERNAL-IP** column.
+   Verify the service mesh installation by ensuring kubernetes services are deployed and they all have a ClusterIP (except **jaeger-agent** service).  Also, the **istio-ingressgateway** service should have been assigned an Public IP on the Azure Load Balancer.  Verify the Public IP for this service under the **EXTERNAL-IP** column.
 
    ```bash
    # Verify all services
@@ -78,7 +78,7 @@ Follow the steps below.
    istio-egressgateway      ClusterIP      172.21.113.24    <none>          80/TCP,443/TCP,15443/TCP   2m
    istio-galley             ClusterIP      172.21.132.247   <none>          443/TCP,15014/TCP,9901/TCP 2m
    istio-ingressgateway     LoadBalancer   172.21.144.254   52.116.22.242   15020:31831/TCP            2m
-   istio-pilot              ClusterIP      172.21.105.205   <none>          15010/TCP,15011/TCP,8080/TCP,15014/TCP                                                                                                       2m
+   istio-pilot              ClusterIP      172.21.105.205   <none>          15010/TCP,15011/TCP,8080/TCP,15014/TCP   2m
    istio-policy             ClusterIP      172.21.14.236    <none>          9091/TCP,15004/TCP,15014/TCP             2m
    istio-sidecar-injector   ClusterIP      172.21.155.47    <none>          443/TCP,15014/TCP          2m
    istio-telemetry          ClusterIP      172.21.196.79    <none>          9091/TCP,15004/TCP,15014/TCP,42422/TCP   2m
