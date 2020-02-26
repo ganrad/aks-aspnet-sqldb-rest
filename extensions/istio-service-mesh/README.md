@@ -160,7 +160,7 @@ Follow the steps below to deploy the Claims API microservice application in a ne
 
 5. Define the ingress gateway for the Claims API microservice
 
-   To access the Claims API REST end-points from outside the AKS cluster, an **Ingress Gateway** resource has to be created on the cluster.  Also, to route the request from the gateway to the service end-point, an **Virtual Service** resource has to be deployed.
+   To access the Claims API REST end-points from outside the AKS cluster, an **Ingress Gateway** resource has to be created on the cluster.  Also, to route the request from the gateway to the service end-point, an **Virtual Service** resource has to be deployed.  This default virtual service does not select a specific version of the Claims Web API but instead distributes the incoming requests evenly among the 3 API versions (v1, v2 & v3) in a round robin manner.
 
    ```bash
    # Deploy the ingress gateway and the virtual service for the Claims API microservice
@@ -173,8 +173,10 @@ Follow the steps below to deploy the Claims API microservice application in a ne
 
 6. Access the Claims Web API from outside the cluster
 
+   To access the Claims Web API from outside the cluster, retrieve the Azure Load Balancer Public IP address (Front-end IP) assigned to the Ingress Gateway.  Refer to the command snippet below.
+
    ```bash
-   # Determine the Ingress Gateway ALB Public IP and port
+   # Determine the Ingress Gateway ALB Public IP and port number
    #
    $ INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
    $ INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
@@ -186,7 +188,20 @@ Follow the steps below to deploy the Claims API microservice application in a ne
    #
    ```
 
-## C. Explore Istio Service Mesh features
+7. Apply default **Destination Rules**
+
+   An *Destination Rule* resource is used to define different versions for a Web API.  For the Claims Web API, we will define a default destination rule with 3 different versions - v1, v2 and v3.
+
+   ```bash
+   # Create the Destination Rule API resource
+   $ kubectl apply -f ./k8s-resources/destination-rule-all.yaml -n dev-claims-istio
+   #
+   # List the destination rules
+   $ kubectl get destinationrules -o yaml
+   #
+   ```
+
+## C. Explore Advanced Istio Service Mesh features
 **Approx. time to complete this section: 2 hours**
 
 In this section, we will explore several advanced features supported by Istio.
