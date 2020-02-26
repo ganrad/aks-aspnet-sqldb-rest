@@ -190,7 +190,7 @@ Follow the steps below to deploy the Claims API microservice application in a ne
 
 7. Apply default **Destination Rules** for the Claims Web API
 
-   An *Destination Rule* resource is used to define different versions for a Web API.  For the Claims Web API, we will define a default destination rule with 3 different versions - v1, v2 and v3.
+   An *Destination Rule* resource is used to define routing rules for directing HTTP traffic to different versions of a Web API.  For the Claims Web API, we will define a default destination rule API resource to route requests to 3 different versions - v1, v2 and v3.
 
    ```bash
    # Create the Destination Rule API resource

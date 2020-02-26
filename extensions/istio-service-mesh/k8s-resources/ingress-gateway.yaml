@@ -25,7 +25,7 @@ spec:
   http:
   - match:
     - uri:
-        exact: /api/v1/claims
+        prefix: /api/v1/claims
     route:
     - destination:
         host: claims-api
