@@ -208,6 +208,8 @@ In this section, we will explore several advanced features supported by Istio.
 
 1. [Intelligent Request Routing](./intelligent-req-routing)
 
+2. [Traffic Shifting](./traffic-shifting)
+
 ## D. Uninstall the Claims API microservice application and Istio Service Mesh
 **Approx. time to complete this section: 10 minutes**
 
