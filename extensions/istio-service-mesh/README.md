@@ -216,7 +216,7 @@ In this section, we will explore several advanced features supported by Istio.
 After you have explored all the advanced features supported by Istio Service Mesh, you can uninstall the application and the service mesh from your Kubernetes cluster.
    ```bash
    # Delete the namespace
-   $ kubectl delete namespace dev-exp-istio
+   $ kubectl delete namespace dev-claims-istio
    #
    # Uninstall Istio service mesh
    $ istioctl manifest generate --set profile=demo > kubectl delete -f -
