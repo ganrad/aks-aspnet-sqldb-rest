@@ -15,7 +15,7 @@ Refer to the command snippet below to apply the **Claims-api-vs** Virtual Servic
 
 ```bash
 # Apply the Virtual Service resource 'claims-api-vs' on the service mesh
-$ kubectl apply -f ./istio-resources/claims-api-vs.yaml
+$ kubectl apply -f ./istio-resources/claims-api-vs.yaml -n dev-claims-istio
 #
 ```
 
