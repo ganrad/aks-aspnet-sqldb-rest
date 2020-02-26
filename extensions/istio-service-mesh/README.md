@@ -158,9 +158,9 @@ Follow the steps below to deploy the Claims API microservice application in a ne
    #
    ```
 
-5. Define the ingress gateway for the Claims API microservice
+5. Define the **Ingress Gateway** for the Claims API microservice
 
-   To access the Claims API REST end-points from outside the AKS cluster, an **Ingress Gateway** resource has to be created on the cluster.  Also, to route the request from the gateway to the service end-point, an **Virtual Service** resource has to be deployed.  This default virtual service does not select a specific version of the Claims Web API but instead distributes the incoming requests evenly among the 3 API versions (v1, v2 & v3) in a round robin manner.
+   To access the Claims API REST end-points from outside the AKS cluster, an *Ingress Gateway* resource has to be created on the cluster.  Also, to route the request from the gateway to the service end-point, an *Virtual Service* resource has to be deployed.  This default virtual service does not select a specific version of the Claims Web API but instead forwards the incoming requests to the Claims API service (K8S Service).  The Claims API service then evenly distributes the requests among the 3 API versions (v1, v2 & v3) in a round robin manner.
 
    ```bash
    # Deploy the ingress gateway and the virtual service for the Claims API microservice
@@ -188,7 +188,7 @@ Follow the steps below to deploy the Claims API microservice application in a ne
    #
    ```
 
-7. Apply default **Destination Rules**
+7. Apply default **Destination Rules** for the Claims Web API
 
    An *Destination Rule* resource is used to define different versions for a Web API.  For the Claims Web API, we will define a default destination rule with 3 different versions - v1, v2 and v3.
 
