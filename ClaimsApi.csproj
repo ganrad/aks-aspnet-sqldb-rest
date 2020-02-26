@@ -11,6 +11,9 @@
   <PropertyGroup>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
+  <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);extensions\**</DefaultItemExcludes>
+  </PropertyGroup>
   <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
