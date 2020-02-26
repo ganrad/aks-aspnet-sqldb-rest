@@ -38,7 +38,7 @@ In this project, we will reuse the Claims Web API microservice and Azure Functio
 Refer to the architecture diagram [here](https://istio.io/docs/ops/deployment/architecture/)
 
 **Prerequisites:**
-1. Readers are required to complete Sections A thru I in the [parent project](https://github.com/ganrad/aks-aspnet-sqldb-rest) before proceeding with the hands-on labs in this project.
+1. Readers are required to complete Sections **A** thru **I** in the [parent project](https://github.com/ganrad/aks-aspnet-sqldb-rest) before proceeding with the hands-on labs in this project.
 
 Readers are advised to go thru the following on-line resources before proceeding with the hands-on sections.
 - [Istio Service Mesh](https://istio.io/docs/concepts/what-is-istio/)
@@ -105,8 +105,8 @@ Login (ssh) to the Linux VM (Bastion Host) via a terminal window.  Follow the st
    #
    ```
 
-## B. Deploy the Claims API microservice on Istio
-**Approx. time to complete this section: 10 minutes**
+## B. Deploy the Claims API microservice on Istio Service Mesh
+**Approx. time to complete this section: 20 minutes**
 
 Before proceeding, make sure you are logged into the Linux VM via a terminal window.
 
@@ -115,18 +115,75 @@ Follow the steps below to deploy the Claims API microservice application in a ne
 1. Create an Istio enabled namespace.
 
    ```bash
-   # Create the k8s namespace 'dev-exp-istio`.
-   $ kubectl create namespace dev-exp-istio
+   # Create the k8s namespace 'dev-claims-istio`.
+   $ kubectl create namespace dev-claims-istio
    #
    # Label the namespace so that the sidecar container (Envoy proxy) is automatically injected 
    # when a Pod is deployed in this namespace.
-   $ kubectl label namespace dev-exp-istio istio-injection=enabled
+   $ kubectl label namespace dev-claims-istio istio-injection=enabled
    #
    ```
 
-2. Deploy the Claims API microservice application.
+2. Update the **claims-api** Helm chart.
+
+   Edit the Helm chart values (`./extensions/istio-service-mesh/values.yaml`) file and specify correct values for the application configuration parameters.  Refer to the table below.
+
+   Parameter Name | Value | Description
+   -------------- | ----- | -----------
+   image.repository | xyz.azurecr.io/claims-api | Specify the name of the ACR instance
+   image.tag-v1 | 1..N | **Build ID number** of version **v1** of Claims API microservice
+   image.tag-v2 | 1..N | **Build ID number** of version **v2** of Claims API microservice
+   image.tag-v3 | 1..N | **Build ID number** of version **v3** of Claims API microservice
+   sqldb.connectionString | NA | Specify the Azure SQL Database connection string value
+
+3. Deploy the Claims API microservice application.
+
+   Use Helm to deploy the Claims API microservice in the **dev-claims-istio** namespace.  Execute the CLI commands as shown in the snippet below.
 
    ```bash
+   # Switch to the './extensions/istio-service-mesh' directory
+   $ cd $HOME/git-repos/aks-aspnet-sqldb-rest/extensions/istio-service-mesh
+   #
+   # Use Helm to deploy the Claims API service and pod.
+   $ helm install ./claims-api --name claims-api-istio --namespace dev-claims-istio
+   ```
+4. Confirm the service is defined and the Claims API pod is running.
+
+   ```bash
+   # List the service
+   $ kubectl get svc -n dev-claims-istio
+   #
+   # Confirm the claims-api pod is up and running
+   $ kubectl get pods -n dev-claims-istio
+   #
+   ```
+
+5. Define the ingress gateway for the Claims API microservice
+
+   To access the Claims API REST end-points from outside the AKS cluster, an **Ingress Gateway** resource has to be created on the cluster.  Also, to route the request from the gateway to the service end-point, an **Virtual Service** resource has to be deployed.
+
+   ```bash
+   # Deploy the ingress gateway and the virtual service for the Claims API microservice
+   $ kubectl apply -f ./k8s-resources/ingress-gateway.yaml -n dev-claims-istio
+   #
+   # Confirm the gateway resource got created
+   $ kubectl get gateway -n dev-claims-istio
+   #
+   ```
+
+6. Access the Claims Web API from outside the cluster
+
+   ```bash
+   # Determine the Ingress Gateway ALB Public IP and port
+   #
+   $ INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+   $ INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
+   $ GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+   #
+   # Access the Claims Web API using curl or via a browser.
+   # Curl usage below
+   $ curl -s http://$GATEWAY_URL/api/v1/claims
+   #
    ```
 
 ## C. Explore Istio Service Mesh features
