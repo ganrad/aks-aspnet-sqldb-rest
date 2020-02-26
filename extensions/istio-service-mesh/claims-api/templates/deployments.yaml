@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag-v1 }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tagV1 }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: ConnectionStrings__SqlServerDb
@@ -86,7 +86,7 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag-v2 }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tagV2 }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: ConnectionStrings__SqlServerDb
@@ -148,7 +148,7 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag-v3 }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tagV3 }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: ConnectionStrings__SqlServerDb

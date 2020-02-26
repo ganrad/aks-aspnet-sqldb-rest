@@ -131,9 +131,9 @@ Follow the steps below to deploy the Claims API microservice application in a ne
    Parameter Name | Value | Description
    -------------- | ----- | -----------
    image.repository | xyz.azurecr.io/claims-api | Specify the name of the ACR instance
-   image.tag-v1 | 1..N | **Build ID number** of version **v1** of Claims API microservice
-   image.tag-v2 | 1..N | **Build ID number** of version **v2** of Claims API microservice
-   image.tag-v3 | 1..N | **Build ID number** of version **v3** of Claims API microservice
+   image.tagV1 | 1..N | **Build ID number** of version **v1** of Claims API microservice
+   image.tagV2 | 1..N | **Build ID number** of version **v2** of Claims API microservice
+   image.tagV3 | 1..N | **Build ID number** of version **v3** of Claims API microservice
    sqldb.connectionString | NA | Specify the Azure SQL Database connection string value
 
 3. Deploy the Claims API microservice application.

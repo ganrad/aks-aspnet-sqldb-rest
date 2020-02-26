@@ -9,9 +9,9 @@ app:
 
 image:
   repository: xyztest.azurecr.io/claims-api
-  tag-v1: 276
-  tag-v2: 277
-  tag-v3: 278
+  tagV1: 276
+  tagV2: 277
+  tagV3: 278
   pullPolicy: Always
 
 service:
