@@ -8,19 +8,19 @@ What is a Service Mesh ? Here are a few excerpts taken from the Istio Service Me
 >In production environments, Istio's diverse feature set lets you successfully and efficiently run a distributed microservice architecture and provides a uniform way to secure, connect and monitor microservices.
 
 At a high level, Istio provides the following four capabilities uniformly across a network of services:
-- Traffic Management
+- **Traffic Management**
 
   Let's you control the flow of traffic and API calls between services.
 
-- Security
+- **Security**
 
   Provides the underlying secure communication channel, and manages authentication, authorization, and encryption of service communication at scale.
 
-- Policies
+- **Policies**
 
   Let's you configure custom policies for applications which enforce rules at runtime such as rate limiting, denials, white and black lists and header redirects and rewrites.
 
-- Observability
+- **Observability**
 
   Supports robust tracing, monitoring and logging features which provide deep insights into the service mesh deployment. 
 
