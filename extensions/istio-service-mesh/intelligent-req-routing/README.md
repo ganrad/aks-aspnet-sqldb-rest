@@ -19,7 +19,7 @@ $ kubectl apply -f ./istio-resources/claims-api-vs.yaml -n dev-claims-istio
 #
 ```
 
-Using a browser (or curl), access the OpenAPI end-point for the Claims API microservice multiple times (refresh). You will observe that the API Spec is returned each time.  This is because we configured Istio to forward all API traffic for all context paths other than `/api/v1/claims` to be routed to version **v3** of the **claims-api** service.
+Using a browser (or curl), access the OpenAPI end-point for the Claims API microservice multiple times (refresh). You will observe that the API Spec is returned each time.  This is because we configured Istio to forward all API traffic for all context paths to version **v3** of the **claims-api** service.
 
 In this section, you have successfully routed traffic to one specific version of the Claims API microservice.  It is also possible to route traffic to different service versions based on the value of custom HTTP headers.  This option is left as an exercise for you to explore.
 
