@@ -19,6 +19,8 @@ $ kubectl apply -f ./istio-resources/claims-api-vs.yaml -n dev-claims-istio
 
 Use the Azure Portal and access the *Application Insights* instance. Generate some Claims API traffic using a script (curl) or a web browser.  In Azure Application Insights, the claims API traffic can be viewed in real time on the Live Stream Metrics blade.  You will observe that metrics data for only 50% of the API calls are received by Application Insights.  This is because we configured Istio to split traffic and send only 50% of the API calls to version **v3** of the microservice.
 
+Leave the Application Insights Live Stream Metrics blade open.  Update the **claims-api-vs** Virtual Service one more time and direct 100% of the traffic to claims-api:v3 service.  Observe how Istio directs 100% of the API traffic to v3!
+
 In this section, you have seen how Istio service mesh can be used to split traffic among multiple versions of a microservice.
 
 **References:**
