@@ -26,6 +26,8 @@ spec:
   - match:
     - uri:
         prefix: /api/v1/claims
+    - uri:
+        prefix: /swagger
     route:
     - destination:
         host: claims-api
