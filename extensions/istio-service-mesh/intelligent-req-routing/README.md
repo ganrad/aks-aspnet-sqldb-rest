@@ -7,9 +7,9 @@ Thus far, three different versions of the Claims API microservice have been depl
 
 End-point to view the OpenAPI spec for the Claims Web API : http://[Istio Ingress Gateway ALB Public IP]/swagger/index.html
 
-In this section, we will configure the Virtual Service **claims-api-vs** to route all API requests to the default version of the microservice.  The default version in this case will be the latest version **v3**.  The latest version v3 includes all the enhancements made to the Claims API microservice.
+In this section, we will configure the Virtual Service **claims-api-vs** to route all API requests to the default version of the microservice.  The default version in this case will be the latest version **v3** which also exposes the OpenAPI spec.  The latest version v3 includes all the enhancements made to the Claims API microservice.
 
-Edit/View the Virtual Service resource file `./istio-resources/claims-api-vs.yaml` to understand how the service is configured to route all API requests that don't match the prefix context path `/api/v1/claims`, to version v3 of the Claims API.  Keep in mind, the order of the routing rules in the Virtual Service resource is very important!
+Edit/View the Virtual Service resource file `./istio-resources/claims-api-vs.yaml` to understand how the service is configured to route all API requests to version v3 of the Claims API.
 
 Refer to the command snippet below to apply the **Claims-api-vs** Virtual Service on the service mesh. 
 

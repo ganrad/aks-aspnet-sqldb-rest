@@ -12,14 +12,9 @@ spec:
   - match:
     - uri:
         prefix: /api/v1/claims
+    - uri:
+        prefix: /swagger
     route:
     - destination:
         host: claims-api
-        port:
-          number: 9080
-  - route:
-    - destination:
-        host: claims-api
-        port:
-          number: 9080
         subset: v3
