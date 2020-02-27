@@ -1,0 +1,25 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: claims-api-vs
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - claims-api-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /api/v1/claims
+    - uri:
+        prefix: /swagger
+    route:
+    - destination:
+        host: claims-api
+        subset: v2
+      weight: 50
+    - destination:
+        host: claims-api
+        subset: v3
+      weight: 50
