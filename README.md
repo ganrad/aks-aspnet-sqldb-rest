@@ -705,6 +705,8 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
     **Save** your build pipeline before proceeding.
 
+    >**NOTE:**Make sure the build pipeline **name** does not have a space or any special character like '/','\' in it.
+
     ![alt tag](./images/F-24.PNG)
 
     Copy the **Helm** chart folder from the source directory to the staging directory.  Click on the plus symbol beside **Agent job 1**.  Search by text **copy**, select the extension **Copy Files** and click **Add**. See screenshot below.
