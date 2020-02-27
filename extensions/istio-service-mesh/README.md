@@ -197,7 +197,7 @@ Follow the steps below to deploy the Claims API microservice application in a ne
    $ kubectl apply -f ./k8s-resources/destination-rule-all.yaml -n dev-claims-istio
    #
    # List the destination rules
-   $ kubectl get destinationrules -o yaml
+   $ kubectl get destinationrules -o yaml -n dev-claims-istio
    #
    ```
 
