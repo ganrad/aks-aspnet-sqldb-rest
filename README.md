@@ -486,7 +486,19 @@ Before proceeding, login into the Linux VM using SSH.
     $ pwd
     /home/labuser/git-repos/aks-aspnet-sqldb-rest
     #
-    # Run the docker build.  The build will take a few minutes to download both the .NET core build and run-time containers!
+    # Run the docker build.
+    # The build will take a few minutes to download both the .NET core build and run-time 
+    # containers!
+    # NOTE:
+    # The 'docker build' command does the following (Review the 'dockerfile'):
+    # 1. Build the dotnet application
+    # 2. Layer the application binaries on top of a base container image
+    # 3. Create a new application container image
+    # 4. Save the built container image on the host (local machine)
+    #
+    # DO NOT forget the dot '.' at the end of the 'docker build' command !!!!
+    # The '.' is used to set the context directory (path to the dockerfile) for the docker build.
+    #
     $ docker build -t claims-api .
     #
     # List the docker images on this VM.  You should see two container images -
@@ -746,7 +758,6 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
     - Azure Subscription = Select your Azure Subscription.
     - Azure Container Registry = Select ACR which you provisioned in [Section E](#e-deploy-azure-container-registry) above.
     - Action = `Push an image`
-    - Docker File = `dockerfile`
     - Image Name = `claims-api:$(Build.BuildId)`
     - Qualify Image Name = Enable checkbox.
     - Include Latest Tag = Enable checkbox.
@@ -820,9 +831,9 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
 3.  Provision an AKS cluster.
 
-    >**NOTE:** Follow the steps in one of the options below (a. or b.) for deploying the AKS cluster.  If you would like to explore deploying containers on **Virtual Nodes** in the [extensions](./extensions) projects, follow the steps in option (b) below.  Otherwise, follow the steps in option (a).
+    >**NOTE:** Follow the steps in one of the options **A** or **B** below for deploying the AKS cluster.  If you would like to explore deploying containers on **Virtual Nodes** in the [extensions](./extensions) projects, follow the steps in option **B** below.  Otherwise, follow the steps in option **A**.
 
-    a. Use the latest supported Kubernetes version to deploy the AKS cluster.  At the time of this writing, version `1.11.5` was the latest AKS version. 
+    **A.** Use the latest supported Kubernetes version to deploy the AKS cluster.  At the time of this writing, version `1.11.5` was the latest AKS version. 
 
        Refer to the commands below to create the AKS cluster.  It will take a few minutes (< 10 mins) for the AKS cluster to get provisioned. 
        ```bash
@@ -839,7 +850,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
        # Verify status of AKS cluster
        $ az aks show -g myResourceGroup -n akscluster --output table
        ```
-    b. With this option, the AKS cluster will be provisioned in a private virtual network on Azure.  You will need **Owner** level permission (role) for the Azure Subscription in order to proceed with the next steps.
+    **B.** With this option, the AKS cluster will be provisioned in a private virtual network on Azure.  You will need **Owner** level permission (role) for the Azure Subscription in order to proceed with the next steps.
 
        ```bash
        # Create a virtual network
