@@ -871,7 +871,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
        # Create a service principal to allow AKS to interact with other Azure resources
        # NOTE: Make a note of the appId and password.
        # IMPORTANT: Save the appId and password in a file.  You will need to use these values
-       # while executing the hands-on labs in the 'extentions' directory!!
+       # while executing the hands-on labs in the 'extensions' directory!!
        #
        $ az ad sp create-for-rbac --skip-assignment
        #
@@ -1001,8 +1001,9 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     #     ACR.
     #     eg., --set image.repository=<your-acr-repo>.azurecr.io/claims-api
     #
-    #   - Azure SQL Server DB Connection string in parameter 'sqldb.connectionString'.  Remember to substitute the
-    #     correct values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD.
+    #   - Azure SQL Server DB Connection string in parameter 'sqldb.connectionString'.  Remember to
+    # substitute the correct values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD.
+    #
     #     eg., --set sqldb.connectionString="Server=tcp:#{SQL_SRV_PREFIX}#.database.windows.net;Initial Catalog=ClaimsDB;Persist Security Info=False;User ID=#{SQL_USER_ID}#;Password=#{SQL_USER_PWD}#;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     #
     #   - Enable/Set deployment type to 'blue'

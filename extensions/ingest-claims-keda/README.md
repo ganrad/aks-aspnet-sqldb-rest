@@ -441,7 +441,7 @@ All the steps in this section have to be executed on the Linux VM terminal windo
    #
    ```
 
-## G. Test the zero (Osiris and KEDA) and auto event (KEDA) scalers 
+## G. Test the HTTP zero (Osiris) and auto event (KEDA) scalers 
 **Approx. time to complete this section: 30 mins**
 
 Use the shell script `./shell-scripts/create-load.sh` to invoke the Claims HTTP API.  Refer to the command snippet below.
