@@ -83,9 +83,11 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
     Login to the [Azure Portal](https://portal.azure.com) using your credentials and use a [Azure Cloud Shell](https://shell.azure.com) session to perform the next steps.  Azure Cloud Shell is an interactive, browser-accessible shell for managing Azure resources.  The first time you access the Cloud Shell, you will be prompted to create a resource group, storage account and file share.  You can use the defaults or click on *Advanced Settings* to customize the defaults.  Accessing the Cloud Shell is described in [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview). 
 
-2.  Create a Resource Group.
+2.  Create a Resource Group. 
 
-    An Azure *Resource Group* is a logical container into which Azure resources are deployed and managed.  From the Cloud Shell, use Azure CLI to create a **Resource Group**.  Azure CLI is already pre-installed and configured to use your Azure account (subscription) in the Cloud Shell.  Alternatively, you can also use Azure Portal to create this resource group.  
+  **Note:-** If you are using a pre-deployed environment, you should already have a resource group with the name of **myresourcegroup-######**. you should use this RG during the lab.
+  
+  An Azure *Resource Group* is a logical container into which Azure resources are deployed and managed.  From the Cloud Shell, use Azure CLI to create a **Resource Group**.  Azure CLI is already pre-installed and configured to use your Azure account (subscription) in the Cloud Shell.  Alternatively, you can also use Azure Portal to create this resource group.  
     ```bash
     $ az group create --name myResourceGroup --location westus2
     ```
@@ -736,7 +738,7 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
     - Task version = `0.*`
     - Display name = `Build container image`
     - Container Registry Type = `Azure Container Registry`
-    - Azure Subscription = Select your Azure Subscription.  Click **Authorize**.
+    - Azure Subscription = Select your Azure Subscription.  Click **Drop Down button on authorize button**, select advance option and select service principal authenticatoin and then select myrsourcegroup-##### and click Ok.
     - Azure Container Registry = Select ACR which you provisioned in [Section E](#e-deploy-azure-container-registry) above.
     - Action = `Build an image`
     - Docker File = `dockerfile`
@@ -829,10 +831,10 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     $ az aks get-versions --location westus2 -o table 
     ```
 
-3.  Provision an AKS cluster.
+3.  Provision an AKS cluster. Please make sure you update the unique id in  resource group name and update the service principal Application ID and Password from the environment details page.
 
-    >**NOTE:** Follow the steps in one of the options **A** or **B** below for deploying the AKS cluster.  If you would like to explore deploying containers on **Virtual Nodes** in the [extensions](./extensions) projects, follow the steps in option **B** below.  Otherwise, follow the steps in option **A**.
 
+    >**NOTE:** Follow the steps in one of the options **A** or **B** below for deploying the AKS cluster.  If you would like to explore deploying containers on **Virtual Nodes** in the [extensions](./extensions) projects, follow the steps in option **B** below.  Otherwise, follow the steps in option **A**. 
     **A.** Use the latest supported Kubernetes version to deploy the AKS cluster.  At the time of this writing, version `1.11.5` was the latest AKS version. 
 
        Refer to the commands below to create the AKS cluster.  It will take a few minutes (< 10 mins) for the AKS cluster to get provisioned. 
@@ -845,7 +847,9 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
        # - RBAC ~ Disabled
        # - Location ~ US West 2
        # - DNS Name prefix for API Server ~ akslab
-       $ az aks create --resource-group myResourceGroup --name akscluster --location westus2 --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.15.5"
+       # - You need to replace the <app-id> and <app-password> with the service principal app id and app password. you can get these details from the environment details.
+       $ az aks create --resource-group myResourceGroup-###### --name akscluster --location westus2 --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.15.10" --service-principal <app-id> --client-secret <app-password>
+
        #
        # Verify status of AKS cluster
        $ az aks show -g myResourceGroup -n akscluster --output table
