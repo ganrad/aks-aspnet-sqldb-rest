@@ -582,7 +582,7 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
 
     The PAT token will be used to connect the Azure Pipelines agent to your Azure DevOps account.
 
-    Login to [Azure DevOps Services](https://dev.azure.com) using your account ID. In the upper right corner, click on **your profile image**.  The click on the **3 dots** as shown in the screenshot below.  Next, click on **User settings** followed by **Personal access tokens**.
+    Login to [Azure DevOps Services](https://dev.azure.com) using your account ID. In the upper right corner, click on **your profile image**.  Then click on the **3 dots** as shown in the screenshot below.  Next, click on **User settings** followed by **Personal access tokens**.
 
     ![alt tag](./images/D-01.PNG)
 
@@ -742,7 +742,7 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
     
     Drag and move the **Copy Files to:** task to the top, above the **Build an image** task.  Specify values for fields as follows:
     - Source Folder = `claims-api`
-    - Contents = `\*\*`
+    - Contents = `**`
     - Target Folder = `$(Build.ArtifactStagingDirectory)/claims-api`
 
     Refer to the screenshot below.
