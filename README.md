@@ -851,21 +851,23 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
 3.  Provision an AKS cluster.
 
-    >**NOTE:** Follow the steps in one of the options **A** or **B** below for deploying the AKS cluster.  If you would like to explore deploying containers on **Virtual Nodes** in the [extensions](./extensions) projects, follow the steps in option **B** below.  Otherwise, follow the steps in option **A**.
+    >**NOTE:** Follow the steps in option **A** or **B** below for deploying the AKS cluster.  If you would like to explore deploying containers on **Virtual Nodes** in the [extensions](./extensions) projects, follow the steps in option **B** below.  Otherwise, follow the steps in option **A**.
 
-    **A.** Use the latest supported Kubernetes version to deploy the AKS cluster.  At the time of this writing, version `1.11.5` was the latest AKS version. 
+    **A.** Use the latest supported Kubernetes version to deploy the AKS cluster.  At the time this project was last updated, version `1.16.8` was the latest AKS version. 
 
        Refer to the commands below to create the AKS cluster.  It will take a few minutes (< 10 mins) for the AKS cluster to get provisioned. 
        ```bash
-       # Create a 2 Node AKS cluster v1.15.5.  This is not the latest patch release.
+       # Create a 2 Node AKS cluster v1.16.8.  This is not the latest patch release.
        # We will upgrade to the latest patch release in a subsequent lab/Section. 
+       # Remember to substitute the correct value for 'Resource Group'.
        # The 'az aks' command below will provision an AKS cluster with the following settings -
-       # - Kubernetes version ~ 1.15.5
+       # - Kubernetes version ~ 1.16.8
        # - No. of application/worker nodes ~ 2
        # - RBAC ~ Disabled
        # - Location ~ US West 2
        # - DNS Name prefix for API Server ~ akslab
-       $ az aks create --resource-group myResourceGroup --name akscluster --location westus2 --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.15.5"
+       #
+       $ az aks create --resource-group myResourceGroup --name akscluster --location westus2 --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.16.8"
        #
        # Verify status of AKS cluster
        $ az aks show -g myResourceGroup -n akscluster --output table
@@ -916,7 +918,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
          --dns-name-prefix akslab \
          --generate-ssh-keys \
          --disable-rbac \
-         --kubernetes-version "1.15.5" \
+         --kubernetes-version "1.16.8" \
          --network-plugin azure \
          --service-cidr 10.0.0.0/16 \
          --dns-service-ip 10.0.0.10 \
@@ -932,6 +934,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 4.  Connect to the AKS cluster and initialize Helm package manager.
     ```bash
     # Configure kubectl to connect to the AKS cluster
+    # Remember to substitute the correct value for 'Resource Group'
     $ az aks get-credentials --resource-group myResourceGroup --name akscluster
     #
     # Check cluster nodes
@@ -940,21 +943,21 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     # Check default namespaces in the cluster
     $ kubectl get namespaces
     #
-    # Initialize Helm.  This will install 'Tiller' on AKS.  Wait for this command to complete!
-    $ helm init --wait --upgrade
+    # Initialize Helm (v2.x).  This will install 'Tiller' on AKS.  Wait for this command to complete!
+    $ helm init --wait
     #
     # Check if Helm client is able to connect to Tiller on AKS.
     # This command should list both client and server versions.
     $ helm version
-    Client: &version.Version{SemVer:"v2.16.3", GitCommit:"e13bc94621d4ef666270cfbe734aaabf342a49bb", GitTreeState:"clean"}
-    Server: &version.Version{SemVer:"v2.16.3", GitCommit:"e13bc94621d4ef666270cfbe734aaabf342a49bb", GitTreeState:"clean"}
+    Client: &version.Version{SemVer:"v2.16.7", GitCommit:"e13bc94621d4ef666270cfbe734aaabf342a49bb", GitTreeState:"clean"}
+    Server: &version.Version{SemVer:"v2.16.7", GitCommit:"e13bc94621d4ef666270cfbe734aaabf342a49bb", GitTreeState:"clean"}
     ```
 
 5.  Deploy Traefik Kubernetes Ingress Controller.
 
     An ingress controller acts as a load balancer cum reverse proxy and intercepts HTTP traffic destined to applications deployed on the AKS cluster.  For production AKS deployments, it's usually a best practice (security reasons) to direct all inbound HTTP traffic into the cluster thru an Ingress Controller.  The ingress controller provides a single point of entry into the AKS cluster and is responsible for directing all HTTP traffic to respective service endpoints exposed on the cluster.
 
-    For this project, we will deploy [Traefik Ingress Controller](https://github.com/helm/charts/tree/master/stable/traefik).  For AKS production deployments, either [NGINX Ingress Controller](https://github.com/nginxinc/kubernetes-ingress) or [Azure Application Gateway Controller](https://azure.github.io/application-gateway-kubernetes-ingress/) is recommended.
+    For this project, we will deploy [Traefik Ingress Controller](https://github.com/helm/charts/tree/master/stable/traefik).  For AKS production deployments, either [NGINX Ingress Controller](https://github.com/nginxinc/kubernetes-ingress) or [Azure Application Gateway Controller](https://docs.microsoft.com/en-us/azure/application-gateway/ingress-controller-overview) is recommended.
     ```bash
     # Deploy Traefik Ingress controller on AKS
     $ helm install stable/traefik --name ingress-traefik --namespace kube-system --set dashboard.enabled=true,dashboard.domain=db-traefik.akslab.com
@@ -967,6 +970,8 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     Update the DNS name resolver on your **local** workstation.  Select one of the options below for your PC/Workstation's Operating System.
     - **Linux/MacOS** : Update the `/etc/hosts` file.  On Linux systems, this file is used to lookup and resolve host name IP addresses.  Use *vi* or *nano* to edit this file.
     - **Windows** : Update the `C:\Windows\System32\Drivers\etc\hosts` file.
+    
+    >**NOTE:** If you are familiar with Azure and AKS, you can also assign a DNS name to the Azure Load Balancer Public IP (External IP) of the Traefik load balancer *Service*. You will however, have to specify this DNS name as the value for the **dashboard.domain** parameter while deploying the Traefik Ingress Controller using Helm (above).
 
     Add an entry to the local DNS name resolver file as shown in the snippet below.
     ```
@@ -985,7 +990,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
 6.  Configure AKS to pull application container images from ACR.
 
-    When AKS cluster is created, Azure also creates a 'Service Principal' (SP) to support cluster operability with other Azure resources.  This auto-generated service principal can be used to authenticate against the ACR.  To do so, we need to create an Azure AD role assignment that grants the cluster's SP access to the Azure Container Registry.
+    When AKS cluster is created, Azure also creates a 'Service Principal' (SP) to support cluster interoperability with other Azure resources.  This auto-generated service principal can be used to authenticate against the ACR.  To do so, we need to create an Azure AD role assignment that grants the cluster's SP access to the Azure Container Registry.
 
     Edit the shell script `./shell-scripts/acr-auth.sh` and specify correct values for the following variables.
 
@@ -1107,7 +1112,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-05.PNG)
 
-    In the *Add an artifact* tab, select *Build* for **Source type**, select your Azure DevOps *Project* from the **Project** drop down menu and select the *Build definition* in the drop down menu for **Source (Build pipeline)**.  Select *Latest* for field **Default version**.  See screenshot below. 
+    In the *Add an artifact* tab, select *Build* for **Source type**, select your Azure DevOps *Project* from the **Project** drop down menu and select the *Build definition* in the drop down menu for **Source (build pipeline)**.  Select *Latest* for field **Default version**.  See screenshot below. 
 
     ![alt tag](./images/H-06.PNG)
 
@@ -1155,6 +1160,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
     - Chart Path = `$(System.DefaultWorkingDirectory)/_claims-api-lab-CI/drop/claims-api`
     - Release name = `aks-aspnetcore-lab`
     - Arguments = `--set blue.enabled=true --set image.repository=<your-acr-repo>.azurecr.io/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)"`
+      Remember to specify the correct value for **ACR instance** in **image.repository** template parameter !
 
     See screenshots below.
 
@@ -1167,6 +1173,8 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
     ![alt tag](./images/H-23.PNG)
 
     ![alt tag](./images/H-24.PNG)
+
+    >**NOTE:** Before you can save the Release pipeline, Azure DevOps will prompt you to secure the Azure SQL Connection String variable.  Click on the **lock** symbol (column header) to secure all variables.
 
     In Azure DevOps Services, each **Stage** in a release pipeline represents a deployment target.  A deployment target in turn represents an application platform (PaaS service) hosted in a given region.  AKS is used as the PaaS service in this project.  It is worth mentioning that with Azure DevOps Services, applications can also be easily deployed on **Azure App Service** PaaS.
 

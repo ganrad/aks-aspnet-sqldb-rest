@@ -1,0 +1,1 @@
+docker run -e VSTS_ACCOUNT=<Agent-Name> -e VSTS_TOKEN="Azure-DevOps-PAT" -e VSTS_AGENT=agent4lab -e VSTS_POOL=Default -v /var/run/docker.sock:/var/run/docker.sock --name agent4lab --rm -it mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-16.04-docker-18.06.1-ce-standard
