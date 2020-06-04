@@ -1,4 +1,4 @@
-#  Build and deploy an ASP.NET Core 3.0 Web API on Azure Kubernetes Service
+#  Build and deploy an ASP.NET Core 3.1 Web API on Azure Kubernetes Service
 This project describes the steps for building and deploying a real world **Medical Claims Processing** microservice application (**Claims API**) on Azure Kubernetes Service.
 
 Table of Contents
@@ -8,7 +8,7 @@ Table of Contents
   * [A. Deploy an Azure SQL Server Database](#a-deploy-an-azure-sql-server-and-database)
   * [B. Provision a Linux VM (Bastion Host/Jump Box) on Azure and install pre-requisite software](#b-provision-a-linux-centos-vm-on-azure)
   * [C. Build and run the Claims API microservice locally on the Bastion Host](#c-build-and-run-the-claims-api-microservice-locally-on-the-linux-vm)
-  * [D. Deploy an Azure DevOps Services build agent on the Bastion Host](#d-deploy-the-azure-devops-services-build-agent)
+  * [D. Deploy an Azure Pipelines Agent on the Bastion Host](#d-deploy-the-azure-devops-services-build-agent)
   * [E. Deploy an Azure Container Registry (ACR)](#e-deploy-azure-container-registry)
   * [F. Define and execute a Build Pipeline in Azure DevOps Services](#f-define-and-execute-claims-api-build-pipeline-in-azure-devops-services)
   * [G. Deploy an Azure Kubernetes Service (AKS) cluster](#g-create-an-azure-kubernetes-service-cluster-and-deploy-claims-api-microservice)
@@ -57,10 +57,10 @@ This project provides step by step instructions to use **Azure DevOps Services**
 
 For easy and quick reference, readers can refer to the following on-line resources as needed.
 - [Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
-- [ASP.NET Core 3.0 Documentation](https://docs.microsoft.com/en-us/aspnet/core/?view=aspnetcore-3.0)
+- [ASP.NET Core 3.1 Documentation](https://docs.microsoft.com/en-us/aspnet/core/?view=aspnetcore-3.1)
 - [Docker Documentation](https://docs.docker.com/)
 - [Kubernetes Documentation](https://kubernetes.io/docs/home/?path=users&persona=app-developer&level=foundational)
-- [Helm Documentation](https://docs.helm.sh/)
+- Helm Documentation [2.x](https://v2.helm.sh/docs/) [3.x](https://docs.helm.sh/)
 - [Creating an Azure VM](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli)
 - [Azure Kubernetes Service (AKS) Documentation](https://docs.microsoft.com/en-us/azure/aks/)
 - [Azure Container Registry Documentation](https://docs.microsoft.com/en-us/azure/container-registry/)
@@ -69,7 +69,7 @@ For easy and quick reference, readers can refer to the following on-line resourc
 
 **Important Notes:**
 - AKS is a managed [Kubernetes](https://kubernetes.io/) service on Azure.  Please refer to the [AKS](https://azure.microsoft.com/en-us/services/container-service/) product web page for more details.
-- This project has been tested on AKS v1.14.5+ and .NET Core 3.0.
+- This project has been tested on AKS v1.14.5+ and .NET Core 3.0+.
 - Commands which are required to be issued on a Linux terminal window are prefixed with a `$` sign.  Lines that are prefixed with the `#` symbol are to be treated as comments.
 - This project requires **all** resources to be deployed to the same Azure **Resource Group**.
 - Specify either **eastus**, **westus**, **westus2** or **centralus** as the *location* for the Azure *Resource Group* and the *AKS cluster*.
@@ -160,14 +160,14 @@ In this section, we will create an Azure SQL Server instance and create a databa
 
 The following tools (binaries) will be installed on the Linux VM (~ Bastion Host).
 
-- Azure DevOps (VSTS) build agent (docker container). The build container will be used for running application and container builds.
+- Azure DevOps Pipelines Agent (docker container). The pipeline container will be used for running application and container builds.
 - Azure CLI 2.0 client.  Azure CLI will be used to administer and manage all Azure resources including the AKS cluster resources.
 - Git client.  The Git client will be used to clone this GitHub repository and then push source code changes to the forked repository.
 - .NET Core SDK.  This SDK will be used to build and test the microservice application locally. 
 - Kubernetes CLI (`kubectl`).  This CLI will be used for managing and introspecting the current state of resources deployed on the Kubernetes (AKS) cluster.
 - Helm CLI (`helm`).  Helm is a package manager for Kubernetes and will be used to manage and monitor the lifecyle of application deployments on AKS.
 - Istio CLI (`istioctl`).  [Istio](https://istio.io/docs/concepts/what-is-istio/) reduces complexity of managing microservice deployments by providing a uniform way to secure, connect, control and manage microservices.
-- Docker engine and client.  Docker engine will be used to run the Azure DevOps build agent. It will also be used to build and run the Claims API microservice container locally. 
+- Docker engine and client.  Docker engine will be used to run the Azure Pipelines Agent. It will also be used to build and run the Claims API microservice container locally. 
 
 Follow the steps below to create the Bastion host (Linux VM) and install pre-requisite software on this VM.
 
@@ -304,12 +304,12 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Make sure you are in the home directory
     $ cd
     #
-    # Install Helm v2.16.3
+    # Install Helm v2.16.7
     # Create a new directory 'Helm' under home directory to store the helm binary
     $ mkdir helm
     $ cd helm
-    $ wget https://get.helm.sh/helm-v2.16.3-linux-amd64.tar.gz
-    $ tar -xzvf helm-v2.16.3-linux-amd64.tar.gz
+    $ wget https://get.helm.sh/helm-v2.16.7-linux-amd64.tar.gz
+    $ tar -xzvf helm-v2.16.7-linux-amd64.tar.gz
     #
     # Switch back to home directory
     $ cd
@@ -321,9 +321,9 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Install kubectl binary in the new directory
     $ az aks install-cli --install-location=./aztools/kubectl
     #
-    # Install Istio Service Mesh CLI v1.4.5
-    $ ISTIO_VERSION=1.4.5
-    $ curl -sL "https://github.com/istio/istio/releases/download/$ISTIO_VERSION/istio-$ISTIO_VERSION-linux.tar.gz" | tar xz --directory=$HOME/aztools
+    # Install Istio Service Mesh CLI v1.6.0
+    $ ISTIO_VERSION=1.6.0
+    $ curl -sL "https://github.com/istio/istio/releases/download/$ISTIO_VERSION/istio-$ISTIO_VERSION-linux-amd64.tar.gz" | tar xz --directory=$HOME/aztools
     # 
     # Register the Microsoft key, product repository and required dependencies.
     $ sudo rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
@@ -331,16 +331,19 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Update the system libraries.  This command will take a few minutes (~10 mins) to complete.  Be patient!
     $ sudo yum update
     #
-    # Install .NET Core 3.0 binaries
-    $ sudo yum install -y dotnet-sdk-3.0
+    # Install .NET Core 3.1 (latest) binaries
+    $ sudo yum install -y dotnet-sdk-3.1
     #
-    # Check .NET Core version (Should print 3.0.100)
+    # Check .NET Core version (Should print 3.1.xxx)
     $ dotnet --version
     #
-    # Install EF Core 3.0
+    # Install EF Core 3.1
     # This command installs dotnet-ef in ~/.dotnet/tools directory. so this directory has to be in
     # the Path !!
-    $ dotnet tool install --global dotnet-ef --version 3.0
+    $ dotnet tool install --global dotnet-ef
+    #
+    # Check .NET Core EF version (should print 3.1.4)
+    $ dotnet-ef --version
     #
     # Finally, update '.bashrc' file and set the path to jq, Helm and Kubectl binaries
     $ JQ=/home/labuser/jq
@@ -542,28 +545,32 @@ Before proceeding, login into the Linux VM using SSH.
 
 You have now successfully tested the Claims API microservice locally on this VM.
 
-### D. Deploy the Azure DevOps Services build agent
+### D. Deploy the Azure DevOps Services Pipelines Agent
 **Approx. time to complete this section: 30 minutes**
 
-Use one of the options below for deploying the *Azure DevOps Services* self-hosted build agent on the Linux VM.  **Option 1** is recommended for advanced users who are well versed in container technology and are familiar with docker engine. Alternatively, if you are new to containers, it's best to follow along the instructions in **Option 2**.
+Use one of the options below for deploying the *Azure DevOps Services* self-hosted build agent on the Linux VM.
 
-Although the Azure DevOps build agent (formerly VSTS build agent) container image is currently supported and available for download from docker hub, for production deployments Microsoft recommends customers to build their own Azure DevOps agent container images (*Option 1*).
+**Option 1** is recommended for **advanced users** who are well versed in container technology and are familiar with docker engine. 
+
+**Option 2** is recommended for users who are **new** to containers.
+
+Although the Azure DevOps Pipelines Agent (formerly VSTS build agent) container image is currently supported and available for download from docker hub, for production deployments Microsoft recommends customers to build their own Azure DevOps Pipelines Agent container images (*Option 1*).
 
 **Option 1:**
-This solution affords more flexibility allowing customers to include additional application build tools and utilities within the image to meet their specific needs and requirements.  To build and run the Azure DevOps self-hosted build agent, refer to one of the links below. 
-- [Build and deploy Azure DevOps Pipeline Agent on AKS](https://github.com/ganrad/Az-DevOps-Agent-On-AKS)
+This solution affords more flexibility allowing customers to include additional application build tools and utilities within the image to meet their specific needs and requirements.  To build and run the Azure DevOps self-hosted pipelines agent, refer to one of the links below. 
+- [Build and deploy Azure DevOps Pipelines Agent on AKS](https://github.com/ganrad/Az-DevOps-Agent-On-AKS)
 - [Azure DevOps Services Self-hosted Linux agents](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/v2-linux?view=azure-devops)
 
 **Option 2:**
-Download the [Azure DevOps (VSTS) build agent](https://hub.docker.com/_/microsoft-azure-pipelines-vsts-agent) container image from docker hub and run a instance on the Linux VM.
+Download the [Azure Pipelines Agent](https://hub.docker.com/_/microsoft-azure-pipelines-vsts-agent) container image from docker hub and run a instance on the Linux VM.
 
 If you haven't already, login to the Linux VM using a SSH terminal session.
 
-1.  Pull the Azure DevOps (VSTS) build agent container from docker hub.
+1.  Pull the Azure Pipelines Agent container image from docker hub.
 
     It will take approx. 20+ minutes to download the image (Size ~ 10.6 GB).  Take a coffee break or treat yourself to a cookie!
     ```bash
-    # This command will take approx. 20 mins to download the Azure DevOps Pipeline (VSTS) build agent container image
+    # This command will take approx. 20 mins to download the Azure Pipelines Agent container image
     $ docker pull mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-16.04-docker-18.06.1-ce-standard
     #
     # List the images on the system/VM
@@ -571,11 +578,15 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
     #
     ```
 
-2.  Generate an Azure DevOps (VSTS) personal access token (PAT).
+2.  Generate an Azure DevOps Services personal access token (PAT).
 
-    The PAT token will be used to connect the Azure DevOps build agent to your Azure DevOps account.
+    The PAT token will be used to connect the Azure Pipelines agent to your Azure DevOps account.
 
-    Login to [Azure DevOps](https://dev.azure.com) using your account ID. In the upper right, click on your profile image and click **Security**.  
+    Login to [Azure DevOps Services](https://dev.azure.com) using your account ID. In the upper right corner, click on the following in sequence. 
+    - Your profile image
+    - 3 dots **...** 
+    - **User settings** 
+    - **Personal access tokens**  
 
     ![alt tag](./images/D-01.PNG)
 
@@ -587,32 +598,43 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
 
     ![alt tag](./images/D-03.PNG)
 
-    In the next page, make sure to **copy and store** the PAT (token) into a file.  Keep in mind, you will not be able to retrieve this token again.  Incase you happen to lose or misplace the token, you will need to generate a new PAT and use it to reconfigure the VSTS build agent.  So save this PAT (token) to a file.
+    In the next page, make sure to **copy and store** the PAT (token) into a file.  Keep in mind, you will not be able to retrieve this token again.  If you happen to lose or misplace the token, you will need to generate a new PAT token and use it to reconfigure the build agent.  So save this PAT (token) to a file.
 
-3.  Start the Azure DevOps (VSTS) build container.
+3.  Start the Azure Pipelines Agent container.
 
-    The *Continuous Integration* (CI) and *Continuous Deployment* (CD) pipelines deployed on Azure DevOps will be executed by the build container on the Linux VM.
+    The *Continuous Integration* (CI) and *Continuous Deployment* (CD) pipelines deployed on Azure DevOps Services will be executed by the pipeline agent container on the Linux VM.
 
     Refer to the table below to set the parameter values for the build container correctly.
 
     Parameter | Value
     --------- | -----
-    VSTS_TOKEN | VSTS PAT Token.  This is the value which you copied and saved in a file in the previous step.
-    VSTS_ACCOUNT | VSTS Organization name.  An Org. is a container for DevOps projects in Azure DevOps (VSTS) platform.  It's usually the first part (Prefix) of the VSTS URL (eg., **Prefix**.visualstudio.com).  If you are using Azure DevOps URL, then it is the last part (ContextPath) of the URL (eg., dev.azure.com/**ContextPath**).
-    VSTS_POOL | VSTS Agent Pool Name.  For this lab, use value *Default*.  **NOTE:** In case you use a different name for the pool, you will need to first create this pool in your VSTS account.  Otherwise the agent will not be able to connect to the pool.
+    VSTS_AGENT | Name of the Pipeline Agent (Defaults to : Container ID)
+    VSTS_TOKEN | Azure DevOps Services *PAT Token*.  This is the value which you copied and saved in a file in the previous step.
+    VSTS_ACCOUNT | Azure DevOps Services *Organization Name*.  An Org. is a container for DevOps projects in Azure DevOps platform.  It is the last part (**ContextPath**) of the Azure DevOps Portal URL (eg., https://dev.azure.com/**ContextPath**).
+    VSTS_POOL | Azure DevOps Services *Agent Pool Name*.  For this lab, use value *Default*.  **NOTE:** In case you use a different name for the pool, you will need to first create this pool in your Azure DevOps account.  Otherwise the agent will not be able to connect to the pool.
 
-    In the Linux terminal window, start the Azure DevOps (VSTS) build container.  See command snippet below.
+    In the Linux terminal window, start the Azure Pipelines Agent container.  See command snippet below.
     ```bash
     # Substitute the correct values for VSTS_ACCOUNT, VSTS_POOL and VSTS_TOKEN before running this command
     #
-    $ docker run -e VSTS_ACCOUNT=<Org. Name> -e VSTS_TOKEN=<PAT Token> -e VSTS_POOL=Default -v /var/run/docker.sock:/var/run/docker.sock --name vstsagent --rm -it mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-16.04-docker-18.06.1-ce-standard
+    $ docker run -e VSTS_ACCOUNT=<Org. Name> -e VSTS_TOKEN=<PAT Token> -e VSTS_AGENT=agent4lab -e VSTS_POOL=Default -v /var/run/docker.sock:/var/run/docker.sock --name agent4lab --rm -it mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-16.04-docker-18.06.1-ce-standard
     #
     ```
 
-    The VSTS build agent will initialize and you should see a message indicating "Listening for Jobs".  See below.  
+    The Azure Pipelines agent will initialize and you should see a message indicating "Listening for Jobs".  See below.  
     ```
     Determining matching VSTS agent...
     Downloading and installing VSTS agent...
+
+      ___                      ______ _            _ _
+     / _ \                     | ___ (_)          | (_)
+    / /_\ \_____   _ _ __ ___  | |_/ /_ _ __   ___| |_ _ __   ___  ___
+    |  _  |_  / | | | '__/ _ \ |  __/| | '_ \ / _ \ | | '_ \ / _ \/ __|
+    | | | |/ /| |_| | | |  __/ | |   | | |_) |  __/ | | | | |  __/\__ \
+    \_| |_/___|\__,_|_|  \___| \_|   |_| .__/ \___|_|_|_| |_|\___||___/
+                                       | |
+            agent v2.169.1             |_|          (commit ac1c169)
+
 
     >> End User License Agreements:
 
@@ -632,15 +654,15 @@ If you haven't already, login to the Linux VM using a SSH terminal session.
     Connecting to the server.
     Successfully added the agent
     Testing agent connection.
-    2018-12-23 05:26:36Z: Settings Saved.
+    2020-06-03 21:58:22Z: Settings Saved.
     Scanning for tool capabilities.
     Connecting to the server.
-    2018-12-23 05:26:39Z: Listening for Jobs
+    2020-06-03 21:58:24Z: Listening for Jobs
     ```
 
-    Minimize this terminal window for now as you will only be using it to view the results of an Azure DevOps build.  Before proceeding, open another terminal (WSL Ubuntu/Putty) window and login (SSH) into the Linux VM.
+    Minimize this terminal window for now as you will only be using it to view the results of an Azure DevOps build/release.  Before proceeding, open another terminal (WSL/Putty/Git bash) window and login (SSH) into the Linux VM.
 
-In subsequent sections, we will configure *Azure DevOps Services* to use the build container as a *self-hosted* agent to perform application and container builds.
+In subsequent sections, we will configure *Azure DevOps Services* to use the pipeline **self-hosted** agent to perform application builds, container builds and containerized application deployments on Azure.
 
 ### E. Deploy Azure Container Registry
 **Approx. time to complete this section: 10 minutes**
@@ -667,19 +689,16 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
 1.  Enable/Verify *Preview* features in Azure DevOps Services.
 
-    If you haven't already done so, login to [Azure DevOps](https://www.visualstudio.com/team-services/) using your Microsoft Live ID (or Azure AD ID).  Click on your profile picture (top right corner) and then click on **Preview Features** as shown in the screenshot below.
+    If you haven't already done so, login to [Azure DevOps](https://dev.azure.com/) using your Microsoft Live ID (or Azure AD ID).  Click on your profile picture (top right corner) then click on the 3 dots **...** followed by **User settings** as shown in the screenshot below. In the pullout menu, click on **Preview Features**.
 
     ![alt tag](./images/F-01.PNG)
 
     Ensure the following *Preview* features are **disabled (Off)**.
     - Analytics Views (Optional)
     - Experimental Themes
-    - Multi-stage pipelines
-    - New account manager (Optional)
+    - New Repos settings experience
     - New service connections experience
     - New Test Plans Page
-    - New user hub
-    - Project Permissions Settings page
 
 2.  Create an Azure DevOps *Organization* and *Project*.
 
@@ -691,9 +710,9 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
     ![alt tag](./images/F-04.PNG)
 
-3.  Create a **Build** pipeline and define tasks to build application binaries and a *claims-api* container image.
+3.  Create a **Pipeline** and define tasks to build application binaries and a *claims-api* container image.
 
-    Click on **Pipelines** in the left navigational menu and select *Builds*.  Then click on **New pipeline**.
+    Click on **Pipelines** in the left navigational menu and select *Pipelines*.  Then click on **New pipeline**.
 
     ![alt tag](./images/F-05.PNG)
 
@@ -725,7 +744,12 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
     ![alt tag](./images/F-19.PNG)
     
-    Move the **Copy Files to:** task to the top, above the **Build an image** task.  Specify values for fields **Source folder**, **Contents** and **Target Folder** as shown in the screenshot below.
+    Drag and move the **Copy Files to:** task to the top, above the **Build an image** task.  Specify values for fields as follows:
+    - Source Folder = claims-api
+    - Contents = \*\*
+    - Target Folder = $(Build.ArtifactStagingDirectory)/claims-api
+
+    Refer to the screenshot below.
 
     ![alt tag](./images/F-20.PNG)
 
@@ -768,7 +792,7 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
 
     Next, publish the contents of the **Helm** chart directory to the artifact staging (**drop**) location.  The Helm chart will be used in the release pipeline [Section H](#h-define-and-execute-claims-api-release-pipeline-in-azure-devops-services) for deploying the Claims API microservice on AKS. 
     
-    Click on the plus symbol beside **Agent job 1**.  Search by text **publish artifact**, select the extension **Publish Build Artifacts** and click **Add**.  See screenshot below.
+    Click on the plus symbol beside **Agent job 1**.  Search by text **publish artifact**, select the extension **Publish Build artifacts** and click **Add**.  See screenshot below.
 
     ![alt tag](./images/F-21.PNG)
 
