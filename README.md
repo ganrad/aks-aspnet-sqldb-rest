@@ -8,7 +8,7 @@ Table of Contents
   * [A. Deploy an Azure SQL Server Database](#a-deploy-an-azure-sql-server-and-database)
   * [B. Provision a Linux VM (Bastion Host/Jump Box) on Azure and install pre-requisite software](#b-provision-a-linux-centos-vm-on-azure)
   * [C. Build and run the Claims API microservice locally on the Bastion Host](#c-build-and-run-the-claims-api-microservice-locally-on-the-linux-vm)
-  * [D. Deploy an Azure Pipelines Agent on the Bastion Host](#d-deploy-the-azure-devops-services-build-agent)
+  * [D. Deploy an Azure Pipelines Agent on the Bastion Host](#d-deploy-an-azure-pipelines-agent-on-the-linux-vm)
   * [E. Deploy an Azure Container Registry (ACR)](#e-deploy-azure-container-registry)
   * [F. Define and execute a Build Pipeline in Azure DevOps Services](#f-define-and-execute-claims-api-build-pipeline-in-azure-devops-services)
   * [G. Deploy an Azure Kubernetes Service (AKS) cluster](#g-create-an-azure-kubernetes-service-cluster-and-deploy-claims-api-microservice)
@@ -399,9 +399,9 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
 
 In this section, we will work on the following tasks
 - Configure the Azure SQL Server connection string in the Claims API microservice (source code)
-- Build the Claims API microservice using the .NET Core 3.0 SDK
+- Build the Claims API microservice using the .NET Core 3.1 SDK
 - Run the .NET Core *Entity Framework* migrations to create the relational database tables in Azure SQL Server provisioned in [Section A](#a-deploy-an-azure-sql-server-and-database).  These tables will be used to persist Claims records.
-- Run the Claims API microservice locally using the .NET Core 3.0 SDK
+- Run the Claims API microservice locally using the .NET Core 3.1 SDK
 - Build the microservice Docker container and run the container
 
 Before proceeding, login into the Linux VM using SSH.
@@ -545,7 +545,7 @@ Before proceeding, login into the Linux VM using SSH.
 
 You have now successfully tested the Claims API microservice locally on this VM.
 
-### D. Deploy the Azure DevOps Services Pipelines Agent
+### D. Deploy an Azure Pipelines Agent on the Linux VM
 **Approx. time to complete this section: 30 minutes**
 
 Use one of the options below for deploying the *Azure DevOps Services* self-hosted build agent on the Linux VM.
