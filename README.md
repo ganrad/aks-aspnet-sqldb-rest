@@ -77,7 +77,7 @@ For easy and quick reference, readers can refer to the following on-line resourc
 ## A. Deploy an Azure SQL Server and Database
 **Approx. time to complete this section: 20 minutes**
 
-In this section, we will create an Azure SQL Server instance and create a database (`ClaimsDB`).  This database will be used by the Claims API microservice to persist *Claims* records.
+In this section, we will create an Azure SQL Server instance and create a database (`ClaimsDB`).  This database will be used by the Claims API microservice to persist *Medical Claims* records.
 
 1.  Login to the Azure Cloud Shell.
 
@@ -401,7 +401,7 @@ In this section, we will work on the following tasks
 - Configure the Azure SQL Server connection string in the Claims API microservice (source code)
 - Build the Claims API microservice using the .NET Core 3.1 SDK
 - Run the .NET Core *Entity Framework* migrations to create the relational database tables in Azure SQL Server provisioned in [Section A](#a-deploy-an-azure-sql-server-and-database).  These tables will be used to persist Claims records.
-- Run the Claims API microservice locally using the .NET Core 3.1 SDK
+- Run the Claims API microservice locally using the .NET Core 3.1 CLI
 - Build the microservice Docker container and run the container
 
 Before proceeding, login into the Linux VM using SSH.
@@ -550,7 +550,7 @@ You have now successfully tested the Claims API microservice locally on this VM.
 
 Use one of the options below for deploying the *Azure DevOps Services* self-hosted build agent on the Linux VM.
 
-**Option 1** is recommended for **advanced users** who are well versed in container technology and are familiar with docker engine. 
+**Option 1** is recommended for **advanced users** who are well versed in container technology and are familiar with Kubernetes and docker engine. 
 
 **Option 2** is recommended for users who are **new** to containers.
 
@@ -971,6 +971,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     - **Linux/MacOS** : Update the `/etc/hosts` file.  On Linux systems, this file is used to lookup and resolve host name IP addresses.  Use *vi* or *nano* to edit this file.
     - **Windows** : Update the `C:\Windows\System32\Drivers\etc\hosts` file.
     
+
     >**NOTE:** If you are familiar with Azure and AKS, you can also assign a DNS name to the Azure Load Balancer Public IP (External IP) of the Traefik load balancer *Service*. You will however, have to specify this DNS name as the value for the **dashboard.domain** parameter while deploying the Traefik Ingress Controller using Helm (above).
 
     Add an entry to the local DNS name resolver file as shown in the snippet below.
@@ -1122,7 +1123,9 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-07.PNG)
 
-    In the *Pipeline* tab, click on the *trigger* icon (highlighted in yellow) and enable **Continuous deployment trigger**.  See screenshot below.
+    Next, we want to trigger this **Release** pipeline when the **Build** pipeline completes successfully.  In the *Pipelines* tab, click on the *trigger* icon (highlighted in yellow) and enable **Continuous deployment trigger**. 
+
+    See screenshot below.
 
     ![alt tag](./images/H-08.PNG)
 
@@ -1159,7 +1162,8 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
     - Chart Type = `File Path`
     - Chart Path = `$(System.DefaultWorkingDirectory)/_claims-api-lab-CI/drop/claims-api`
     - Release name = `aks-aspnetcore-lab`
-    - Arguments = `--set blue.enabled=true --set image.repository=<your-acr-repo>.azurecr.io/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)"`
+    - Arguments = `--set blue.enabled=true --set image.repository=**<your-acr-repo>**.azurecr.io/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)"`
+
       Remember to specify the correct value for **ACR instance** in **image.repository** template parameter !
 
     See screenshots below.
@@ -1206,7 +1210,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     Click on **Save** to save the release pipeline.
 
-    We have now finished defining the **Release pipeline** for the Claims API microservice.  This pipeline will in turn be triggered when the build pipeline completes successfully.
+    We have now finished defining the **Release pipeline** for the Claims API microservice.
 
 2.  Enable Continuous Integration.
 

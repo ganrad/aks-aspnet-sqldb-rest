@@ -15,7 +15,12 @@ else
 fi
 echo
 
-## Get all claims
+# Display target URL for claims-api application
+echo -e "***** Claims API URL *****"
+echo "http://$svcIpAddress/api/v1/claims/"
+echo
+
+# Get all claims
 echo -e "***** Retrieving all claims *****"
 # curl -i -k https://grclaimsapi.azurewebsites.net/api/claims/
 hcode=$(curl --connect-timeout 5 --write-out \\n%{http_code}\\n --silent --output tmp.out http://$svcIpAddress/api/v1/claims/ | awk '{if(NR==2) print $0}')
