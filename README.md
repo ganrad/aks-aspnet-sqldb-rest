@@ -1504,7 +1504,7 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
 **Scan container images and digitally sign them using Docker Content Trust**
 
 In this exercise, you will learn how to
-- Scan container images for known vulnerabilities using the Open Source container image scanning engine from [Aqua](https://github.com/aquasecurity/microscanner)
+- Scan container images for known vulnerabilities using the Open Source container image scanning engine [Aqua Trivy](https://github.com/aquasecurity/trivy)
 - Digitally sign container images using *Docker Content Trust* (DCT) before pushing these images into ACR
     
 To learn more about digitally signing container images using *Docker Content Trust*, refer to the following online resources.
@@ -1552,7 +1552,7 @@ To complete this challenge, you will update and run a YAML *delivery* pipeline i
 
 6. Create a new *Continuous Delivery* pipeline in Azure DevOps Pipelines and run it
 
-   - After updating the `dct-pipeline.yml` pipeline file in Azure DevOps Repos, create a new *Delivery pipeline* (actually *Build* pipeline) in Azure DevOps Pipelines. Select *Azure Repos Git* for source code, *aks-aspnet-sqldb-rest* for repository, *Existing Azure Pipelines YAML file* for pipeline & select `dct-pipeline.yml`, review the pipeline code and **Run** it.
+   - After updating the `dct-pipeline.yml` pipeline file in Azure DevOps Repos, create a new *Delivery pipeline* in Azure DevOps Pipelines. Select *Azure Repos Git* for source code, *aks-aspnet-sqldb-rest* for repository, *Existing Azure Pipelines YAML file* for pipeline & select `dct-pipeline.yml`, review the pipeline code and **Run** it.
    - Keep in mind, Aqua Trivy will take approx. 15-20 mins to run the first time.  During the initial run Aqua will download OS vulnerability/fixes info. (CVE's etc) from multiple vendor advisory databases, cache it locally and then scan the image.  Vulnerability info. from the cached database will be used for subsequent image scans. As a result, the scan task should not take more than a few seconds to complete in subsequent pipeline runs.
    - After the pipeline completes OK, inspect the delivery pipeline task execution logs.
 
