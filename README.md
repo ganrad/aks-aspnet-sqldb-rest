@@ -1416,7 +1416,7 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
 
     ![alt tag](./images/I-04.PNG)
 
-    In the **Add a Docker Registry service connection** page, select **Azure Container Registry** for **Registry type** and specify **acrSvcConnection** for **Connection name**. In the **Azure subscription** drop down field, select your Azure subscription.  In the **Azure container registry** field, select the ACR which you created in [Section E](#e-deploy-azure-container-registry).  See screenshot below.
+    In the **Add a Docker Registry service connection** page, select **Azure Container Registry** for **Registry type** and specify a *Name* for **Connection name** (eg., ACR-Connection). In the **Azure subscription** drop down field, select your Azure subscription.  In the **Azure container registry** drop down field, select the ACR instance which you created in [Section E](#e-deploy-azure-container-registry).  See screenshot below.
 
     ![alt tag](./images/I-05.PNG)
 
@@ -1482,7 +1482,7 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
 
     ![alt tag](./images/I-10.PNG)
 
-    In the next tab, select the Git repository which you imported in Step [1] above. The name of the first Git repository in *Repos* should the same as the *Project* name.
+    In the next tab, select the Git repository which you imported in Step [1] above. The name of the first Git repository in *Repos* should be the same as the *Project* name.
 
     ![alt tag](./images/I-19.PNG)
 
