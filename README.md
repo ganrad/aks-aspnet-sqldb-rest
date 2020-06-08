@@ -56,7 +56,7 @@ This project provides step by step instructions to use **Azure DevOps Services**
 ![alt tag](./images/aks-aspnetcore-sqldb-rest.PNG)
 
 For easy and quick reference, readers can refer to the following on-line resources as needed.
-- [Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
 - [ASP.NET Core 3.1 Documentation](https://docs.microsoft.com/en-us/aspnet/core/?view=aspnetcore-3.1)
 - [Docker Documentation](https://docs.docker.com/)
 - [Kubernetes Documentation](https://kubernetes.io/docs/home/?path=users&persona=app-developer&level=foundational)
@@ -65,7 +65,7 @@ For easy and quick reference, readers can refer to the following on-line resourc
 - [Azure Kubernetes Service (AKS) Documentation](https://docs.microsoft.com/en-us/azure/aks/)
 - [Azure Container Registry Documentation](https://docs.microsoft.com/en-us/azure/container-registry/)
 - [Azure DevOps Documentation](https://docs.microsoft.com/en-us/vsts/index?view=vsts)
-- [Zero instrumentation application monitoring for Kubernetes with Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/kubernetes)
+- [Application Insights for ASP.NET Core applications](https://docs.microsoft.com/en-us/azure/azure-monitor/app/asp-net-core)
 
 **Important Notes:**
 - AKS is a managed [Kubernetes](https://kubernetes.io/) service on Azure.  Please refer to the [AKS](https://azure.microsoft.com/en-us/services/container-service/) product web page for more details.
@@ -1450,7 +1450,7 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
 
     ![alt tag](./images/I-16.PNG)
 
-    Specify values for **Subscription**, **Resource Group**, **Name** and **Region** and click **Review + create**.
+    Specify values for **Subscription**, **Resource Group**, **Name** and **Region** and click **Review + create**.  Use the same Resource Group and Region where you deployed all other resources in this project.
 
     ![alt tag](./images/I-17.PNG)
     
@@ -1458,7 +1458,7 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
 
     ![alt tag](./images/I-18.PNG)
 
-    Enable metrics collection by updating the Claims API application code.  Once metrics collection is enabled, the Application Insights SDK will instrument the application at runtime and send telemetry (server requests, server response times, availability, failed requests etc) data to Azure.  This is a *Zero instrumentation* application monitoring solution (currently in public preview for AKS).  Refer to the *Prerequisites* section for links to Application Insights documentation.
+    Enable metrics collection by updating the Claims API application code.  Once metrics collection is enabled, the Application Insights SDK will instrument the application at runtime and send telemetry (server requests, server response times, availability, failed requests etc) data to Azure.  Refer to the *Prerequisites* section for links to Azure Monitor (**Application Insights for ASP.NET Core applications**) documentation.
 
     In the *Repos* view, click on `Program.cs` file.  Edit this file by clicking on the *pencil* icon.  Uncomment line # 22 as shown in the screenshot below.
 
@@ -1474,7 +1474,7 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
 
 5.  Create an Azure DevOps Delivery Pipeline and execute it
 
-    Click on *Pipelines* menu on the left navigational panel.  Click on *Builds* and then click on *+ New* drop down menu.  Select *New build pipeline* menu item.  See screenshot below.    
+    Click on *Pipelines* menu on the left navigational panel.  Then click on *New Pipeline* as shown in the screenshot below.    
 
     ![alt tag](./images/I-09.PNG)
 
@@ -1482,7 +1482,7 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
 
     ![alt tag](./images/I-10.PNG)
 
-    In the next tab, select the `aks-aspnet-sqldb-rest` repository which you imported in Step [1] above.
+    In the next tab, select the Git repository which you imported in Step [1] above. The name of the first Git repository in *Repos* should the same as the *Project* name.
 
     ![alt tag](./images/I-19.PNG)
 
@@ -1494,7 +1494,7 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
 
     ![alt tag](./images/I-12.PNG)
 
-    After the pipeline completes OK, verify the following (left as an exercise)
+    After the pipeline completes OK, verify the following (left as an exercise).
     - Confirm a new container image for *Claims API* microservice was built and pushed into ACR
     - Verify a new revision for the Claims API microservice application (**aks-aspnetcore-lab**) was deployed successfully on AKS.  Check the update date and time of the release revision.
     - Verify the container image in the Pod manifest matches the container image (tag and Digest) pushed into ACR.
