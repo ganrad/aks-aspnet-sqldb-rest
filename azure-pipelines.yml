@@ -1,6 +1,6 @@
 #
 # Microservice : Claims API Microservice
-# Language : ASP.NET Core 2.2
+# Language : ASP.NET Core 3.1
 # Date: 08-19-2019
 # Author: Ganesh Radhakrishnan (ganrad01@gmail.com)
 # 
@@ -21,6 +21,11 @@
 # 
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+#
+# --------------------------------
+# NOTES:
+# ID06082020: ganrad01: Updated script to .NET Core 3.1
+# --------------------------------
 
 # trigger:
 # - azure-pipelines
