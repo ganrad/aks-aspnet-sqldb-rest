@@ -161,7 +161,7 @@ In this section, we will create an Azure SQL Server instance and create a databa
 The following tools (binaries) will be installed on the Linux VM (~ Bastion Host).
 
 - Azure DevOps Pipelines Agent (docker container). The pipeline container will be used for running application and container builds.
-- Azure CLI 2.0 client.  Azure CLI will be used to administer and manage all Azure resources including the AKS cluster resources.
+- Azure CLI client.  Azure CLI will be used to administer and manage all Azure resources including the AKS cluster resources.
 - Git client.  The Git client will be used to clone this GitHub repository and then push source code changes to the forked repository.
 - .NET Core SDK.  This SDK will be used to build and test the microservice application locally. 
 - Kubernetes CLI (`kubectl`).  This CLI will be used for managing and introspecting the current state of resources deployed on the Kubernetes (AKS) cluster.
@@ -291,7 +291,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Install with the yum install command.
     $ sudo yum install -y azure-cli
     #
-    # Check the Azure CLI version (Should be 2.0.54+)
+    # Check the Azure CLI version (Should be 2.7+.  At the time of this writing, 2.7.0 was the latest release)
     $ az -v
     #
     # Login to your Azure account.  Use your Azure login ID and password to login.
