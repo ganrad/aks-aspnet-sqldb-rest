@@ -1598,7 +1598,7 @@ In this section, we will explore value add features for administering & managing
     $ kubectl get nodes
     #
     ```
-    The cluster can also be configured for automatic scaling.  You can read more about cluster **auto-scaling** feature in the [AKS documentation](https://docs.microsoft.com/en-us/azure/aks/cluster-autoscaler).
+    The cluster can also be configured to automatically scale the nodes (VMs).  You can read more about cluster **auto-scaling** feature in the [AKS documentation](https://docs.microsoft.com/en-us/azure/aks/cluster-autoscaler).
 
 2.  [Upgrade an AKS cluster](https://docs.microsoft.com/en-us/azure/aks/upgrade-cluster)
 
