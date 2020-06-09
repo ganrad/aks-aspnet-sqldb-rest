@@ -6,7 +6,7 @@ metadata:
     app: claims-api-v2
     mesh: istio
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: claims-api
@@ -53,7 +53,7 @@ metadata:
     app: claims-api-v1
     mesh: istio
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: claims-api

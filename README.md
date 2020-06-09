@@ -1598,7 +1598,7 @@ In this section, we will explore value add features for administering & managing
     $ kubectl get nodes
     #
     ```
-    [Auto-scaling](https://docs.microsoft.com/en-us/azure/aks/cluster-autoscaler) an AKS cluster is currently in public preview.
+    The cluster can also be configured for automatic scaling.  You can read more about cluster **auto-scaling** feature in the [AKS documentation](https://docs.microsoft.com/en-us/azure/aks/cluster-autoscaler).
 
 2.  [Upgrade an AKS cluster](https://docs.microsoft.com/en-us/azure/aks/upgrade-cluster)
 
@@ -1612,9 +1612,9 @@ In this section, we will explore value add features for administering & managing
     # List the available upgrade versions for the AKS cluster
     $ az aks get-upgrades -g myResourceGroup -n akscluster -o table
     #
-    # Upgrade the AKS cluster to v1.15.7.  Then confirm (y) the upgrade.
+    # Upgrade the AKS cluster to v1.16.9.  Then confirm (y) the upgrade.
     # Be patient.  The upgrade will run for a few minutes!
-    $ az aks upgrade -g myResourceGroup -n akscluster --kubernetes-version 1.15.7
+    $ az aks upgrade -g myResourceGroup -n akscluster --kubernetes-version 1.16.9
     #
     # Verify the nodes have been upgraded by checking the value under the 'KubernetesVersion' column
     $ az aks show -g myResourceGroup -n akscluster -o table
@@ -1674,7 +1674,7 @@ In this section, we will explore a few advanced features provided by Kubernetes 
     # Verify only 1 in 4 API calls are being served by the Canary release
     ```
 
-    Use **curl** and invoke the Claims API end-point in a loop.  You will observe that version v1 of the Claims API will only be invoked once for every 3 invokations of version v2 of the API.
+    Use **curl** and invoke the Claims API end-point in a loop.  You will observe that version v2 of the Claims API will only be invoked once for every 3 invokations of version v1 of the API.
 
     You can tweak the number of replicas in the v1 and v2 deployments to determine the ratio of each release which will receive live traffic.
 
