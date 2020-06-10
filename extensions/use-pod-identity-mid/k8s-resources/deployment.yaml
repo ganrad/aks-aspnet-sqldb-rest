@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: claims-api-mid-deploy
+  labels:
+    app: claims-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: claims-api
+  template:
+    metadata:
+      labels:
+        app: claims-api
+        aadpodidbinding: claims-api-mid
+    spec:
+      containers:
+      - name: claims-api-mid
+        image: <acr-name>.azurecr.io/claims-api:<tag-name>
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /api/v1/claims/healthz
+            port: http
+          initialDelaySeconds:
+          periodSeconds:
+        livenessProbe:
+          httpGet:
+            path: /api/v1/claims/healthz
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 30
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: claims-api-mid-svc
+  labels:
+    app: claims-api
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: claims-api
+

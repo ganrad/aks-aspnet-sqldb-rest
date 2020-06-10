@@ -2,8 +2,8 @@ using Microsoft.EntityFrameworkCore;
 namespace ClaimsApi.Models {
     public class ClaimsContext : DbContext {
         public ClaimsContext(DbContextOptions<ClaimsContext> options) : base(options) {
-	    var conn = (Microsoft.Data.SqlClient.SqlConnection) Database.GetDbConnection();
-	    conn.AccessToken = (new Microsoft.Azure.Services.AppAuthentication.AzureServiceTokenProvider()).GetAccessTokenAsync("https://database.windows.net/").Result;
+	    /** var conn = (Microsoft.Data.SqlClient.SqlConnection) Database.GetDbConnection();
+	    conn.AccessToken = (new Microsoft.Azure.Services.AppAuthentication.AzureServiceTokenProvider()).GetAccessTokenAsync("https://database.windows.net/").Result; **/
 
         }
         public DbSet<ClaimItem> ClaimItems { get; set; }

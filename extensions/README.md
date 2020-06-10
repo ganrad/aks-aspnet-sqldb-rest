@@ -9,6 +9,10 @@ The extensions below explore advanced features of AKS (Kubernetes) and additiona
 
   In this sub-project, secrets stored in Azure **Key Vault** are fetched and injected inside the Claims Web API application container at runtime.  The project makes use of two open source projects - [AAD Pod Identity](https://github.com/Azure/aad-pod-identity) and [Azure Key Vault Kubernetes Flex Volume](https://github.com/Azure/kubernetes-keyvault-flexvol).  Storing application secrets in Azure Key Vault provides a secure alternative to storing them in standard Kubernetes *Secret* API objects on the etcd server.  The secrets stored in Key Vault never come to reside on the nodes and are directly injected into the application container at runtime.
 
+- [Inject Azure Key Vault Secrets using AAD Pod Identity](./use-pod-identity)
+
+  In this sub-project, the Claims Web API application uses an Azure *Managed Identity* to access the Azure SQL Database.  [Managed Identities for Azure Resources](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview) is a feature of Azure Active Directory and can be used by Azure service instances (eg., AKS) to securely access other Azure resources (eg., Key Vault, SQL Server ...) that support AD authentication.  With Managed Identity, applications deployed on Azure service instances need not store any credential information.  This project also makes use of [AAD Pod Identity]((https://github.com/Azure/aad-pod-identity).
+
 - [Explore advanced features of **Istio** Service Mesh](./istio-service-mesh)
 
   This sub-project examines the advanced features supported by [Istio Service Mesh](https://istio.io/docs/concepts/what-is-istio/).  Features such as intelligent request/traffic routing, traffic splitting (a.k.a Canary rollouts), request timeouts, circuit breaking, fault injection, secure intra-pod communication, rate limiting and others are explored in greater depth and detail.  
