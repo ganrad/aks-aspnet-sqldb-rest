@@ -1,15 +1,16 @@
-# Use AAD Pod Identity and Azure Managed Identity to access Azure SQL Server Database
+# Use Azure Managed Identity and AAD Pod Identity to access Azure SQL Server Database
 
-This extension project describes the steps for configuring the Claims Web API application to use **AAD Pod Identity** and **Managed Identity**.
-
-*AAD Pod Identity* enables Kubernetes applications to access cloud resources securely using managed identities and service principals. Without any code modifications, containerized applications can access any resource on Azure cloud that uses AAD as an Identity provider.
+This project extension describes the steps for configuring the Claims Web API application to use user-assigned **Managed Identity** to access Azure SQL Database.  **AAD Pod Identity** is used to retrieve managed identity service principal token and authenticate with Azure SQL Server.
 
 *Managed Identity* makes applications more secure by eliminating secrets such as credentials in connection strings. 
 
-In this extension project, you will work on completing the following tasks.
+*AAD Pod Identity* enables Kubernetes applications to access cloud resources securely using managed identities and service principals. Without any code modifications, containerized applications can access any resource on Azure cloud that use AAD as an Identity provider.
 
-- Deploy *AAD Pod Identity* components on AKS cluster
-- Configure Azure SQL Database to allow *Managed Identity** access to resources (eg., Tables)
+In this sub-project, you will work on completing the following tasks.
+
+- Install *AAD Pod Identity* components on AKS cluster
+- Configure Azure SQL Database to allow *Managed Identity* access to resources (eg., Database Tables)
+- Deploy AAD Pod Identity application resoureces on AKS
 - Configure the Claims Web API application to retrieve data from Azure SQL Database Tables using Azure *Managed Identity*  
 
 **Functional Diagram:**
@@ -107,7 +108,7 @@ Follow the steps below to deploy AAD Pod Identity components and custom resource
    ```
 
 ## B. Configure Azure SQL Database
-**Approx. time to complete this section: 45 minutes**
+**Approx. time to complete this section: 25 minutes**
 
 To allow **Managed Identity** access to Azure SQL Database resources (eg., Tables), a managed identity user has to be created in the database and granted specific roles.  This would allow the managed identity user to manipulate data in the database tables.
 
@@ -139,7 +140,7 @@ To allow **Managed Identity** access to Azure SQL Database resources (eg., Table
 
    ![alt tag](./images/B-04.PNG)
 
-   Run the following SQL-Transact commands in the **Query** panel/window.  Click **Run**.
+   Run the following T-SQL commands in the **Query** panel/window.  Click **Run**.
 
    ```bash
    # IMPORTANT:
@@ -158,12 +159,12 @@ To allow **Managed Identity** access to Azure SQL Database resources (eg., Table
    ![alt tag](./images/B-05.PNG)
 
 ## C. Deploy AAD Pod Identity resoureces on AKS
+**Approx. time to complete this section: 10 minutes**
 
 1. Create a new Kubernetes namespace for deploying Claims Web API application;
   
    ```bash
-   # Create a new Kubernetes namespace 'dev-claims-mid' for deploying the Claims Web API application with 
-   # AAD Pod Identity and Managed Identity
+   # Create a new Kubernetes namespace 'dev-claims-mid' for deploying the Claims Web API application
    #
    $ kubectl create namespace dev-claims-mid 
    #
@@ -206,52 +207,93 @@ To allow **Managed Identity** access to Azure SQL Database resources (eg., Table
 ## E. Deploy the Claims Web API application
 **Approx. time to complete this section: 20 minutes**
 
-Execute the steps below to deploy the Claims Web API application on AKS.
+Login to the Linux VM (Bastion Host) via an SSH terminal window.  Execute the steps below to deploy the Claims Web API application on AKS.
 
-1. Update the Helm chart for the Claims Web API application.
+1. Modify the Claims Web API application configuration file.
 
-   Update the Helm chart `./claims-api/values.yaml` file by referring to the table below.
-
-   Parameter Name | Value | Description
-   -------------- | ----- | -----------
-   image.repository | acr-name.azurecr.io/claims-api | Specify the ACR name and image name for the Claims Web API container image.
-   image.tag | latest | Specify the claims-api image tag name.
-   kv.secretName | sqldbconn | Specify the name of the Azure Key Vault **secret** containing the Azure SQL Database connection string.
-   kv.resourceGroup | resource-group | Specify the name of the resource group containing the Azure Key Vault.
-   kv.subscriptionId | subscription-id | Specify the Azure subscription in which the Key Vault is provisioned.
-   kv.tenantId | tenant-id | Specify the AAD Tenant in which the Key Vault is provisioned.
+   Copy `./appsettings.json` file to the project root (**parent**) directory.  View the contents of this application configuration file and you will notice that the Azure SQL Connection String (**SqlServerDb**) doesn't have the DB username or password.  See below.
 
    ```bash
-   # (If you have not already) Switch to the 'use-pod-identity' extension directory.
-   $ cd ./extensions/use-pod-identity
+   # 'appsettings.json' file contents
    #
-   # Edit the './claims-api/values.yaml` file by referring to the table above.
+     "ConnectionStrings": {
+        "SqlServerDb": "Server=tcp:claimsdb.database.windows.net,1433;Database=ClaimsDB;"
+     }
    #
    ```
 
-2. Deploy the Claims Web API application.
+   **Add** this file to the local git repository on the Linux VM. 
+
+2. Modify Claims Web API application (code).
+
+   Update the Entity Framework database context class to retrieve the access token for Azure SQL Database.  In the project root (**parent**) directory, edit class `./Models/ClaimsContext.cs`.  Uncomment the two lines (lines: 5 and 6) as shown in the code snippet below.
+
+   ```cs
+   // Uncomment lines 5 and 6
+   // 
+   public ClaimsContext(DbContextOptions<ClaimsContext> options) : base(options) {
+     var conn = (Microsoft.Data.SqlClient.SqlConnection) Database.GetDbConnection();
+     conn.AccessToken = (new Microsoft.Azure.Services.AppAuthentication.AzureServiceTokenProvider()).GetAccessTokenAsync("https://database.windows.net/").Result;
+   }
+   ```
+   
+   **Add** this class to the local git repository on the Linux VM.
+
+   **Commit** the updated files to your local git repository.  Finally, **Push** the local updates to your GitHub repository (your forked repo.).
+
+3. Define and execute an Build Pipeline in Azure DevOps.
+
+   Login to [Azure DevOps Services](https://dev.azure.com/) and define a simple *Pipeline*.  This pipeline should contain 2 tasks as detailed below.
+
+   - Docker **Build** Task: This task builds the Claims Web API application and application container image.
+   - Docker **Push** Task: This task pushes the built application container image to ACR.
+
+
+4. Update the Kubernetes deployment manifest.
+
+   Log back into the Linux VM.
+
+   Switch to the extensions directory `./extensions/use-pod-identity-mid`.  Edit the Kubernetes application deployment manifest `./k8s-resources/deployment.yaml`.  Update this file and specify correct values for attributes listed in the table below.
+
+   | Attribute Name | Description |
+   | -------------- | ----------- |
+   acr-name | Name of the Azure Container Registry instance |
+   tag-name | Azure DevOps Pipeline **Build ID**.  Get the latest build ID from ACR. |
+
+   In case you have deployed an Ingress Controller (Nginx / Traefik) on the AKS cluster, you can also expose the API endpoint on the ingress controller by defining and deploying an *Ingress* resource (left as an exercise).
+
+5. Create a new Kubernetes namespace for deploying Claims Web API with Managed Identity.
 
    ```bash
-   # Use Helm to install the Claims Web API application in namespace 'dev-claims-podid'
-   $ helm install ./claims-api/ --namespace dev-claims-podid --name claims-api-podid
+   # Create a new Kubernetes namespace 'dev-claims-mid' for deploying the Claims Web API application
+   # with Managed Identity.
+   #
+   $ kubectl create namespace dev-claims-mid
+   # 
+   ```
+
+6. Deploy the Claims Web API application.
+
+   ```bash
+   # Install the Claims Web API application in namespace 'dev-claims-mid'
+   # 
+   $ kubectl apply -f ./k8s-resources/deployment.yaml --namespace dev-claims-mid
    #
    # Verify the Claims Web API pod is running
-   $ kubectl get pods -n dev-claims-podid
+   $ kubectl get pods -n dev-claims-mid
    #
    ```
 
 3. Access the Claims Web API application.
 
-   Retrieve the Public IP address of the Nginx ingress controller. See the command snippet below.
-   
    ```bash
-   # Get the ALB IP address for the Nginx Ingress Controller service.
+   # Get the ALB IP address for the Claims Web API endpoint
    # The ALB Public IP address should be listed under column 'EXTERNAL-IP' in the command output.
    #
-   $ kubectl get svc -n ingress-basic
+   $ kubectl get svc -n dev-claims-mid
    #
    ```
 
    Access the Claims Web API service using a browser eg., http://[ALB Public IP]/api/v1/claims.
 
-Congrats! In this extension, you installed Azure **FlexVolume** driver and **AAD Pod Identity** components.  Finally, you configured the Claims Web API application to use FlexVolume driver and the managed Pod Identity to retrieve SQL Connection String from an Azure Key Vault. 
+Congrats! In this extension, you installed **AAD Pod Identity** components on the AKS Cluster. You then configured the Claims Web API application to retrieve an OAuth token from Azure AD using **Managed Identity**. This token was used by the application to authenticate to Azure SQL Server.  Finally, you deployed the application on AKS and verified the application is able to retrieve and send Claims documents to the SQL Database.
