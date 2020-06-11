@@ -4,5 +4,5 @@ metadata:
   name: claims-api-podid
 spec:
   type: 0
-  ResourceID: /subscriptions/0000-0000/resourcegroups/resourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/claims-api-mid
-  ClientID: 00000-7d73-470b-9c28-0000
+  resourceID: /subscriptions/0000-0000/resourcegroups/resourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/claims-api-mid
+  clientID: 00000-7d73-470b-9c28-0000

@@ -2,7 +2,7 @@
 
 This project extension describes the steps for configuring the Claims Web API application to use user-assigned **Managed Identity** to access Azure SQL Database.  **AAD Pod Identity** is used to retrieve managed identity service principal token and authenticate with Azure SQL Server.
 
-*Managed Identity* makes applications more secure by eliminating secrets such as credentials in connection strings. 
+*Managed Identities for Azure Resources* makes applications more secure by eliminating secrets such as credentials in connection strings. 
 
 *AAD Pod Identity* enables Kubernetes applications to access cloud resources securely using managed identities and service principals. Without any code modifications, containerized applications can access any resource on Azure cloud that use AAD as an Identity provider.
 
@@ -18,7 +18,7 @@ In this sub-project, you will work on completing the following tasks.
 Refer to the architecture diagram [here](https://docs.microsoft.com/en-us/azure/aks/operator-best-practices-identity#use-pod-identities).
 
 **Prerequisites:**
-1. Readers are required to complete Sections A thru G in the [parent project](https://github.com/ganrad/aks-aspnet-sqldb-rest) before proceeding with the hands-on labs in this project.
+1. Readers are required to complete Sections A thru G in the [parent project](https://github.com/ganrad/aks-aspnet-sqldb-rest) before proceeding with the hands-on labs in this sub-project.
 
 Readers are advised to refer to the following on-line resources as needed.
 - [Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/)
@@ -27,9 +27,9 @@ Readers are advised to refer to the following on-line resources as needed.
 - [Use Managed Identities in AKS](https://docs.microsoft.com/en-us/azure/aks/use-managed-identity)
 
 ## A. Install AAD Pod Identity components on AKS Cluster
-**Approx. time to complete this section: 30 minutes**
+**Approx. time to complete this section: 25 minutes**
 
-AAD Pod Identity consists of two key components and custom resources.  The two core components are described below.
+AAD Pod Identity consists of two key components and custom resources.  The two core components are briefly described below.
 - **Managed Identity Controller (MIC)**
 
   The MIC is a custom Kubernetes resource that watches for changes to Pods, Identities and Bindings through the Kubernetes API Server.   When it detects a change, the MIC adds or deletes assigned identities as required.
@@ -65,7 +65,7 @@ Follow the steps below to deploy AAD Pod Identity components and custom resource
    #
    ```
 
-3. Create an Azure Managed Identity in the **Node** Resource Group.
+3. Create an Azure Managed Identity in the AKS **Cluster/Node** Resource Group.
 
    Save the values of `clientId` and `id` from the command output.
 
@@ -74,7 +74,7 @@ Follow the steps below to deploy AAD Pod Identity components and custom resource
    # prefix..
    # Make sure you are logged in to your Azure account and have configured the correct subscription.
    # Substitute correct values for the following parameters:
-   # - node-resource-group => Azure Kubernetes Service Node resource group 
+   # - node-resource-group => Azure Kubernetes Service Cluster/Node resource group 
    # - name => Managed Identity name eg., claims-api-mid
    #
    $ az identity create -g <node-resource-group> -n <name> -o json
@@ -85,12 +85,12 @@ Follow the steps below to deploy AAD Pod Identity components and custom resource
 
 4. Assign Roles to AKS cluster Service Principal.
 
-   Assign the AKS Service Principal, **Managed Identity Operator** and **Virtual Machine Contributor** roles for (scope of) the **Node** or **Cluster** Resource Group.
+   Assign the AKS Service Principal, **Managed Identity Operator** and **Virtual Machine Contributor** roles for (scope of) the **Cluster** Resource Group.
 
    ```bash
    # Retrieve the AKS cluster service principal id.
    # Substitute correct values for the following parameters:
-   # - resource-group => Azure Kubernetes Service resource group 
+   # - resource-group => Resource group in which Azure Kubernetes Service is deployed
    # - name => AKS cluster name
    #
    $ az aks show -g <resource-group> -n <name> --query servicePrincipalProfile.clientId -o tsv
@@ -108,7 +108,7 @@ Follow the steps below to deploy AAD Pod Identity components and custom resource
    ```
 
 ## B. Configure Azure SQL Database
-**Approx. time to complete this section: 25 minutes**
+**Approx. time to complete this section: 15 minutes**
 
 To allow **Managed Identity** access to Azure SQL Database resources (eg., Tables), a managed identity user has to be created in the database and granted specific roles.  This would allow the managed identity user to manipulate data in the database tables.
 
@@ -245,7 +245,7 @@ Execute the steps below to deploy the Claims Web API application on AKS.
 
 3. Define and execute an Build Pipeline in Azure DevOps.
 
-   Login to [Azure DevOps Services](https://dev.azure.com/) and define a simple *Pipeline*.  The pipeline should contain 2 tasks as detailed below.
+   Login to [Azure DevOps Services](https://dev.azure.com/) portal and define a simple *Pipeline*.  The pipeline should contain 2 tasks as detailed below.
 
    - Docker **Build** Task: This task builds the Claims Web API application and application container image.
    - Docker **Push** Task: This task pushes the built application container image to ACR.
@@ -264,17 +264,7 @@ Execute the steps below to deploy the Claims Web API application on AKS.
 
    In case you have deployed an Ingress Controller (Nginx / Traefik) on the AKS cluster, you can also expose the API endpoint on the ingress controller by deploying an *Ingress* resource (left as an exercise).
 
-5. Create a new Kubernetes namespace for deploying Claims Web API with Managed Identity.
-
-   ```bash
-   # Create a new Kubernetes namespace 'dev-claims-mid' for deploying the Claims Web API application
-   # with Managed Identity.
-   #
-   $ kubectl create namespace dev-claims-mid
-   # 
-   ```
-
-6. Deploy the Claims Web API application.
+5. Deploy the Claims Web API application.
 
    ```bash
    # Install the Claims Web API application in namespace 'dev-claims-mid'
@@ -286,7 +276,7 @@ Execute the steps below to deploy the Claims Web API application on AKS.
    #
    ```
 
-3. Access the Claims Web API application.
+6. Access the Claims Web API application.
 
    ```bash
    # Get the ALB IP address for the Claims Web API endpoint

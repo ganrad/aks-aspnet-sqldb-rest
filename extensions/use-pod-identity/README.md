@@ -1,21 +1,23 @@
 # Use AAD Pod Identity and Key Vault FlexVolume driver to inject Secrets into applications on AKS
 
-This extension project describes the steps for configuring AAD Pod Identity and Azure FlexVolume driver for retreiving secrets from Azure Key Vault and mounting them onto the file system within the Claims Web API application container.
+This project extension describes the steps for configuring AAD Pod Identity and Azure FlexVolume driver for retreiving secrets from Azure Key Vault and mounting them onto the file system within the Claims Web API application container.
 
 In production environments, confidential data such as database user names and passwords are stored in a secure location such as Azure Key Vault and then injected into the application container at runtime.
 
-In this project, the Azure SQL Database **Connection String** will be stored in Azure Key Vault.  The FlexVolume driver will be used to retrieve the connection string from Key Vault and mount it as a file on the container's file system.  
+In this project, the Azure SQL Database **Connection String** will be stored in Azure Key Vault.
 
-Azure Active Directory (AAD) Pod Identity enables Kubernetes applications to access cloud resources securely using managed identities and service principals.  Without any code modifications, containerized applications can access any resource on Azure cloud that uses AAD as an Identity provider.
+The **Azure Key Vault FlexVolume Driver** will be used to retrieve the connection string from Key Vault and mount it as a file on the container's file system.  
+
+**Azure Active Directory (AAD) Pod Identity** enables Kubernetes applications to access cloud resources securely using managed identities and service principals.  Without any code modifications, containerized applications can access any resource on Azure cloud that uses AAD as an Identity provider.
 
 **Functional Diagram:**
 
 Refer to the architecture diagram [here](https://docs.microsoft.com/en-us/azure/aks/operator-best-practices-identity#use-pod-identities).
 
 **Prerequisites:**
-1. Readers are required to complete Sections A thru G in the [parent project](https://github.com/ganrad/aks-aspnet-sqldb-rest) before proceeding with the hands-on labs in this project.
+1. Readers are required to complete Sections A thru G in the [parent project](https://github.com/ganrad/aks-aspnet-sqldb-rest) before proceeding with the hands-on labs in this sub-project.
 
-Readers are advised to go thru the following on-line resources before proceeding with the hands-on sections.
+Readers are advised to go thru the following on-line resources as needed.
 - [Azure AAD Pod Identity](https://github.com/Azure/aad-pod-identity)
 - [Azure/Kubernetes Key Vault FlexVolume Driver](https://github.com/Azure/kubernetes-keyvault-flexvol)
 
@@ -24,7 +26,7 @@ Readers are advised to go thru the following on-line resources before proceeding
 
 An ingress controller provides reverse proxy, configurable traffic routing and TLS termination for applications (Web Services) deployed on the AKS cluster.  The ingress controller acts as a single entry point for all external HTTP traffic inbound into the cluster and intelligently routes the calls to the respective application service end-points.
 
-In this project, we will deploy an [Nginx Ingress Controller](https://github.com/kubernetes/ingress-nginx) and configure it to intercept and route HTTP calls to the Claims API microservice.
+In this sub-project, we will deploy an [Nginx Ingress Controller](https://github.com/kubernetes/ingress-nginx) and configure it to intercept and route HTTP calls to the Claims API microservice.
 
 Follow the steps below to provision the Nginx Ingress Controller on the AKS cluster.  You can also refer to the steps in the AKS documentation [here](https://docs.microsoft.com/en-us/azure/aks/ingress-basic).
 
@@ -68,11 +70,11 @@ Follow the steps below to provision the Nginx Ingress Controller on the AKS clus
 ## B. Deploy Azure Key Vault FlexVolume Driver on AKS cluster
 **Approx. time to complete this section: 10 minutes**
 
-The FlexVolume driver is responsible for retrieving secrets from Azure Key Vault and mounting them into separate files on the application container's file system.
+The Azure Key Vault FlexVolume driver retrieves secrets from Azure Key Vault and mounts them into separate files on the application container's file system.
 
 Follow the steps below to provision the FlexVolume driver on the AKS cluster.
 
-1. Deploy Key Vault FlexVolume Driver on the AKS Cluster
+1. Deploy Azure Key Vault FlexVolume Driver on the AKS Cluster
 
    ```bash
    # Deploy the KV FlexVolume Driver on the AKS cluster.
@@ -87,7 +89,8 @@ Follow the steps below to provision the FlexVolume driver on the AKS cluster.
 ## C. Install AAD Pod Identity components on AKS Cluster
 **Approx. time to complete this section: 30 minutes**
 
-AAD Pod Identity consists of two key components and custom resources.  The two core components are described below.
+AAD Pod Identity consists of two key components and custom resources.  The two core components are briefly described below.
+
 - **Managed Identity Controller (MIC)**
 
   The MIC is a custom Kubernetes resource that watches for changes to Pods, Identities and Bindings through the Kubernetes API Server.   When it detects a change, the MIC adds or deletes assigned identities as required.
@@ -112,6 +115,9 @@ Follow the steps below to deploy AAD Pod Identity components and custom resource
    #
    $ kubectl apply -f https://raw.githubusercontent.com/Azure/aad-pod-identity/master/deploy/infra/deployment.yaml
    #
+   # For AKS clusters, deploy the MIC and AKS add-on exception
+   $ kubectl apply -f https://raw.githubusercontent.com/Azure/aad-pod-identity/master/deploy/infra/mic-exception.yaml
+   #
    # Verify MIC (Deployments) and NMI (Daemon sets) pods have been deployed on the cluster.
    # The pods will be deployed in the 'default' namespace.  There should be as many instances of
    # NMI and MIC pods running as there are nodes in the cluster (1 pod on each node).
@@ -132,8 +138,9 @@ Follow the steps below to deploy AAD Pod Identity components and custom resource
    # - name => Managed Identity name eg., claims-api-mid
    #
    $ az identity create -g <resource-group> -n <name> -o json
-   # Important: Save the json output of the above command in a file !! We will need to use 'clientId', 'principalId' 
-   # 'id' and other values from the json output in the subsequent commands below.
+   # Important: Save the json output of the above command in a file !!
+   # We will need to use 'clientId', 'principalId', 'id' and other values from the json output in 
+   # the subsequent steps below.
    #
    ```
 4. Assign AKS cluster SPN Role.
@@ -176,7 +183,7 @@ The Azure SQL Database *Connection String* will be stored in an Azure Key Vault.
 
    | Secret Name | Value | Description |
    | ----------- | ----- | ----------- |
-   sqldbconn | Server=tcp:{SQL_SRV_PREFIX}.database.windows.net;Initial Catalog=ClaimsDB;Persist Security Info=False;User ID={SQL_USER_ID};Password={SQL_USER_PWD};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30; | The Azure SQL Database connection string. Value of 'ConnectionStrings.SqlServerDb' parameter in `appsettings.json` file.  Make sure to substitute correct values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD in the connection string. |
+   sqldbconn | Server=tcp:{SQL_SRV_PREFIX}.database.windows.net;Initial Catalog=ClaimsDB;Persist Security Info=False;User ID={SQL_USER_ID};Password={SQL_USER_PWD};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30; | The Azure SQL Database connection string. Value of 'ConnectionStrings.SqlServerDb' parameter in `appsettings.json` file.  **IMPORTANT:** Make sure to substitute correct values for SQL_SRV_PREFIX, SQL_USER_ID & SQL_USER_PWD in the connection string. |
 
 3. Assign Azure Identity Roles.
 
@@ -221,8 +228,8 @@ The Azure SQL Database *Connection String* will be stored in an Azure Key Vault.
    #
    # Edit the Pod Identity Kubernetes manifest file `./k8s-resources/aadpodidentity.yaml`, update 
    # values for the following two attributes and then save the file.
-   # - ResourceID => 'id' attribute value of the managed identity created in Section B step 3
-   # - ClientID => 'clientId' value of the managed identity created in Section B step 3
+   # - resourceID => 'id' attribute value of the managed identity created in Section B step 3
+   # - clientID => 'clientId' value of the managed identity created in Section B step 3
    #
    # Deploy the pod identity custom resource on AKS
    $ kubectl apply -f ./k8s-resources/aadpodidentity.yaml -n dev-claims-podid
@@ -296,4 +303,4 @@ Execute the steps below to deploy the Claims Web API application on AKS.
 
    Access the Claims Web API service using a browser eg., http://[ALB Public IP]/api/v1/claims.
 
-Congrats! In this extension, you installed Azure **FlexVolume** driver and **AAD Pod Identity** components.  Finally, you configured the Claims Web API application to use FlexVolume driver and the managed Pod Identity to retrieve SQL Connection String from an Azure Key Vault. 
+Congrats! In this project extension, you installed **Azure Key Vault FlexVolume** driver and **AAD Pod Identity** components on the AKS cluster.  Next, you secured the SQL Connection String by storing it in an Azure Key Vault. Finally, you configured the Claims Web API application to use FlexVolume driver and managed Pod Identity to retrieve the SQL Connection String from Key Vault and connect to the SQL Database. 
