@@ -20,7 +20,7 @@ Refer to the architecture diagram [here](https://docs.microsoft.com/en-us/azure/
 1. Readers are required to complete Sections A thru G in the [parent project](https://github.com/ganrad/aks-aspnet-sqldb-rest) before proceeding with the hands-on labs in this project.
 
 Readers are advised to refer to the following on-line resources as needed.
-- [Azure Active Directory] (https://docs.microsoft.com/en-us/azure/active-directory/)
+- [Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/)
 - [Azure AAD Pod Identity](https://github.com/Azure/aad-pod-identity)
 - [Managed Identities for Azure resources](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview)
 - [Use Managed Identities in AKS](https://docs.microsoft.com/en-us/azure/aks/use-managed-identity)

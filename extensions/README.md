@@ -11,7 +11,7 @@ The extensions below explore advanced features of AKS (Kubernetes) and additiona
 
 - [Access Azure SQL using **Managed Identity for Azure Resources**](./use-pod-identity-mid)
 
-  In this sub-project, the Claims Web API application uses an Azure *Managed Identity* to access the Azure SQL Database.  [Managed Identities for Azure Resources](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview) is a feature of Azure Active Directory and can be used by Azure service instances (eg., AKS) to securely access other Azure resources (eg., Key Vault, SQL Server ...) that support AD authentication.  With Managed Identity, applications deployed on Azure service instances need not store any credential information.  This project also makes use of [AAD Pod Identity](https://github.com/Azure/aad-pod-identity).
+  In this sub-project, the Claims Web API application uses an Azure *Managed Identity* to access the Azure SQL Database.  [Managed Identities for Azure Resources](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview) is a feature of Azure Active Directory. With Managed Identity, applications deployed on Azure service instances can securely access other Azure resources that support AD authentication.  Most importantly, applications do not have to store any credential information.  This project also makes use of [AAD Pod Identity](https://github.com/Azure/aad-pod-identity).
 
 - [Explore advanced features of **Istio** Service Mesh](./istio-service-mesh)
 
