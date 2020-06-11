@@ -10,8 +10,8 @@ In this sub-project, you will work on completing the following tasks.
 
 - Install *AAD Pod Identity* components on AKS cluster
 - Configure Azure SQL Database to allow *Managed Identity* access to resources (eg., Database Tables)
-- Deploy AAD Pod Identity application resoureces on AKS
-- Configure the Claims Web API application to retrieve data from Azure SQL Database Tables using Azure *Managed Identity*  
+- Deploy AAD Pod Identity application resources on AKS
+- Deploy the Claims Web API application on AKS
 
 **Functional Diagram:**
 
@@ -158,10 +158,10 @@ To allow **Managed Identity** access to Azure SQL Database resources (eg., Table
 
    ![alt tag](./images/B-05.PNG)
 
-## C. Deploy AAD Pod Identity resoureces on AKS
+## C. Deploy AAD Pod Identity resources on AKS
 **Approx. time to complete this section: 10 minutes**
 
-1. Create a new Kubernetes namespace for deploying Claims Web API application;
+1. Create a new Kubernetes namespace for deploying Claims Web API application.
   
    ```bash
    # Create a new Kubernetes namespace 'dev-claims-mid' for deploying the Claims Web API application
@@ -204,10 +204,12 @@ To allow **Managed Identity** access to Azure SQL Database resources (eg., Table
    #
    ```
 
-## E. Deploy the Claims Web API application
-**Approx. time to complete this section: 20 minutes**
+## D. Deploy the Claims Web API application on AKS
+**Approx. time to complete this section: 30 minutes**
 
-Login to the Linux VM (Bastion Host) via an SSH terminal window.  Execute the steps below to deploy the Claims Web API application on AKS.
+Login to the Linux VM (Bastion Host) via an SSH terminal window.
+
+Execute the steps below to deploy the Claims Web API application on AKS.
 
 1. Modify the Claims Web API application configuration file.
 
@@ -243,7 +245,7 @@ Login to the Linux VM (Bastion Host) via an SSH terminal window.  Execute the st
 
 3. Define and execute an Build Pipeline in Azure DevOps.
 
-   Login to [Azure DevOps Services](https://dev.azure.com/) and define a simple *Pipeline*.  This pipeline should contain 2 tasks as detailed below.
+   Login to [Azure DevOps Services](https://dev.azure.com/) and define a simple *Pipeline*.  The pipeline should contain 2 tasks as detailed below.
 
    - Docker **Build** Task: This task builds the Claims Web API application and application container image.
    - Docker **Push** Task: This task pushes the built application container image to ACR.
@@ -253,14 +255,14 @@ Login to the Linux VM (Bastion Host) via an SSH terminal window.  Execute the st
 
    Log back into the Linux VM.
 
-   Switch to the extensions directory `./extensions/use-pod-identity-mid`.  Edit the Kubernetes application deployment manifest `./k8s-resources/deployment.yaml`.  Update this file and specify correct values for attributes listed in the table below.
+   Switch to this project extensions directory `./extensions/use-pod-identity-mid`.  Edit the Kubernetes application deployment manifest `./k8s-resources/deployment.yaml`.  Specify correct values for attributes listed in the table below.
 
    | Attribute Name | Description |
    | -------------- | ----------- |
    acr-name | Name of the Azure Container Registry instance |
-   tag-name | Azure DevOps Pipeline **Build ID**.  Get the latest build ID from ACR. |
+   tag-name | Azure DevOps Pipeline **Build ID**.  Login to Azure Portal. Get the latest build ID from ACR **claims-api** repository. |
 
-   In case you have deployed an Ingress Controller (Nginx / Traefik) on the AKS cluster, you can also expose the API endpoint on the ingress controller by defining and deploying an *Ingress* resource (left as an exercise).
+   In case you have deployed an Ingress Controller (Nginx / Traefik) on the AKS cluster, you can also expose the API endpoint on the ingress controller by deploying an *Ingress* resource (left as an exercise).
 
 5. Create a new Kubernetes namespace for deploying Claims Web API with Managed Identity.
 
@@ -296,4 +298,4 @@ Login to the Linux VM (Bastion Host) via an SSH terminal window.  Execute the st
 
    Access the Claims Web API service using a browser eg., http://[ALB Public IP]/api/v1/claims.
 
-Congrats! In this extension, you installed **AAD Pod Identity** components on the AKS Cluster. You then configured the Claims Web API application to retrieve an OAuth token from Azure AD using **Managed Identity**. This token was used by the application to authenticate to Azure SQL Server.  Finally, you deployed the application on AKS and verified the application is able to retrieve and send Claims documents to the SQL Database.
+Congrats! In this project extension, you installed **AAD Pod Identity** components on the AKS Cluster. You then configured the Claims Web API application to retrieve an OAuth token from Azure AD using **Managed Identity**. This token was used by the application to authenticate to Azure SQL Server.  Finally, you deployed the application on AKS and verified the application is able to retrieve and send Claims documents to the SQL Database.
