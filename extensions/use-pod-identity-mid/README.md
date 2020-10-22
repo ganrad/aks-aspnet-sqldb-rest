@@ -214,12 +214,15 @@ Execute the steps below to deploy the Claims Web API application on AKS.
 1. Modify the Claims Web API application configuration file.
 
    Copy `./appsettings.json` file to the project root (**parent**) directory.  View the contents of this application configuration file and you will notice that the Azure SQL Connection String (**SqlServerDb**) doesn't have the DB username or password.  See below.
+  
+   >**NOTE**: In the `./appsettings.json` file, remember to substitute correct value for **Azure SQL Server** name in the connection string (`SqlServerDb`).
 
    ```bash
    # 'appsettings.json' file contents
+   # Note: Substitute correct value for Azure SQL server name ('sqldbserver') in the connection string below.
    #
      "ConnectionStrings": {
-        "SqlServerDb": "Server=tcp:claimsdb.database.windows.net,1433;Database=ClaimsDB;"
+        "SqlServerDb": "Server=tcp:sqldbserver.database.windows.net,1433;Database=ClaimsDB;"
      }
    #
    ```
