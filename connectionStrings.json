@@ -1,0 +1,8 @@
+{
+    "claimsDB": "Server=tcp:sql-anpenn.database.windows.net;Initial Catalog=ClaimsDB;Persist Security Info=False;User ID=adm-anpenn;Password={your_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+    "k8s-lab_bastion": {
+        "publicIpAddress": "51.143.0.234",
+        "username": "adm-anpenn",
+        "password": "Billgates01!"
+      }
+}
