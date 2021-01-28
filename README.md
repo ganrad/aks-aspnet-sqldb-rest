@@ -999,9 +999,11 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
 6.  Configure AKS to pull application container images from ACR.
 
-    **IMPORTANT NOTES:**
+    When AKS cluster is created, Azure also creates a 'Service Principal' (SP) to support cluster interoperability with other Azure resources.  This auto-generated service principal can be used to authenticate against the ACR.  To do so, we need to create an Azure AD role assignment that grants the cluster's SP access to the Azure Container Registry.
 
-    If you selected Option **A** in Step 3 then execute the command in the code snippet below and skip to Step 7.  Skip this command snippet and go to the next section in this step if you selected Option **B** in Step 3.
+    **IMPORTANT NOTES:**
+    - If you selected Option **A** in Step 3 then execute the command in the code snippet below and skip to Step 7.
+    - Alternatively if you selected Option **B** in Step 3, skip this code snippet and go to the next section in this step.
 
     ```bash
     # Assign registry pull permission to the AKS cluster Service Principal so it can pull images from the ACR instance.
@@ -1010,8 +1012,6 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     $ az aks update -g myResourceGroup -n akscluster --attach-acr <ACR_NAME>
     #
     ```
-     
-    When AKS cluster is created, Azure also creates a 'Service Principal' (SP) to support cluster interoperability with other Azure resources.  This auto-generated service principal can be used to authenticate against the ACR.  To do so, we need to create an Azure AD role assignment that grants the cluster's SP access to the Azure Container Registry.
 
     Edit the shell script `./shell-scripts/acr-auth.sh` and specify correct values for the following variables.
 
