@@ -1000,11 +1000,13 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 6.  Configure AKS to pull application container images from ACR.
 
     **IMPORTANT NOTES:**
-    If you selected Option **A** in Step 3 then execute the command in the snippet below and skip to the Step 7.  Skip this command and go to the next section in this step if you selected Option **B** in Step 3.
+
+    If you selected Option **A** in Step 3 then execute the command in the code snippet below and skip to Step 7.  Skip this command snippet and go to the next section in this step if you selected Option **B** in Step 3.
 
     ```bash
     # Assign registry pull permission to the AKS cluster Service Principal so it can pull images from the ACR instance.
-    # In the command below, replace 'ACR_NAME' with the name of your ACR instance.  (Exclude the brackets '<, >')
+    # In the command below, replace 'ACR_NAME' with the name of your ACR instance.  (Exclude the brackets '< , >')
+    #
     $ az aks update -g myResourceGroup -n akscluster --attach-acr <ACR_NAME>
     #
     ```
