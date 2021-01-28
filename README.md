@@ -926,7 +926,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
          --dns-name-prefix akslab \
          --generate-ssh-keys \
          --disable-rbac \
-         --kubernetes-version "1.16.8" \
+         --kubernetes-version "1.19.3" \
          --network-plugin azure \
          --service-cidr 10.0.0.0/16 \
          --dns-service-ip 10.0.0.10 \
@@ -1182,7 +1182,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
     - Chart Type = `File Path`
     - Chart Path = `$(System.DefaultWorkingDirectory)/_claims-api-lab-CI/drop/claims-api`
     - Release name = `aks-aspnetcore-lab`
-    - Arguments = `--set blue.enabled=true --set image.repository=**<your-acr-repo>**.azurecr.io/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)"`
+    - Arguments = `--set blue.enabled=true --set image.repository=<your-acr-repo>.azurecr.io/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)"`
 
       Remember to specify the correct value for **ACR instance** in **image.repository** template parameter !
 
