@@ -1161,7 +1161,11 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-11.PNG)
 
-    Click on the **helm** task (on the left).  In the detail pane on the right, fill out the values as shown in the screenshots below.  Remember to specify the correct value for the Azure resource group (eg., myResourceGroup).
+    Click on the **helm** task (on the left).  In the detail pane on the right, fill out the values as shown in the screenshots below.
+
+    **IMPORTANT NOTES:**
+    - Remember to specify the correct value for the Azure resource group (eg., myResourceGroup).
+    - The **Helm v2** task uses an Helm version that points to a deprecated chart repository (which may not resolve).  Add parameter `--stable-repo-url https://charts.helm.sh/stable` to the **Arguments** field of the **Helm** task (below) to force Helm to retrieve charts from the updated stable repository.
 
     ![alt tag](./images/H-12.PNG)
 
