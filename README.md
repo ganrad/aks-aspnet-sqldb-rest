@@ -207,7 +207,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Write a file system to the partition using 'mkfs' command
     $ sudo mkfs -t xfs /dev/sdc1
     #
-    # Mount the disk so it's accessible in the operation system
+    # Mount the disk so it's accessible in the operating system
     $ sudo mkdir -p /var/lib/docker && sudo mount /dev/sdc1 /var/lib/docker
     #
     # Verify the disk got mounted property.  The output should display filesystem '/dev/sdc1' mounted on directory
@@ -273,6 +273,9 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Download the 'jq' binary and save it in this directory
     $ wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
     #
+    # Grant execute permission for jq
+    $ chmod 700 ./jq-linux64
+    #
     # Switch back to the home directory
     $ cd
     #
@@ -291,7 +294,7 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Install with the yum install command.
     $ sudo yum install -y azure-cli
     #
-    # Check the Azure CLI version (Should be 2.7+.  At the time of this writing, 2.7.0 was the latest release)
+    # Check the Azure CLI version (At the time of the last update to this document, 2.18.0 was the latest release)
     $ az -v
     #
     # Login to your Azure account.  Use your Azure login ID and password to login.
@@ -304,12 +307,12 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Make sure you are in the home directory
     $ cd
     #
-    # Install Helm v2.16.7
+    # Install Helm v2.17.0
     # Create a new directory 'Helm' under home directory to store the helm binary
     $ mkdir helm
     $ cd helm
-    $ wget https://get.helm.sh/helm-v2.16.7-linux-amd64.tar.gz
-    $ tar -xzvf helm-v2.16.7-linux-amd64.tar.gz
+    $ wget https://get.helm.sh/helm-v2.17.0-linux-amd64.tar.gz
+    $ tar -xzvf helm-v2.17.0-linux-amd64.tar.gz
     #
     # Switch back to home directory
     $ cd
@@ -318,18 +321,21 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Create a new directory 'aztools' under home directory to store the kubectl binary
     $ mkdir aztools
     #
-    # Install kubectl binary in the new directory
-    $ az aks install-cli --install-location=./aztools/kubectl
+    # Install Kubernetes CLI (kubectl + kubelogin) v1.20.x in the 'aztools' directory
+    $ sudo az aks install-cli --install-location=./aztools/kubectl
     #
-    # Install Istio Service Mesh CLI v1.6.0
-    $ ISTIO_VERSION=1.6.0
+    # Install Istio Service Mesh CLI (istioctl) v1.8.2 in the 'aztools' directory
+    $ ISTIO_VERSION=1.8.2
     $ curl -sL "https://github.com/istio/istio/releases/download/$ISTIO_VERSION/istio-$ISTIO_VERSION-linux-amd64.tar.gz" | tar xz --directory=$HOME/aztools
     # 
     # Register the Microsoft key, product repository and required dependencies.
-    $ sudo rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
+    # sudo rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm - Don't run this command !!
+    #
+    $ curl https://packages.microsoft.com/config/rhel/7/prod.repo > ./microsoft-prod.repo
+    $ sudo cp ./microsoft-prod.repo /etc/yum.repos.d/
     #
     # Update the system libraries.  This command will take a few minutes (~10 mins) to complete.  Be patient!
-    $ sudo yum update
+    $ sudo yum update -y
     #
     # Install .NET Core 3.1 (latest) binaries
     $ sudo yum install -y dotnet-sdk-3.1
@@ -337,15 +343,17 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Check .NET Core version (Should print 3.1.xxx)
     $ dotnet --version
     #
-    # Install EF Core 3.1
+    # Install .NET EF Core 5.0.x
     # This command installs dotnet-ef in ~/.dotnet/tools directory. so this directory has to be in
     # the Path !!
     $ dotnet tool install --global dotnet-ef
     #
-    # Check .NET Core EF version (should print 3.1.4)
+    # Check .NET Core EF version (should print 5.0.2)
+    # You may need to logout of the terminal session and log back in to view theoutput
     $ dotnet-ef --version
     #
     # Finally, update '.bashrc' file and set the path to jq, Helm and Kubectl binaries
+    # NOTE: Substitute 'labuser' with your Linux VM login name.
     $ JQ=/home/labuser/jq
     $ KUBECLI=/home/labuser/aztools
     $ HELM=/home/labuser/helm/linux-amd64
@@ -692,9 +700,6 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
     Ensure the following *Preview* features are **disabled (Off)**.
     - Analytics Views (Optional)
     - Experimental Themes
-    - New Repos settings experience
-    - New service connections experience
-    - New Test Plans Page
 
 2.  Create an Azure DevOps *Organization* and *Project*.
 
@@ -853,21 +858,24 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
     >**NOTE:** Follow the steps in option **A** or **B** below for deploying the AKS cluster.  If you would like to explore deploying containers on **Virtual Nodes** in the [extensions](./extensions) projects, follow the steps in option **B** below.  Otherwise, follow the steps in option **A**.
 
-    **A.** Use the latest supported Kubernetes version to deploy the AKS cluster.  At the time this project was last updated, version `1.16.8` was the latest AKS version. 
+    **A.** Use the latest supported Kubernetes version to deploy the AKS cluster.  At the time this project was last updated, version `1.19.3` was the latest stable AKS version. 
 
        Refer to the commands below to create the AKS cluster.  It will take a few minutes (< 10 mins) for the AKS cluster to get provisioned. 
        ```bash
-       # Create a 2 Node AKS cluster v1.16.8.  This is not the latest patch release.
+       # Create a 2 Node AKS cluster v1.19.3.  This is not the latest patch release.
        # We will upgrade to the latest patch release in a subsequent lab/Section. 
        # Remember to substitute the correct value for 'Resource Group'.
        # The 'az aks' command below will provision an AKS cluster with the following settings -
-       # - Kubernetes version ~ 1.16.8
+       # - Kubernetes version ~ 1.19.3
        # - No. of application/worker nodes ~ 2
+       # - Node pool - A single 'system' node pool (AKS supports up to 10 node pools)
        # - RBAC ~ Disabled
+       # - CNI Networking Plugin - Kubenet
+       # - Azure Load Balancer - Standard SKU
        # - Location ~ US West 2
        # - DNS Name prefix for API Server ~ akslab
        #
-       $ az aks create --resource-group myResourceGroup --name akscluster --location westus2 --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.16.8"
+       $ az aks create --resource-group myResourceGroup --name akscluster --location westus2 --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.19.3"
        #
        # Verify status of AKS cluster
        $ az aks show -g myResourceGroup -n akscluster --output table
@@ -918,7 +926,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
          --dns-name-prefix akslab \
          --generate-ssh-keys \
          --disable-rbac \
-         --kubernetes-version "1.16.8" \
+         --kubernetes-version "1.19.3" \
          --network-plugin azure \
          --service-cidr 10.0.0.0/16 \
          --dns-service-ip 10.0.0.10 \
@@ -949,8 +957,8 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     # Check if Helm client is able to connect to Tiller on AKS.
     # This command should list both client and server versions.
     $ helm version
-    Client: &version.Version{SemVer:"v2.16.7", GitCommit:"e13bc94621d4ef666270cfbe734aaabf342a49bb", GitTreeState:"clean"}
-    Server: &version.Version{SemVer:"v2.16.7", GitCommit:"e13bc94621d4ef666270cfbe734aaabf342a49bb", GitTreeState:"clean"}
+    Client: &version.Version{SemVer:"v2.17.0", GitCommit:"e13bc94621d4ef666270cfbe734aaabf342a49bb", GitTreeState:"clean"}
+    Server: &version.Version{SemVer:"v2.17.0", GitCommit:"e13bc94621d4ef666270cfbe734aaabf342a49bb", GitTreeState:"clean"}
     ```
 
 5.  Deploy Traefik Kubernetes Ingress Controller.
@@ -992,6 +1000,18 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 6.  Configure AKS to pull application container images from ACR.
 
     When AKS cluster is created, Azure also creates a 'Service Principal' (SP) to support cluster interoperability with other Azure resources.  This auto-generated service principal can be used to authenticate against the ACR.  To do so, we need to create an Azure AD role assignment that grants the cluster's SP access to the Azure Container Registry.
+
+    **IMPORTANT NOTES:**
+    - If you selected Option **A** in Step 3 then execute the command in the code snippet below and skip to Step 7.
+    - Alternatively if you selected Option **B** in Step 3, skip this code snippet and go to the next section in this step.
+
+    ```bash
+    # Assign registry pull permission to the AKS cluster Service Principal so it can pull images from the ACR instance.
+    # In the command below, replace 'ACR_NAME' with the name of your ACR instance.  (Exclude the brackets '< , >')
+    #
+    $ az aks update -g myResourceGroup -n akscluster --attach-acr <ACR_NAME>
+    #
+    ```
 
     Edit the shell script `./shell-scripts/acr-auth.sh` and specify correct values for the following variables.
 
@@ -1141,7 +1161,11 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-11.PNG)
 
-    Click on the **helm** task (on the left).  In the detail pane on the right, fill out the values as shown in the screenshots below.  Remember to specify the correct value for the Azure resource group (eg., myResourceGroup).
+    Click on the **helm** task (on the left).  In the detail pane on the right, fill out the values as shown in the screenshots below.
+
+    **IMPORTANT NOTES:**
+    - Remember to specify the correct value for the Azure resource group (eg., myResourceGroup).
+    - The **Helm v2** task uses an Helm version that points to a deprecated chart repository (which may not resolve).  Add parameter `--stable-repo-url https://charts.helm.sh/stable` to the **Arguments** field of the **Helm** task (below) to force Helm to retrieve charts from the updated stable repository.
 
     ![alt tag](./images/H-12.PNG)
 
@@ -1162,7 +1186,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
     - Chart Type = `File Path`
     - Chart Path = `$(System.DefaultWorkingDirectory)/_claims-api-lab-CI/drop/claims-api`
     - Release name = `aks-aspnetcore-lab`
-    - Arguments = `--set blue.enabled=true --set image.repository=**<your-acr-repo>**.azurecr.io/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)"`
+    - Arguments = `--set blue.enabled=true --set image.repository=<your-acr-repo>.azurecr.io/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)"`
 
       Remember to specify the correct value for **ACR instance** in **image.repository** template parameter !
 
@@ -1612,9 +1636,9 @@ In this section, we will explore value add features for administering & managing
     # List the available upgrade versions for the AKS cluster
     $ az aks get-upgrades -g myResourceGroup -n akscluster -o table
     #
-    # Upgrade the AKS cluster to v1.16.9.  Then confirm (y) the upgrade.
+    # Upgrade the AKS cluster to v1.19.6.  Then confirm (y) the upgrade.
     # Be patient.  The upgrade will run for a few minutes!
-    $ az aks upgrade -g myResourceGroup -n akscluster --kubernetes-version 1.16.9
+    $ az aks upgrade -g myResourceGroup -n akscluster --kubernetes-version 1.19.6
     #
     # Verify the nodes have been upgraded by checking the value under the 'KubernetesVersion' column
     $ az aks show -g myResourceGroup -n akscluster -o table
