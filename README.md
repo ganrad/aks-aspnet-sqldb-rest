@@ -25,16 +25,11 @@ This project provides step by step instructions to use **Azure DevOps Services**
 
 **Prerequisites:**
 1.  Review and complete all modules in [Azure Fundamentals](https://docs.microsoft.com/en-us/learn/paths/azure-fundamentals/) course.
-2.  An active **Microsoft Azure Subscription** with **Owner** *Role* permission.  You can obtain a free Azure subscription by accessing the [Microsoft Azure](https://azure.microsoft.com/en-us/?v=18.12) website.
-
-    **IMPORTANT NOTES:**
-    - In order to complete all sections in this project, at least one person in your team **must** have **Owner** *Role* permission for the Azure Subscription.
-    - For an Azure Subscription, there is a default limit on the number of **VM Cores** which can be provisioned per region.  The Azure limits are also referred to as quotas.  The VM Cores have both a regional total limit (~ 20) and a per-size series limit.  In case a single Azure Subscription is used for provisioning resources (~ VM's) by all attendees, the default VM Cores limit might get exceeded. The default quota can be increased by opening an online Azure Customer Support request.  More details can be found [here](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits).
-3.  An Azure **Resource Group** with **Owner** *Role* permission.  All Azure resources will be deloyed into this resource group.
-4.  A **GitHub** Account to fork and clone this GitHub repository.
-5.  A **Azure DevOps Services** (formerly Visual Studio Team Services) Account.  You can get a free Azure DevOps account by accessing the [Azure DevOps Services](https://azure.microsoft.com/en-us/services/devops/) web page.
-6.  Review [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview).  **Azure Cloud Shell** is an interactive, browser accessible shell for managing Azure resources.  You will be using the Cloud Shell to create the Bastion Host (Linux VM).
-7.  This project assumes readers/attendees are familiar with Linux fundamentals, Git SCM, Linux Containers (*docker engine*), Kubernetes, DevOps (*Continuous Integration/Continuous Deployment*) concepts and developing Microservices in one or more programming languages.  If you are new to any of these technologies, go thru the resources below.
+2.  An Azure **Resource Group** with **Owner** *Role* permission.  All Azure resources will be deloyed into this resource group.
+3.  A **GitHub** Account to fork and clone this GitHub repository.
+4.  A **Azure DevOps Services** (formerly Visual Studio Team Services) Account.  You can get a free Azure DevOps account by accessing the [Azure DevOps Services](https://azure.microsoft.com/en-us/services/devops/) web page.
+5.  Review [Overview of Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview).  **Azure Cloud Shell** is an interactive, browser accessible shell for managing Azure resources.  You will be using the Cloud Shell to create the Bastion Host (Linux VM).
+6.  This project assumes readers/attendees are familiar with Linux fundamentals, Git SCM, Linux Containers (*docker engine*), Kubernetes, DevOps (*Continuous Integration/Continuous Deployment*) concepts and developing Microservices in one or more programming languages.  If you are new to any of these technologies, go thru the resources below.
     - [Learn Linux, 101: A roadmap for LPIC-1](https://developer.ibm.com/tutorials/l-lpic1-map/)
 
       Go thru the chapters in **Topic 103: GNU and UNIX commands**
@@ -44,12 +39,22 @@ This project provides step by step instructions to use **Azure DevOps Services**
     - [Introduction to .NET and Docker](https://docs.microsoft.com/en-us/dotnet/core/docker/intro-net-docker)
     - [Kubernetes Overview](https://kubernetes.io/docs/tutorials/kubernetes-basics/)
     - [Introduction to Azure DevOps Services](https://azure.microsoft.com/en-us/overview/devops-tutorial/)
-8.  (Windows users only) A **terminal emulator** is required to login (SSH) into the Linux VM (Bastion) host running on Azure. Download and install one of the utilities below.
+7.  (Windows users only) A **terminal emulator** is required to login (SSH) into the Linux VM (Bastion) host running on Azure. Download and install one of the utilities below.
     - [Putty](https://putty.org/)
     - [Git bash](https://gitforwindows.org/)
     - [Windows Sub-System for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
-9.  (Optional) Download and install [Microsoft SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-2017) to manage SQL Server database artifacts.
-10. (Optional) Download and install [Postman App](https://www.getpostman.com/apps), a REST API Client used for testing the Web API's.
+8.  (Optional) Download and install [Microsoft SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-2017) to manage SQL Server database artifacts.
+9. (Optional) Download and install [Postman App](https://www.getpostman.com/apps), a REST API Client used for testing the Web API's.
+
+**Prerequisite Environment Configuration:**
+
+![alt tag](./images/pre-req_rg-sp-sub-hierarchy.png)
+
+This diagram outlines the steps to configure a common lab environment where many attendees share a single Azure subscription for this project.
+- Every attendee has their own Resource Group
+    - The attendee has the 'Owner' role assigned to their respective Resource Group
+- Every attendee also has their own Service Principal created in their Tenant
+    - The attendee's Service Principal has the 'Contributor' role assigned to their respective resource group
 
 **Functional Architecture:**
 
