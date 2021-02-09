@@ -65,5 +65,5 @@ tolerations: []
 affinity: {}
 
 imagePullSecrets:
-  - name: acr-secret
+  - name: ase-ecr-credentials
 
