@@ -578,7 +578,7 @@ In this step, we will deploy an instance of Azure Container Registry (ACR) to st
 **Approx. time to complete this section: 30 minutes**
 
 To build and run the Azure DevOps self-hosted pipelines agent, refer to this GitHub repo. (link below). 
-- [Build and deploy Azure DevOps Pipelines Agent on AKS](https://github.com/ganrad/Az-DevOps-Agent-On-AKS)
+- [Build and deploy Azure DevOps Pipelines Agent](https://github.com/ganrad/Az-DevOps-Agent-On-AKS)
 
 Also, refer to the [Azure DevOps Services Docs](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/v2-linux?view=azure-devops).
 
@@ -893,7 +893,8 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
 6.  Configure AKS to pull application container images from ACR.
 
-    **IMPORTANT NOTES:** If you selected Option **A** in Step 3 then skip this Step and go to Step 7.
+    **IMPORTANT NOTES:**
+    - If you selected Option **A** in Step 3 then you can skip this Step and go to Step 7.
 
     When AKS cluster is created, Azure also creates a 'Service Principal' (SP) to support cluster interoperability with other Azure resources.  This auto-generated service principal can be used to authenticate against the ACR.  To do so, we need to create an Azure AD role assignment that grants the cluster's SP access to the Azure Container Registry.
 
@@ -1104,7 +1105,7 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
     Click on **helm upgrade** task.  Change the Kubernetes **Namespace** to **qa-test** and the Helm **Release Name** to **aks-aspnetcore-lab-qa** as shown in the screenshot below. Leave all other field values as is.
 
     **IMPORTANT NOTES:**
-    - Ignore the 'helm init' task in the screenshots below.  This task was required for Helm v2 but isn't required in Helm v3
+    - Ignore the 'helm init' task in the screenshot below.  This task was required for Helm v2 but isn't required in Helm v3
 
     ![alt tag](./images/H-30.PNG)
 
