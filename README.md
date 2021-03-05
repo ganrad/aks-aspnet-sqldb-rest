@@ -8,8 +8,8 @@ Table of Contents
   * [A. Deploy an Azure SQL Server Database](#a-deploy-an-azure-sql-server-and-database)
   * [B. Provision a Linux VM (Bastion Host/Jump Box) on Azure and install pre-requisite software](#b-provision-a-linux-centos-vm-on-azure)
   * [C. Build and run the Claims API microservice locally on the Bastion Host](#c-build-and-run-the-claims-api-microservice-locally-on-the-linux-vm)
-  * [D. Deploy an Azure Pipelines Agent on the Bastion Host](#d-deploy-an-azure-pipelines-agent-on-the-linux-vm)
-  * [E. Deploy an Azure Container Registry (ACR)](#e-deploy-azure-container-registry)
+  * [D. Deploy an Azure Container Registry (ACR)](#e-deploy-azure-container-registry)
+  * [E. Deploy an Azure Pipelines Agent on the Bastion Host](#d-deploy-an-azure-pipelines-agent-on-the-linux-vm)
   * [F. Define and execute a Build Pipeline in Azure DevOps Services](#f-define-and-execute-claims-api-build-pipeline-in-azure-devops-services)
   * [G. Deploy an Azure Kubernetes Service (AKS) cluster](#g-create-an-azure-kubernetes-service-cluster-and-deploy-claims-api-microservice)
     * [Invoking the Claims API Microservice REST API](#invoking-the-claims-api-microservice-rest-api)
@@ -65,7 +65,7 @@ For easy and quick reference, readers can refer to the following on-line resourc
 - [ASP.NET Core 3.1 Documentation](https://docs.microsoft.com/en-us/aspnet/core/?view=aspnetcore-3.1)
 - [Docker Documentation](https://docs.docker.com/)
 - [Kubernetes Documentation](https://kubernetes.io/docs/home/?path=users&persona=app-developer&level=foundational)
-- Helm Documentation [2.x](https://v2.helm.sh/docs/) [3.x](https://docs.helm.sh/)
+- [Helm 3.x Documentation](https://docs.helm.sh/)
 - [Creating an Azure VM](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli)
 - [Azure Kubernetes Service (AKS) Documentation](https://docs.microsoft.com/en-us/azure/aks/)
 - [Azure Container Registry Documentation](https://docs.microsoft.com/en-us/azure/container-registry/)
@@ -312,12 +312,12 @@ Follow the steps below to create the Bastion host (Linux VM) and install pre-req
     # Make sure you are in the home directory
     $ cd
     #
-    # Install Helm v2.17.0
+    # Install Helm v3.5.2 (Latest version at the time this repo. was last updated)
     # Create a new directory 'Helm' under home directory to store the helm binary
     $ mkdir helm
     $ cd helm
-    $ wget https://get.helm.sh/helm-v2.17.0-linux-amd64.tar.gz
-    $ tar -xzvf helm-v2.17.0-linux-amd64.tar.gz
+    $ wget https://get.helm.sh/helm-v3.5.2-linux-amd64.tar.gz
+    $ tar -xzvf helm-v3.5.2-linux-amd64.tar.gz
     #
     # Switch back to home directory
     $ cd
@@ -558,122 +558,7 @@ Before proceeding, login into the Linux VM using SSH.
 
 You have now successfully tested the Claims API microservice locally on this VM.
 
-### D. Deploy an Azure Pipelines Agent on the Linux VM
-**Approx. time to complete this section: 30 minutes**
-
-Use one of the options below for deploying the *Azure DevOps Services* self-hosted build agent on the Linux VM.
-
-**Option 1** is recommended for **advanced users** who are well versed in container technology and are familiar with Kubernetes and docker engine. 
-
-**Option 2** is recommended for users who are **new** to containers.
-
-Although the Azure DevOps Pipelines Agent (formerly VSTS build agent) container image is currently supported and available for download from docker hub, for production deployments Microsoft recommends customers to build their own Azure DevOps Pipelines Agent container images (*Option 1*).
-
-**Option 1:**
-This solution affords more flexibility allowing customers to include additional application build tools and utilities within the image to meet their specific needs and requirements.  To build and run the Azure DevOps self-hosted pipelines agent, refer to one of the links below. 
-- [Build and deploy Azure DevOps Pipelines Agent on AKS](https://github.com/ganrad/Az-DevOps-Agent-On-AKS)
-- [Azure DevOps Services Self-hosted Linux agents](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/v2-linux?view=azure-devops)
-
-**Option 2:**
-Download the [Azure Pipelines Agent](https://hub.docker.com/_/microsoft-azure-pipelines-vsts-agent) container image from docker hub and run a instance on the Linux VM.
-
-If you haven't already, login to the Linux VM using a SSH terminal session.
-
-1.  Pull the Azure Pipelines Agent container image from docker hub.
-
-    It will take approx. 20+ minutes to download the image (Size ~ 10.6 GB).  Take a coffee break or treat yourself to a cookie!
-    ```bash
-    # This command will take approx. 20 mins to download the Azure Pipelines Agent container image
-    $ docker pull mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-16.04-docker-18.06.1-ce-standard
-    #
-    # List the images on the system/VM
-    $ docker images
-    #
-    ```
-
-2.  Generate an Azure DevOps Services personal access token (PAT).
-
-    The PAT token will be used to connect the Azure Pipelines agent to your Azure DevOps account.
-
-    Login to [Azure DevOps Services](https://dev.azure.com) using your account ID. In the upper right corner, click on **your profile image**.  Then click on the **3 dots** as shown in the screenshot below.  Next, click on **User settings** followed by **Personal access tokens**.
-
-    ![alt tag](./images/D-01.PNG)
-
-    Click on **New Token** to create a new PAT.  See screenshot below.
-
-    ![alt tag](./images/D-02.PNG)
-
-    In the **Create a new personal access token** tab, provide a **Name** for the token, check the radio button besides **Full access**, select an **Expiration** period and click **Create**.  See screenshot below.
-
-    ![alt tag](./images/D-03.PNG)
-
-    In the next page, make sure to **copy and store** the PAT (token) into a file.  Keep in mind, you will not be able to retrieve this token again.  If you happen to lose or misplace the token, you will need to generate a new PAT token and use it to reconfigure the build agent.  So save this PAT (token) to a file.
-
-3.  Start the Azure Pipelines Agent container.
-
-    The *Continuous Integration* (CI) and *Continuous Deployment* (CD) pipelines deployed on Azure DevOps Services will be executed by the pipeline agent container on the Linux VM.
-
-    Refer to the table below to set the parameter values for the build container correctly.
-
-    Parameter | Value
-    --------- | -----
-    VSTS_AGENT | Name of the Pipeline Agent (Defaults to : Container ID)
-    VSTS_TOKEN | Azure DevOps Services *PAT Token*.  This is the value which you copied and saved in a file in the previous step.
-    VSTS_ACCOUNT | Azure DevOps Services *Organization Name*.  An Org. is a container for DevOps projects in Azure DevOps platform.  It is the last part (**ContextPath**) of the Azure DevOps Portal URL (eg., https://dev.azure.com/**ContextPath**).
-    VSTS_POOL | Azure DevOps Services *Agent Pool Name*.  For this lab, use value *Default*.  **NOTE:** In case you use a different name for the pool, you will need to first create this pool in your Azure DevOps account.  Otherwise the agent will not be able to connect to the pool.
-
-    In the Linux terminal window, start the Azure Pipelines Agent container.  See command snippet below.
-    ```bash
-    # Substitute the correct values for VSTS_ACCOUNT, VSTS_POOL and VSTS_TOKEN before running this command
-    #
-    $ docker run -e VSTS_ACCOUNT=<Org. Name> -e VSTS_TOKEN=<PAT Token> -e VSTS_AGENT=agent4lab -e VSTS_POOL=Default -v /var/run/docker.sock:/var/run/docker.sock --name agent4lab --rm -it mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-16.04-docker-18.06.1-ce-standard
-    #
-    ```
-
-    The Azure Pipelines agent will initialize and you should see a message indicating "Listening for Jobs".  See below.  
-    ```
-    Determining matching VSTS agent...
-    Downloading and installing VSTS agent...
-
-      ___                      ______ _            _ _
-     / _ \                     | ___ (_)          | (_)
-    / /_\ \_____   _ _ __ ___  | |_/ /_ _ __   ___| |_ _ __   ___  ___
-    |  _  |_  / | | | '__/ _ \ |  __/| | '_ \ / _ \ | | '_ \ / _ \/ __|
-    | | | |/ /| |_| | | |  __/ | |   | | |_) |  __/ | | | | |  __/\__ \
-    \_| |_/___|\__,_|_|  \___| \_|   |_| .__/ \___|_|_|_| |_|\___||___/
-                                       | |
-            agent v2.169.1             |_|          (commit ac1c169)
-
-
-    >> End User License Agreements:
-
-    Building sources from a TFVC repository requires accepting the Team Explorer Everywhere End User License Agreement. This step is not required for building sources from Git repositories.
-
-    A copy of the Team Explorer Everywhere license agreement can be found at:
-      /vsts/agent/externals/tee/license.html
-
-
-    >> Connect:
-
-    Connecting to server ...
-
-    >> Register Agent:
-
-    Scanning for tool capabilities.
-    Connecting to the server.
-    Successfully added the agent
-    Testing agent connection.
-    2020-06-03 21:58:22Z: Settings Saved.
-    Scanning for tool capabilities.
-    Connecting to the server.
-    2020-06-03 21:58:24Z: Listening for Jobs
-    ```
-
-    Minimize this terminal window for now as you will only be using it to view the results of an Azure DevOps build/release.  Before proceeding, open another terminal (WSL/Putty/Git bash) window and login (SSH) into the Linux VM.
-
-In subsequent sections, we will configure *Azure DevOps Services* to use the pipeline **self-hosted** agent to perform application builds, container builds and containerized application deployments on Azure.
-
-### E. Deploy Azure Container Registry
+### D. Deploy Azure Container Registry
 **Approx. time to complete this section: 10 minutes**
 
 In this step, we will deploy an instance of Azure Container Registry (ACR) to store container images which we will build in later steps.  A container registry such as ACR allows us to store multiple versions of application container images in one centralized repository and consume them from multiple nodes (VMs/Servers) where our applications are deployed.
@@ -689,10 +574,18 @@ In this step, we will deploy an instance of Azure Container Registry (ACR) to st
 
     ![alt tag](./images/E-02.PNG)
 
+### E. Deploy an Azure Pipelines Agent on the Linux VM
+**Approx. time to complete this section: 30 minutes**
+
+To build and run the Azure DevOps self-hosted pipelines agent, refer to this GitHub repo. (link below). 
+- [Build and deploy Azure DevOps Pipelines Agent on AKS](https://github.com/ganrad/Az-DevOps-Agent-On-AKS)
+
+Also, refer to the [Azure DevOps Services Docs](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/v2-linux?view=azure-devops).
+
 ### F. Define and execute Claims API Build Pipeline in Azure DevOps Services
 **Approx. time to complete this section: 1 Hour**
 
-In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (mcr.microsoft.com/dotnet/core/aspnet).  Finally, the application container image is pushed into the ACR which you deployed in [Section E](#e-deploy-azure-container-registry).
+In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (mcr.microsoft.com/dotnet/core/aspnet).  Finally, the application container image is pushed into the ACR which you deployed in [Section D](#e-deploy-azure-container-registry).
 
 Before proceeding with the next steps, take a few minutes and go thru the **dockerfile** and Claims API source files in the GitHub repository.  This will help you understand how the container is built when the continuous integration (CI) pipeline is executed in Azure DevOps Services.
 
@@ -767,7 +660,7 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
     - Display name = `Build container image`
     - Container Registry Type = `Azure Container Registry`
     - Azure Subscription = Select your Azure Subscription.  Click **Authorize**.
-    - Azure Container Registry = Select ACR which you provisioned in [Section E](#e-deploy-azure-container-registry) above.
+    - Azure Container Registry = Select ACR which you provisioned in [Section D](#e-deploy-azure-container-registry) above.
     - Action = `Build an image`
     - Docker File = `dockerfile`
     - Image Name = `claims-api:$(Build.BuildId)`
@@ -786,7 +679,7 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
     - Display name = `Push container image to ACR`
     - Container Registry Type = `Azure Container Registry`
     - Azure Subscription = Select your Azure Subscription.
-    - Azure Container Registry = Select ACR which you provisioned in [Section E](#e-deploy-azure-container-registry) above.
+    - Azure Container Registry = Select ACR which you provisioned in [Section D](#e-deploy-azure-container-registry) above.
     - Action = `Push an image`
     - Image Name = `claims-api:$(Build.BuildId)`
     - Qualify Image Name = Enable checkbox.
@@ -863,15 +756,17 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
     >**NOTE:** Follow the steps in option **A** or **B** below for deploying the AKS cluster.  If you would like to explore deploying containers on **Virtual Nodes** in the [extensions](./extensions) projects, follow the steps in option **B** below.  Otherwise, follow the steps in option **A**.
 
-    **A.** Use the latest supported Kubernetes version to deploy the AKS cluster.  At the time this project was last updated, version `1.19.3` was the latest stable AKS version. 
+    **A.** Use the latest supported Kubernetes version to deploy the AKS cluster.  At the time this project was last updated, version `1.19.6` was the latest stable AKS version. 
 
        Refer to the commands below to create the AKS cluster.  It will take a few minutes (< 10 mins) for the AKS cluster to get provisioned. 
        ```bash
-       # Create a 2 Node AKS cluster v1.19.3.  This is not the latest patch release.
+       # Create a 2 Node AKS cluster v1.19.6.  This is not the latest patch release.
        # We will upgrade to the latest patch release in a subsequent lab/Section. 
-       # Remember to substitute the correct value for 'Resource Group'.
+       #
+       # IMPORTANT: Remember to substitute correct values for 'Resource Group' & 'ACR Name' (Exclude the brackets '<' and '>').
+       #
        # The 'az aks' command below will provision an AKS cluster with the following settings -
-       # - Kubernetes version ~ 1.19.3
+       # - Kubernetes version ~ 1.19.6
        # - No. of application/worker nodes ~ 2
        # - Node pool - A single 'system' node pool (AKS supports up to 10 node pools)
        # - RBAC ~ Disabled
@@ -879,8 +774,9 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
        # - Azure Load Balancer - Standard SKU
        # - Location ~ US West 2
        # - DNS Name prefix for API Server ~ akslab
+       # - The cluster's service principal will have 'pull' permissions to pull container images from the ACR instance
        #
-       $ az aks create --resource-group myResourceGroup --name akscluster --location westus2 --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.19.3"
+       $ az aks create --resource-group <Resource Group> --name akscluster --location westus2 --node-count 2 --dns-name-prefix akslab --generate-ssh-keys --disable-rbac --kubernetes-version "1.19.6" --attach-acr <ACR Name>
        #
        # Verify status of AKS cluster
        $ az aks show -g myResourceGroup -n akscluster --output table
@@ -922,16 +818,17 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
        $ az network vnet subnet show --resource-group myResourceGroup --vnet-name myVnet --name myAKSSubnet --query id -o tsv
        #
        # Provision the AKS cluster within a private VNET
-       # Substitute correct values for appId, password & subnetId
+       # IMPORTANT: Substitute correct values for resourceGroup, appId, password & subnetId (Exclude the brackets '<' and '>')
+       #
        $ az aks create \
-         --resource-group myResourceGroup \
+         --resource-group <resourceGroup> \
          --name akscluster \
          --location westus2 \
          --node-count 2 \
          --dns-name-prefix akslab \
          --generate-ssh-keys \
          --disable-rbac \
-         --kubernetes-version "1.19.3" \
+         --kubernetes-version "1.19.6" \
          --network-plugin azure \
          --service-cidr 10.0.0.0/16 \
          --dns-service-ip 10.0.0.10 \
@@ -944,7 +841,7 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
        $ az aks show -g myResourceGroup -n akscluster --output table
        ```
 
-4.  Connect to the AKS cluster and initialize Helm package manager.
+4.  Connect to the AKS cluster.
     ```bash
     # Configure kubectl to connect to the AKS cluster
     # Remember to substitute the correct value for 'Resource Group'
@@ -956,14 +853,6 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     # Check default namespaces in the cluster
     $ kubectl get namespaces
     #
-    # Initialize Helm (v2.x).  This will install 'Tiller' on AKS.  Wait for this command to complete!
-    $ helm init --wait
-    #
-    # Check if Helm client is able to connect to Tiller on AKS.
-    # This command should list both client and server versions.
-    $ helm version
-    Client: &version.Version{SemVer:"v2.17.0", GitCommit:"e13bc94621d4ef666270cfbe734aaabf342a49bb", GitTreeState:"clean"}
-    Server: &version.Version{SemVer:"v2.17.0", GitCommit:"e13bc94621d4ef666270cfbe734aaabf342a49bb", GitTreeState:"clean"}
     ```
 
 5.  Deploy Traefik Kubernetes Ingress Controller.
@@ -1004,19 +893,9 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
 6.  Configure AKS to pull application container images from ACR.
 
+    **IMPORTANT NOTES:** If you selected Option **A** in Step 3 then skip this Step and go to Step 7.
+
     When AKS cluster is created, Azure also creates a 'Service Principal' (SP) to support cluster interoperability with other Azure resources.  This auto-generated service principal can be used to authenticate against the ACR.  To do so, we need to create an Azure AD role assignment that grants the cluster's SP access to the Azure Container Registry.
-
-    **IMPORTANT NOTES:**
-    - If you selected Option **A** in Step 3 then execute the command in the code snippet below and skip to Step 7.
-    - Alternatively if you selected Option **B** in Step 3, skip this code snippet and go to the next section in this step.
-
-    ```bash
-    # Assign registry pull permission to the AKS cluster Service Principal so it can pull images from the ACR instance.
-    # In the command below, replace 'ACR_NAME' with the name of your ACR instance.  (Exclude the brackets '< , >')
-    #
-    $ az aks update -g myResourceGroup -n akscluster --attach-acr <ACR_NAME>
-    #
-    ```
 
     Edit the shell script `./shell-scripts/acr-auth.sh` and specify correct values for the following variables.
 
@@ -1060,13 +939,13 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
     #   - Enable/Set deployment type to 'blue'
     #     eg., --set blue.enabled=true
     # 
-    $ helm upgrade aks-aspnetcore-lab ./claims-api --install --namespace development --set blue.enabled=true --set image.repository=<your-acr-repo>.azurecr.io/claims-api --set sqldb.connectionString="Server=tcp:#{SQL_SRV_PREFIX}#.database.windows.net;Initial Catalog=ClaimsDB;Persist Security Info=False;User ID=#{SQL_USER_ID}#;Password=#{SQL_USER_PWD}#;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    $ helm upgrade aks-aspnetcore-lab ./claims-api --install --namespace development --create-namespace --set blue.enabled=true --set image.repository=<your-acr-repo>.azurecr.io/claims-api --set sqldb.connectionString="Server=tcp:#{SQL_SRV_PREFIX}#.database.windows.net;Initial Catalog=ClaimsDB;Persist Security Info=False;User ID=#{SQL_USER_ID}#;Password=#{SQL_USER_PWD}#;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     #
     # List the Kubernetes namespaces.  Verify that the 'development' namespace got created.
     $ kubectl get namespaces
     #
-    # List the application releases
-    $ helm ls
+    # List the application releases in 'development' namespace
+    $ helm ls -n development
     #
     # List the pods in the 'development' namespace
     $ kubectl get pods -n development
@@ -1166,20 +1045,6 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
 
     ![alt tag](./images/H-11.PNG)
 
-    Click on the **helm** task (on the left).  In the detail pane on the right, fill out the values as shown in the screenshots below.
-
-    **IMPORTANT NOTES:**
-    - Remember to specify the correct value for the Azure resource group (eg., myResourceGroup).
-    - The **Helm v2** task uses an Helm version that points to a deprecated chart repository (which may not resolve).  Add parameter `--stable-repo-url https://charts.helm.sh/stable` to the **Arguments** field of the **Helm** task (below) to force Helm to retrieve charts from the updated stable repository.
-
-    ![alt tag](./images/H-12.PNG)
-
-    ![alt tag](./images/H-13.PNG)
-
-    Again, click on the **" + "** symbol beside **Agent job** and search for text *helm*, select extension **Package and deploy Helm charts** and click **Add**.  See screenshot below.
-
-    ![alt tag](./images/H-14.PNG)
-
     Click on the **helm** task (on the left).  In the detail pane on the right, specify correct values for the following fields.
     - Display name = `helm upgrade`
     - Connection Type = `Azure Resource Manager`
@@ -1193,7 +1058,10 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
     - Release name = `aks-aspnetcore-lab`
     - Arguments = `--set blue.enabled=true --set image.repository=<your-acr-repo>.azurecr.io/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)"`
 
-      Remember to specify the correct value for **ACR instance** in **image.repository** template parameter !
+    **IMPORTANT NOTES:**
+    - Specify the correct value for the Azure resource group (eg., myResourceGroup)
+    - Specify the correct value for **ACR instance** in **image.repository** template parameter
+    - Ignore the 'helm init' task in the screenshots below.  This task was required for Helm v2 but isn't required in Helm v3
 
     See screenshots below.
 
@@ -1234,6 +1102,9 @@ In the next section, we will define a *Release Pipeline* in Azure DevOps to auto
     ![alt tag](./images/H-29.PNG)
 
     Click on **helm upgrade** task.  Change the Kubernetes **Namespace** to **qa-test** and the Helm **Release Name** to **aks-aspnetcore-lab-qa** as shown in the screenshot below. Leave all other field values as is.
+
+    **IMPORTANT NOTES:**
+    - Ignore the 'helm init' task in the screenshots below.  This task was required for Helm v2 but isn't required in Helm v3
 
     ![alt tag](./images/H-30.PNG)
 
@@ -1445,7 +1316,7 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
 
     ![alt tag](./images/I-04.PNG)
 
-    In the **Add a Docker Registry service connection** page, select **Azure Container Registry** for **Registry type** and specify a *Name* for **Connection name** (eg., ACR-Connection). In the **Azure subscription** drop down field, select your Azure subscription.  In the **Azure container registry** drop down field, select the ACR instance which you created in [Section E](#e-deploy-azure-container-registry).  See screenshot below.
+    In the **Add a Docker Registry service connection** page, select **Azure Container Registry** for **Registry type** and specify a *Name* for **Connection name** (eg., ACR-Connection). In the **Azure subscription** drop down field, select your Azure subscription.  In the **Azure container registry** drop down field, select the ACR instance which you created in [Section D](#e-deploy-azure-container-registry).  See screenshot below.
 
     ![alt tag](./images/I-05.PNG)
 
@@ -1641,9 +1512,9 @@ In this section, we will explore value add features for administering & managing
     # List the available upgrade versions for the AKS cluster
     $ az aks get-upgrades -g myResourceGroup -n akscluster -o table
     #
-    # Upgrade the AKS cluster to v1.19.6.  Then confirm (y) the upgrade.
+    # Upgrade the AKS cluster to v1.19.7.  Then confirm (y) the upgrade.
     # Be patient.  The upgrade will run for a few minutes!
-    $ az aks upgrade -g myResourceGroup -n akscluster --kubernetes-version 1.19.6
+    $ az aks upgrade -g myResourceGroup -n akscluster --kubernetes-version 1.19.7
     #
     # Verify the nodes have been upgraded by checking the value under the 'KubernetesVersion' column
     $ az aks show -g myResourceGroup -n akscluster -o table

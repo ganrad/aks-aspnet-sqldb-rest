@@ -26,6 +26,7 @@
 # NOTES:
 # ID06082020: ganrad01: Updated script to .NET Core 3.1
 # ID01292021: ganrad01: Updated script so Helm reads the latest stable chart repo.
+# ID03042021: ganrad01: Helm Init task is not required in Helm v3
 # --------------------------------
 
 # trigger:
@@ -88,19 +89,21 @@ steps:
   displayName: Helm deploy start
   name: echo_helm_start
 
-- task: HelmDeploy@0
-  displayName: Helm init
-  name: helm_init
-  inputs:
-    connectionType: Azure Resource Manager
-    azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
-    azureResourceGroup: $(azureResourceGroup)
-    kubernetesCluster: $(kubernetesCluster)
-    command: init
-    upgradetiller: false
-    waitForExecution: true
+  # ID03042021.so
+  #- task: HelmDeploy@0
+  #displayName: Helm init
+  #name: helm_init
+  #inputs:
+  #  connectionType: Azure Resource Manager
+  #  azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+  #  azureResourceGroup: $(azureResourceGroup)
+  #  kubernetesCluster: $(kubernetesCluster)
+  #  command: init
+  #  upgradetiller: false
+  #  waitForExecution: true
     # arguments: --client-only ID012921.o
-    arguments: --stable-repo-url "https://charts.helm.sh/stable" --client-only
+  #  arguments: --stable-repo-url "https://charts.helm.sh/stable" --client-only
+  # ID03042021.eo
 
 - task: HelmDeploy@0
   displayName: Helm upgrade
@@ -111,7 +114,7 @@ steps:
     azureResourceGroup: $(azureResourceGroup)
     kubernetesCluster: $(kubernetesCluster)
     command: upgrade
-    arguments: --namespace dev-dp --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)" --set blue.enabled=true
+    arguments: --namespace dev-dp --create-namespace --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)" --set blue.enabled=true
     chartType: filepath
     chartPath: $(System.DefaultWorkingDirectory)/claims-api
     releaseName: aks-aspnetcore-lab-dp
