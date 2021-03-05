@@ -8,8 +8,8 @@ Table of Contents
   * [A. Deploy an Azure SQL Server Database](#a-deploy-an-azure-sql-server-and-database)
   * [B. Provision a Linux VM (Bastion Host/Jump Box) on Azure and install pre-requisite software](#b-provision-a-linux-centos-vm-on-azure)
   * [C. Build and run the Claims API microservice locally on the Bastion Host](#c-build-and-run-the-claims-api-microservice-locally-on-the-linux-vm)
-  * [D. Deploy an Azure Container Registry (ACR)](#e-deploy-azure-container-registry)
-  * [E. Deploy an Azure Pipelines Agent on the Bastion Host](#d-deploy-an-azure-pipelines-agent-on-the-linux-vm)
+  * [D. Deploy an Azure Container Registry (ACR)](#d-deploy-azure-container-registry)
+  * [E. Deploy an Azure Pipelines Agent on the Bastion Host](#e-deploy-an-azure-pipelines-agent-on-the-linux-vm)
   * [F. Define and execute a Build Pipeline in Azure DevOps Services](#f-define-and-execute-claims-api-build-pipeline-in-azure-devops-services)
   * [G. Deploy an Azure Kubernetes Service (AKS) cluster](#g-create-an-azure-kubernetes-service-cluster-and-deploy-claims-api-microservice)
     * [Invoking the Claims API Microservice REST API](#invoking-the-claims-api-microservice-rest-api)
@@ -585,7 +585,7 @@ Also, refer to the [Azure DevOps Services Docs](https://docs.microsoft.com/en-us
 ### F. Define and execute Claims API Build Pipeline in Azure DevOps Services
 **Approx. time to complete this section: 1 Hour**
 
-In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (mcr.microsoft.com/dotnet/core/aspnet).  Finally, the application container image is pushed into the ACR which you deployed in [Section D](#e-deploy-azure-container-registry).
+In this step, we will create a **Continuous Integration** (CI) pipeline in Azure DevOps.  This pipeline will contain the tasks for building the microservice (binary artifacts) and packaging (layering) it within a docker container.  During the application container build process, the application binary is layered on top of a base docker image (mcr.microsoft.com/dotnet/core/aspnet).  Finally, the application container image is pushed into the ACR which you deployed in [Section D](#d-deploy-azure-container-registry).
 
 Before proceeding with the next steps, take a few minutes and go thru the **dockerfile** and Claims API source files in the GitHub repository.  This will help you understand how the container is built when the continuous integration (CI) pipeline is executed in Azure DevOps Services.
 
@@ -660,7 +660,7 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
     - Display name = `Build container image`
     - Container Registry Type = `Azure Container Registry`
     - Azure Subscription = Select your Azure Subscription.  Click **Authorize**.
-    - Azure Container Registry = Select ACR which you provisioned in [Section D](#e-deploy-azure-container-registry) above.
+    - Azure Container Registry = Select ACR which you provisioned in [Section D](#d-deploy-azure-container-registry) above.
     - Action = `Build an image`
     - Docker File = `dockerfile`
     - Image Name = `claims-api:$(Build.BuildId)`
@@ -679,7 +679,7 @@ Before proceeding with the next steps, take a few minutes and go thru the **dock
     - Display name = `Push container image to ACR`
     - Container Registry Type = `Azure Container Registry`
     - Azure Subscription = Select your Azure Subscription.
-    - Azure Container Registry = Select ACR which you provisioned in [Section D](#e-deploy-azure-container-registry) above.
+    - Azure Container Registry = Select ACR which you provisioned in [Section D](#d-deploy-azure-container-registry) above.
     - Action = `Push an image`
     - Image Name = `claims-api:$(Build.BuildId)`
     - Qualify Image Name = Enable checkbox.
@@ -1316,7 +1316,7 @@ In this section, we will build and deploy a *Continuous Delivery* pipeline in Az
 
     ![alt tag](./images/I-04.PNG)
 
-    In the **Add a Docker Registry service connection** page, select **Azure Container Registry** for **Registry type** and specify a *Name* for **Connection name** (eg., ACR-Connection). In the **Azure subscription** drop down field, select your Azure subscription.  In the **Azure container registry** drop down field, select the ACR instance which you created in [Section D](#e-deploy-azure-container-registry).  See screenshot below.
+    In the **Add a Docker Registry service connection** page, select **Azure Container Registry** for **Registry type** and specify a *Name* for **Connection name** (eg., ACR-Connection). In the **Azure subscription** drop down field, select your Azure subscription.  In the **Azure container registry** drop down field, select the ACR instance which you created in [Section D](#d-deploy-azure-container-registry).  See screenshot below.
 
     ![alt tag](./images/I-05.PNG)
 
