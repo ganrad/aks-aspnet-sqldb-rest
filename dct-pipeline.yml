@@ -34,6 +34,7 @@
 # --------------------------------
 # NOTES:
 # ID06082020: ganrad01: Updated script to .NET Core 3.1
+# ID03042021: ganrad01: Helm Init task is not required in Helm v3. There is no need to initialize the local client.
 # --------------------------------
 
 # pool:
@@ -105,18 +106,20 @@ steps:
 - script: |
     docker trust inspect --pretty $(azureContainerRegistry)/$(imageRepository):$(Build.BuildId)
 
-- task: HelmDeploy@0
-  displayName: Helm init
-  name: helm_init
-  inputs:
-    connectionType: Azure Resource Manager
-    azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
-    azureResourceGroup: $(azureResourceGroup)
-    kubernetesCluster: $(kubernetesCluster)
-    command: init
-    upgradetiller: false
-    waitForExecution: true
-    arguments: --client-only
+    # ID03042021.so
+    #- task: HelmDeploy@0
+    #displayName: Helm init
+    #name: helm_init
+    #inputs:
+    #connectionType: Azure Resource Manager
+    #azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+    #azureResourceGroup: $(azureResourceGroup)
+    #kubernetesCluster: $(kubernetesCluster)
+    #command: init
+    #upgradetiller: false
+    #waitForExecution: true
+    #arguments: --client-only
+    # ID03042021.so
 
 - task: HelmDeploy@0
   displayName: Helm upgrade on AKS - $(azureResourceGroup):$(kubernetesCluster)
@@ -127,7 +130,7 @@ steps:
     azureResourceGroup: $(azureResourceGroup)
     kubernetesCluster: $(kubernetesCluster)
     command: upgrade
-    arguments: --namespace dev-dct --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)" --set blue.enabled=true
+    arguments: --namespace dev-dct --create-namespace --set image.repository=$(azureContainerRegistry)/claims-api --set image.tag=$(Build.BuildId) --set sqldb.connectionString="$(sqlDbConnectionString)" --set blue.enabled=true
     chartType: filepath
     chartPath: $(System.DefaultWorkingDirectory)/claims-api
     releaseName: aks-aspnetcore-lab-dct
