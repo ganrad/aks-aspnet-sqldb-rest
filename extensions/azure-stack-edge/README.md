@@ -16,8 +16,9 @@ Steps:
 6. Commit and push changes to new branch.
 7. Go to the ADO project and update the build pipeline using new branch (instead of master).
 8. Create a new container registry service connection for your edge container registry and update the build pipeline (e.g. "https://ecr.dbe-70c9r53.microsoftdatabox.com:31001/").
-9. In the release pipeline, edit the namespace and use the one you created for Claims API deployment.
-10. Run pipeline and verify result.
+9. Create a new Kubernetes service connection using the kubeconfig file for the user who's grant access to the namespace for deployment.
+10. In the release pipeline, edit the namespace and use the one you created for Claims API deployment.
+11. Run pipeline and verify result.
 
 Notes:
 * Since we are using the edge container registry instead of ACR, we will need to create imagePullSecret on k8s to store the credentials. This is handled by helm 3 charts.
