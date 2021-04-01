@@ -18,7 +18,15 @@ Steps:
 8. Create a new container registry service connection for your edge container registry and update the build pipeline (e.g. "https://ecr.dbe-70c9r53.microsoftdatabox.com:31001/").
 9. Create a new Kubernetes service connection using the kubeconfig file for the user who's grant access to the namespace for deployment.
 10. In the release pipeline, edit the namespace and use the one you created for Claims API deployment.
-11. Run pipeline and verify result.
+11. Run pipeline and verify result:
+```bash
+azureuser@Ubuntu1804:~$ helm ls -n claims-api-dev
+NAME                    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+aks-aspnetcore-lab      claims-api-dev  1               2021-03-31 23:44:33.354484376 +0000 UTC deployed        claims-api-0.1.0        1.0
+azureuser@Ubuntu1804:~$ kubectl get services -n claims-api-dev
+NAME             TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+claims-api-svc   LoadBalancer   172.28.121.185   192.168.1.9   80:31608/TCP   154m
+```
 
 Notes:
 * Since we are using the edge container registry instead of ACR, we will need to create imagePullSecret on k8s to store the credentials. This is handled by helm 3 charts.
