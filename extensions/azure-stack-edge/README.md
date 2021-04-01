@@ -2,7 +2,7 @@
 
 **Functional Architecture:**
 
-![alt tag](./images/EXT-ase-arch.png)
+![alt tag](../../images/EXT-ase-arch.png)
 
 Prerequisites:
 * You have access to a [fully functional ASE with internet access and allocated sufficient IP address space for k8s services](https://docs.microsoft.com/en-us/azure/databox-online/azure-stack-edge-gpu-deploy-configure-network-compute-web-proxy#enable-compute-network) exopsed on your local network.
