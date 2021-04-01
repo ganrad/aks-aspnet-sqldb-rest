@@ -72,7 +72,7 @@ imagePullSecrets:
   - name: regcred
 
 imageCredentials:
-  registry: https://ecr.dbe-70c9r53.microsoftdatabox.com:31001
+  registry: https://ecr.YOURASEHOSTNAME.microsoftdatabox.com:31001
   username: ase-ecr-user
-  password: LnJlQyWJ0fTW4Fl
-  email: k8sadmin@redondoase.org
+  password: YOURPASSWORD
+  email: k8sadmin@yourcompany.com
