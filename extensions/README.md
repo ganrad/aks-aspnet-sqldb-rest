@@ -16,3 +16,7 @@ The extensions below explore advanced features of AKS (Kubernetes) and additiona
 - [Explore advanced features of **Istio Service Mesh**](./istio-service-mesh)
 
   This sub-project examines the advanced features supported by [Istio Service Mesh](https://istio.io/docs/concepts/what-is-istio/).  Features such as intelligent request/traffic routing, traffic splitting (a.k.a Canary rollouts), request timeouts, circuit breaking, fault injection, secure intra-pod communication, rate limiting and others are explored in greater depth and detail.  
+
+- [Deploy Claims API to **Azure Stack Edge**](./azure-stack-edge)
+
+  In this sub-project, we will deploy the same Claims Web API to the [Kubernetes cluster on Azure Stack Edge (ASE)](https://docs.microsoft.com/en-us/azure/databox-online/azure-stack-edge-gpu-kubernetes-overview). The container is built on a Ubuntu [virtual machine on ASE](https://docs.microsoft.com/en-us/azure/databox-online/azure-stack-edge-gpu-deploy-virtual-machine-portal) and pushed to the private [edge container registry on ASE](https://docs.microsoft.com/en-us/azure/databox-online/azure-stack-edge-gpu-edge-container-registry).
