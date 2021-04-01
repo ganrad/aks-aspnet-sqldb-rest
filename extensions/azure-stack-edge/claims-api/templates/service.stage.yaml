@@ -1,0 +1,26 @@
+{{- if eq .Values.service.type "ClusterIP" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.app.name }}-svc-stage
+  labels:
+    app: {{ .Values.app.name }}
+    chart: {{ template "claims-api.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ .Values.app.name }}
+    {{- if eq .Values.productionSlot "blue" }}
+    slot: green
+    {{- else }}
+    slot: blue
+    {{- end }}
+    release: {{ .Release.Name }}
+{{- end }}

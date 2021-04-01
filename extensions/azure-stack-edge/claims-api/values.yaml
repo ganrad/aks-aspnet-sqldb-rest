@@ -1,0 +1,78 @@
+# Default values for claims-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+productionSlot: blue
+productionTag: latest
+blue:
+  enabled: false
+green:
+  enabled: false
+
+replicaCount: 1
+
+app:
+  name: claims-api
+
+image:
+  repository: labtest.azurecr.io/claims-api
+  tag: latest
+  tag0: latest
+  pullPolicy: Always
+
+service:
+  type: LoadBalancer
+  port: 80
+
+checks:
+  initialDelay: 10
+  periodSeconds: 30
+
+ingress:
+  enabled: false
+  annotations:
+    kubernetes.io/ingress.class: traefik
+  path: /
+  host:
+    epProd: claims-api-prod.akslab.com
+    epStage: claims-api-stage.akslab.com
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+sqldb:
+  connectionString: "Sql Server Connection String"
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+asesecret:
+  enabled: true
+  name: regcred
+
+imagePullSecrets:
+  - name: regcred
+
+imageCredentials:
+  registry: https://ecr.YOURASEHOSTNAME.microsoftdatabox.com:31001
+  username: ase-ecr-user
+  password: YOURPASSWORD
+  email: k8sadmin@yourcompany.com
