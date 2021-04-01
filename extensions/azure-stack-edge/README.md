@@ -1,5 +1,9 @@
 # Deploy Claims API on Azure Stack Edge
 
+**Functional Architecture:**
+
+![alt tag](./images/EXT-ase-arch.png)
+
 Prerequisites:
 * You have access to a [fully functional ASE with internet access and allocated sufficient IP address space for k8s services](https://docs.microsoft.com/en-us/azure/databox-online/azure-stack-edge-gpu-deploy-configure-network-compute-web-proxy#enable-compute-network) exopsed on your local network.
 * [Create a new user and namespace with proper RBAC on ASE k8s](https://docs.microsoft.com/en-us/azure/databox-online/azure-stack-edge-gpu-create-kubernetes-cluster).
