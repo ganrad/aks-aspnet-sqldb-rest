@@ -857,7 +857,9 @@ Follow the steps below to provision the AKS cluster and deploy the Claims API mi
 
 5.  Deploy Traefik Kubernetes Ingress Controller.
 
-    An ingress controller acts as a load balancer cum reverse proxy and intercepts HTTP traffic destined to applications deployed on the AKS cluster.  For production AKS deployments, it's usually a best practice (security reasons) to direct all inbound HTTP traffic into the cluster thru an Ingress Controller.  The ingress controller provides a single point of entry into the AKS cluster and is responsible for directing all HTTP traffic to respective service endpoints exposed on the cluster.
+    An ingress controller (IC) acts as a load balancer and reverse proxy.  The ingress controller provides a single point of entry into the AKS cluster and is responsible for directing all HTTP traffic to respective service endpoints exposed on the cluster.
+
+    For production AKS deployments, it's usually a best practice (security reasons) to direct all inbound HTTP traffic into the cluster thru an Ingress Controller.  
 
     For this project, we will deploy [Traefik Ingress Controller](https://github.com/helm/charts/tree/master/stable/traefik).  For AKS production deployments, either [NGINX Ingress Controller](https://github.com/nginxinc/kubernetes-ingress) or [Azure Application Gateway Controller](https://docs.microsoft.com/en-us/azure/application-gateway/ingress-controller-overview) is recommended.
     ```bash
