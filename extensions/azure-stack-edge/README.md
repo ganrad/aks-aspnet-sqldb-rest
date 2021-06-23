@@ -2,7 +2,7 @@
 
 **Functional Architecture:**
 
-![alt tag](../../images/EXT-ase-arch.png)
+![alt tag](../../images/EXT-ase-apim-arch.png)
 
 Prerequisites:
 * You have access to a [fully functional ASE with internet access and allocated sufficient IP address space for k8s services](https://docs.microsoft.com/en-us/azure/databox-online/azure-stack-edge-gpu-deploy-configure-network-compute-web-proxy#enable-compute-network) exopsed on your local network.
@@ -44,8 +44,24 @@ X-Pod-IpAddr: 172.27.114.62
 
 [{"claimItemId":100,"claimStatus":"02","claimType":"InstClaim","senderID":"CLPCSVNTEST2","receiverID":"APPCSVNTEST1","originatorID":"ORGNCSVTEST1","destinationID":"DESMEDSTEST1","claimInputMethod":"E","subscriberInfo":[{"subscriberInfoId":100,"subscriberRelationship":"18","subscriberPolicyNumber":"12345","insuredGroupName":"MD000004","subscriberLastName":"Doe","subscriberFirstName":"John","subscriberMiddleName":"","subscriberIdentifierSSN":"489-88-7001","subscriberAddressLine1":"5589 Hawthorne Way","subscriberAddressLine2":"","subscriberCity":"Sacramento","subscriberState":"CA","subscriberPostalCode":"95835","subscriberCountry":"US","subDateOfBirth":"12-19-1984","subscriberGender":"Male","payerName":"","patientLastName":"","patientFirstName":"","patientSSN":"489-88-7001","patientMemberID":"12345","patientDOB":"12-19-1984","patientGender":"Male","catgOfService":"Consultation","claimItemId":100}],"claimNumber":"1234121235","totalClaimCharge":1234.50,"patientStatus":"01","patientAmountDue":0.00,"serviceDate":"0001-01-01T00:00:00","policyNumber":"898435","claimPaidDate":"2021-02-03T00:06:38.4030071","serviceLineDetails":[{"serviceLineDetailsId":100,"statementDate":"2018-10-31T08:30:00","lineCounter":1,"serviceCodeDescription":"INPT","lineChargeAmount":15000.00,"drugCode":"UN","drugUnitQuantity":23,"pharmacyPrescriptionNumber":"123897","serviceType":"Consultation","providerCode":"72","providerLastName":"Longhorn","providerFirstName":"Dr. James","providerIdentification":"20120904-20120907","inNetworkIndicator":true,"claimItemId":100}],"planPayment":[{"planPaymentId":100,"primaryPayerID":"MEDICAID","cobServicePaidAmount":15000.00,"serviceCode":"ABC","paymentDate":"2021-02-03T00:00:00","claimAdjGroupCode":"HIPAA","claimAdjReasonCode":"CO","claimAdjAmount":500.00,"claimAdjQuantity":"3","claimItemId":100}]}]
 ```
+At this point, we have successfully deployed Claims API to the ASE. In the following steps, we will add API Management functionalities to this lab.
 
-Notes:
+12. [Deploy APIM](https://docs.microsoft.com/en-us/azure/api-management/get-started-create-service-instance) in Azure and create a new API: "Claims API" and define the backend endpoint by specifying the k8s internal endpoint for Claims API: "http://claims-api-svc.claims-api-dev".
+![image](https://user-images.githubusercontent.com/15071173/123028500-49b2b080-d394-11eb-9013-56735ddd6354.png)
+![image](https://user-images.githubusercontent.com/15071173/123028245-f93b5300-d393-11eb-8f71-d3b6d736c3ec.png)
+13. Make sure you have followed instructions to [enable Arc for K8S on ASE](https://docs.microsoft.com/en-us/azure/databox-online/azure-stack-edge-gpu-deploy-arc-kubernetes-cluster): ![image](https://user-images.githubusercontent.com/15071173/123027251-5f26db00-d392-11eb-9978-fdd7c1b2c0eb.png)
+14. Install Azure Arc extension: API Management gateway (preview) in k8s namespace "apim":
+![image](https://user-images.githubusercontent.com/15071173/123027012-fa6b8080-d391-11eb-8523-fdcf2bbd78b2.png)
+15. Add "Claims API" to the APIM Gateway:
+![image](https://user-images.githubusercontent.com/15071173/123029055-5c79b500-d395-11eb-8d55-6f93bab2f243.png)
+16. Confirm the APIM Gateway service is running:
+![image](https://user-images.githubusercontent.com/15071173/123027359-8f6e7980-d392-11eb-87f1-23b5aa5afa09.png)
+17. Use Postman to send a request to APIM Gateway:
+![image](https://user-images.githubusercontent.com/15071173/123029586-34d71c80-d396-11eb-9d8a-a08fa736ebab.png)
+18. Examin the APIM gateway metrics:
+![image](https://user-images.githubusercontent.com/15071173/123029833-96978680-d396-11eb-84ff-cd41bdb20b39.png)
+
+**Notes**:
 * Since we are using the edge container registry (ECR) instead of ACR, we will need to create imagePullSecret on k8s to store the ECR credential "**regcred**", see below:
 ```bash
 azureuser@Ubuntu1804:~$ kubectl get secrets -n claims-api-dev
@@ -73,5 +89,5 @@ metadata:
   uid: 1ce2902e-78b3-433b-a289-f6c0fa2b655c
 type: kubernetes.io/dockerconfigjson
 ```
-* Seeing is believing:
+* Finally, **seeing is believing**:
 ![InkedEXT-ase-redondo_LI](https://user-images.githubusercontent.com/15071173/113322952-34b10e80-92ca-11eb-890c-c065b3d37433.jpg)
