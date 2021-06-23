@@ -46,7 +46,7 @@ X-Pod-IpAddr: 172.27.114.62
 ```
 At this point, we have successfully deployed Claims API to the ASE. In the following steps, we will add API Management functionalities to this lab.
 
-12. [Deploy APIM](https://docs.microsoft.com/en-us/azure/api-management/get-started-create-service-instance) in Azure and create a new API: "Claims API" and define the backend endpoint by specifying the k8s internal endpoint for Claims API: "http://claims-api-svc.claims-api-dev".
+12. [Deploy APIM](https://docs.microsoft.com/en-us/azure/api-management/get-started-create-service-instance) in Azure and create a new API: "Claims API" and define the backend endpoint by specifying the k8s **internal endpoint** for Claims API: "http://claims-api-svc.claims-api-dev".
 ![image](https://user-images.githubusercontent.com/15071173/123028500-49b2b080-d394-11eb-9013-56735ddd6354.png)
 ![image](https://user-images.githubusercontent.com/15071173/123028245-f93b5300-d393-11eb-8f71-d3b6d736c3ec.png)
 13. Make sure you have followed instructions to [enable Arc for K8S on ASE](https://docs.microsoft.com/en-us/azure/databox-online/azure-stack-edge-gpu-deploy-arc-kubernetes-cluster): ![image](https://user-images.githubusercontent.com/15071173/123027251-5f26db00-d392-11eb-9978-fdd7c1b2c0eb.png)
@@ -54,9 +54,9 @@ At this point, we have successfully deployed Claims API to the ASE. In the follo
 ![image](https://user-images.githubusercontent.com/15071173/123027012-fa6b8080-d391-11eb-8523-fdcf2bbd78b2.png)
 15. Add "Claims API" to the APIM Gateway:
 ![image](https://user-images.githubusercontent.com/15071173/123029055-5c79b500-d395-11eb-8d55-6f93bab2f243.png)
-16. Confirm the APIM Gateway service is running:
+16. Confirm the APIM Gateway service is running: APIM self-hosted gateway is deployed in the k8s namespace "**apim**" (configured in step 14 above), take a note of the **External Endpoint** of the gateway. From the screenshot below, it is **192.168.1.10:5000**.
 ![image](https://user-images.githubusercontent.com/15071173/123027359-8f6e7980-d392-11eb-87f1-23b5aa5afa09.png)
-17. Use Postman to send a request to APIM Gateway:
+17. Use Postman to invoke the Claims API by sending a request to APIM Gateway: Create a new request in Postman and configure the request URL as "http://192.168.1.10:5000/claims-api/api/v1/claims". Verify the response is the same as in step 11.
 ![image](https://user-images.githubusercontent.com/15071173/123029586-34d71c80-d396-11eb-9d8a-a08fa736ebab.png)
 18. Examin the APIM gateway metrics:
 ![image](https://user-images.githubusercontent.com/15071173/123029833-96978680-d396-11eb-84ff-cd41bdb20b39.png)
