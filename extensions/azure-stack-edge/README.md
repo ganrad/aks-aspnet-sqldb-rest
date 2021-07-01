@@ -61,6 +61,27 @@ At this point, we have successfully deployed Claims API to the ASE. In the follo
 18. Examin the APIM gateway metrics:
 ![image](https://user-images.githubusercontent.com/15071173/123029833-96978680-d396-11eb-84ff-cd41bdb20b39.png)
 
+In the following steps, we will [**integrate Azure AD to protect the Claims API**](https://docs.microsoft.com/en-us/azure/api-management/api-management-howto-protect-backend-with-aad) on Azure Stack Edge.
+
+19. [Create an App Registration](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-configure-app-expose-web-apis) in Azure AD to represent the **Claims web API**. On the app Overview page, find the **Application (client) ID** value and record it for later.
+![image](https://user-images.githubusercontent.com/15071173/124045995-cb729180-d9c5-11eb-99d4-840c6717c4b5.png)
+Expose the API and define a scope. Take a note of the scope.
+![image](https://user-images.githubusercontent.com/15071173/124046272-6a978900-d9c6-11eb-81f2-3a8b56b34055.png)
+20. Register another application in Azure AD to represent **a client application (in this example, Postman)**. Add client secret.
+![image](https://user-images.githubusercontent.com/15071173/124046527-0628f980-d9c7-11eb-9c7c-fe461a9fd031.png)
+Add Redirect URIs.
+![image](https://user-images.githubusercontent.com/15071173/124046732-7df72400-d9c7-11eb-8408-eaa564283403.png)
+21. Grant permissions in Azure AD so the client app can access the Claims API. **Optionally**, grant admin consent if you have permissions. Otherwise user consent will be granted later.
+![image](https://user-images.githubusercontent.com/15071173/124046900-d5958f80-d9c7-11eb-81c6-6cdc717ea6e4.png)
+22. Enable OAuth 2.0 user authorization for the APIM instance in Azure Portal.
+![image](https://user-images.githubusercontent.com/15071173/124047452-16da6f00-d9c9-11eb-98ac-2081f1a6871e.png)
+23. Configure a JWT validation policy for the APIM to pre-authorize requests before passing them to Claims API.
+![image](https://user-images.githubusercontent.com/15071173/124048089-679e9780-d9ca-11eb-9558-1e3e102695dc.png)
+24. Configure [OAuth2 Auth Code Grant](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow) and obtain a JWT token while submitting request to Claims API.
+![image](https://user-images.githubusercontent.com/15071173/124047199-7421f080-d9c8-11eb-95df-922604ce6986.png)
+25. Verify the response. It should be the same as in step 17 above.
+
+
 **Notes**:
 * Since we are using the edge container registry (ECR) instead of ACR, we will need to create imagePullSecret on k8s to store the ECR credential "**regcred**", see below:
 ```bash
